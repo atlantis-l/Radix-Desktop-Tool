@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "indi.atlantis-l.app.radix-desktop-tool",
+  "asar": true,
+  "productName": "Radix Tool",
+  "icon": "public/electron.png",
+  "directories": {
+    "output": "release"
+  },
+  "files": ["dist", "dist-electron"],
+  "mac": {
+    "target": ["dmg"],
+    "artifactName": "${productName}-Mac-${version}.${ext}"
+  },
+  "win": {
+    "target": ["portable"],
+    "artifactName": "${productName}-Win-${version}.${ext}"
+  },
+  "linux": {
+    "target": ["AppImage"],
+    "artifactName": "${productName}-Linux-${version}.${ext}"
+  }
+}

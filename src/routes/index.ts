@@ -63,6 +63,12 @@ const router = createRouter({
       ],
     },
     {
+      name: "HistoryCheck",
+      path: "/HistoryCheck",
+      icon: "ClockCircleTwoTone",
+      component: View.HistoryCheck,
+    },
+    {
       name: "WalletCreate",
       path: "/WalletCreate",
       icon: "WalletTwoTone",

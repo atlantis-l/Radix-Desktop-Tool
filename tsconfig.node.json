@@ -3,6 +3,8 @@
     "strict": true,
     "composite": true,
     "module": "ESNext",
+    "removeComments": true,
+    "isolatedModules": true,
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true
   },

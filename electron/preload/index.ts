@@ -1,3 +1,16 @@
+const safeDOM = {
+  append(parent: HTMLElement, child: HTMLElement) {
+    if (!Array.from(parent.children).find((e) => e === child)) {
+      return parent.appendChild(child);
+    }
+  },
+  remove(parent: HTMLElement, child: HTMLElement) {
+    if (Array.from(parent.children).find((e) => e === child)) {
+      return parent.removeChild(child);
+    }
+  },
+};
+
 function domReady(
   condition: DocumentReadyState[] = ["complete", "interactive"],
 ) {
@@ -13,19 +26,6 @@ function domReady(
     }
   });
 }
-
-const safeDOM = {
-  append(parent: HTMLElement, child: HTMLElement) {
-    if (!Array.from(parent.children).find((e) => e === child)) {
-      return parent.appendChild(child);
-    }
-  },
-  remove(parent: HTMLElement, child: HTMLElement) {
-    if (Array.from(parent.children).find((e) => e === child)) {
-      return parent.removeChild(child);
-    }
-  },
-};
 
 function useLoading() {
   const className = `loaders-css__square-spin`;
@@ -81,5 +81,16 @@ const { appendLoading, removeLoading } = useLoading();
 // domReady().then(appendLoading)
 
 // setTimeout(removeLoading, 3000)
+
+// ---------------------------- CUSTOM ---------------------------- //
+
+import { contextBridge, ipcRenderer } from "electron";
+
+contextBridge.exposeInMainWorld("RadixTool", {
+  data: {
+    set: (key: string, value: any) => ipcRenderer.invoke("set", key, value),
+    get: (key: string) => ipcRenderer.invoke("get", key),
+  },
+});
 
 // ---------------------------- CUSTOM ---------------------------- //

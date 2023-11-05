@@ -7,6 +7,7 @@
     "module": "ESNext",
     "removeComments": true,
     "esModuleInterop": true,
+    "isolatedModules": true,
     "resolveJsonModule": true,
     "moduleResolution": "Bundler",
     "useDefineForClassFields": true,

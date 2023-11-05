@@ -19,6 +19,9 @@ export default {
       singleWallet: "Single Wallet",
       multipleWallets: "Multiple Wallets",
     },
+    HistoryCheck: {
+      title: "History Check",
+    },
     WalletCreate: {
       title: "Wallet Create",
     },
@@ -174,6 +177,9 @@ export default {
       MultipleWallets: {
         message: "Multiple Wallets",
       },
+    },
+    HistoryCheck: {
+      message: "History Check",
     },
     WalletCreate: {
       message: "Wallet Create",

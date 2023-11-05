@@ -19,6 +19,9 @@ export default {
       singleWallet: "单个钱包",
       multipleWallets: "多个钱包",
     },
+    HistoryCheck: {
+      title: "历史检查",
+    },
     WalletCreate: {
       title: "钱包创建",
     },
@@ -173,6 +176,9 @@ export default {
       MultipleWallets: {
         message: "多个钱包",
       },
+    },
+    HistoryCheck: {
+      message: "历史检查",
     },
     WalletCreate: {
       message: "钱包创建",

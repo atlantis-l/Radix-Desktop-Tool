@@ -225,6 +225,25 @@ export default defineComponent({
 <style>
 /* ************************* Global ************************* */
 
+@font-face {
+  font-family: "PingFang SC";
+  src: url("/fonts/PingFang SC.ttf");
+}
+
+@font-face {
+  font-family: "SF-Pro-Text-Regular";
+  src: url("/fonts/SF-Pro-Text-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "SF-Pro-Display-Regular";
+  src: url("/fonts/SF-Pro-Display-Regular.otf") format("opentype");
+}
+
+* {
+  font-family: "PingFang SC", "SF-Pro-Display-Regular", "SF-Pro-Text-Regular" !important;
+}
+
 .ant-row {
   margin: 0 0 20px 0 !important;
 }

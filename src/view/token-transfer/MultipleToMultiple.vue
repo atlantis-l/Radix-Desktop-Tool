@@ -186,7 +186,7 @@
 
     <!------------------------ Header ------------------------>
     <a-row :gutter="gutter">
-      <a-col flex="11" class="view-no-padding-left">
+      <a-col span="11" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
             <span>
@@ -216,7 +216,7 @@
           />
         </a-tooltip>
       </a-col>
-      <a-col flex="8">
+      <a-col span="8">
         <a-tooltip>
           <template #title>
             <span>{{
@@ -252,25 +252,7 @@
       </a-col>
     </a-row>
     <a-row :gutter="gutter" class="no-margin-row">
-      <a-col class="view-no-padding-left">
-        <a-button @click="addTransfer">
-          {{
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.header.addTransfer.button`,
-            )
-          }}
-        </a-button>
-      </a-col>
-      <a-col>
-        <a-button danger type="dashed" @click="clearAllTransfers">
-          {{
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.header.clearAll.button`,
-            )
-          }}
-        </a-button>
-      </a-col>
-      <a-col flex="1">
+      <a-col span="11" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
             <span>
@@ -297,6 +279,24 @@
             "
           />
         </a-tooltip>
+      </a-col>
+      <a-col span="4">
+        <a-button class="view-max-width" @click="addTransfer">
+          {{
+            $t(
+              `View.TokenTransfer.MultipleToMultiple.template.header.addTransfer.button`,
+            )
+          }}
+        </a-button>
+      </a-col>
+      <a-col span="4">
+        <a-button danger class="view-max-width" @click="clearAllTransfers">
+          {{
+            $t(
+              `View.TokenTransfer.MultipleToMultiple.template.header.clearAll.button`,
+            )
+          }}
+        </a-button>
       </a-col>
       <a-col span="5" class="view-no-padding-right">
         <a-button
@@ -1078,7 +1078,7 @@ export default defineComponent({
 .list-move,
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.4s ease-in-out;
 }
 
 .list-enter-from,

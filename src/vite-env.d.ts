@@ -12,7 +12,8 @@ declare interface Event {
 
 declare interface RadixTool {
   data: {
-    set: (key: string, value: any) => Promise<void>;
     get: (key: string) => Promise<any>;
+    set: (key: string, value: any) => Promise<void>;
   };
+  translate: (symbol: "en" | "zh") => Promise<void>;
 }

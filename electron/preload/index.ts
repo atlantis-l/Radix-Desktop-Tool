@@ -83,14 +83,45 @@ const { appendLoading, removeLoading } = useLoading();
 // setTimeout(removeLoading, 3000)
 
 // ---------------------------- CUSTOM ---------------------------- //
-
+import path from "path";
 import { contextBridge, ipcRenderer } from "electron";
+import { Titlebar, TitlebarColor } from "custom-electron-titlebar";
+
+const TITLE = {
+  en: "⚙️ Radix Tool ⚙️",
+  zh: "⚙️ Radix 工具 ⚙️",
+};
+
+const options = {
+  iconSize: 24,
+  maximizable: false,
+  menuTransparency: 0.5,
+  titleHorizontalAlignment: "center",
+  backgroundColor: TitlebarColor.fromHex("#333333"),
+  icon: path.join(__dirname, "../../dist/electron.png"),
+};
+
+let titleBar: Titlebar;
+
+window.addEventListener("DOMContentLoaded", async () => {
+  //@ts-ignore
+  titleBar = new Titlebar(options);
+
+  titleBar.titleElement.style.color = "#FFFFFF";
+
+  const language = await ipcRenderer.invoke("get", "language");
+
+  titleBar.updateTitle(language === "en" ? TITLE.en : TITLE.zh);
+});
 
 contextBridge.exposeInMainWorld("RadixTool", {
   data: {
     set: (key: string, value: any) => ipcRenderer.invoke("set", key, value),
     get: (key: string) => ipcRenderer.invoke("get", key),
   },
+  translate: (symbol: "en" | "zh") => {
+    titleBar.updateTitle(symbol === "en" ? TITLE.en : TITLE.zh);
+    titleBar.refreshMenu();
+  },
 });
-
 // ---------------------------- CUSTOM ---------------------------- //

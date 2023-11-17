@@ -4,6 +4,13 @@ import { release, homedir } from "node:os";
 import contextMenu from "electron-context-menu";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { app, Menu, ipcMain, MenuItem, BrowserWindow } from "electron";
+import {
+  setupTitlebar,
+  attachTitlebarToWindow,
+} from "custom-electron-titlebar/main";
+
+// setup the titlebar main process
+setupTitlebar();
 
 // ---------------------------- DEFAULT ---------------------------- //
 //屏蔽 `内存溢出`提示
@@ -19,6 +26,8 @@ EventEmitter.setMaxListeners(0);
 // │ └── index.html    > Electron-Renderer  //
 // -------------- 目录构建结构 -------------- //
 
+const PLATFORM = process.platform;
+
 process.env.DIST_ELECTRON = join(__dirname, "..");
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
 
@@ -30,7 +39,7 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
 
 // Set application name for Windows 10+ notifications
-if (process.platform === "win32") app.setAppUserModelId(app.getName());
+if (PLATFORM === "win32") app.setAppUserModelId(app.getName());
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();
@@ -69,8 +78,6 @@ function setMenu() {
   const menu = new Menu();
 
   if (config.language === "zh") {
-    win.setTitle(TITLE.zh);
-
     menu.append(
       new MenuItem({
         label: "应用",
@@ -78,7 +85,7 @@ function setMenu() {
           {
             label: "退出",
             role: "quit",
-            accelerator: process.platform === "darwin" ? "Cmd+Q" : "Ctrl+Q",
+            accelerator: PLATFORM === "darwin" ? "Cmd+Q" : "Ctrl+Q",
           },
         ],
       }),
@@ -178,8 +185,6 @@ function setMenu() {
       ],
     });
   } else if (config.language === "en") {
-    win.setTitle(TITLE.en);
-
     menu.append(
       new MenuItem({
         label: "App",
@@ -187,7 +192,7 @@ function setMenu() {
           {
             label: "Quit",
             role: "quit",
-            accelerator: process.platform === "darwin" ? "Cmd+Q" : "Ctrl+Q",
+            accelerator: PLATFORM === "darwin" ? "Cmd+Q" : "Ctrl+Q",
           },
         ],
       }),
@@ -302,12 +307,13 @@ async function loadPage() {
 async function createWindow() {
   win = new BrowserWindow({
     width: 1100,
-    height: 672,
     resizable: false,
-    useContentSize: true,
-    icon: join(process.env.PUBLIC, "electron.png"),
-    webPreferences: { preload, spellcheck: false },
+    titleBarStyle: "hidden",
+    height: PLATFORM === "darwin" ? 700 : 701,
+    webPreferences: { preload, sandbox: false, spellcheck: false },
   });
+
+  attachTitlebarToWindow(win);
 
   centered();
 
@@ -320,7 +326,7 @@ async function createWindow() {
 
 app.on("window-all-closed", () => {
   win = undefined;
-  process.platform !== "darwin" && app.quit();
+  PLATFORM !== "darwin" && app.quit();
 });
 
 app.on("second-instance", () => {
@@ -340,11 +346,6 @@ app.on("activate", () => {
 // ---------------------------- DEFAULT ---------------------------- //
 
 // ---------------------------- CUSTOM ---------------------------- //
-const TITLE = {
-  en: "Radix Tool",
-  zh: "Radix 工具",
-};
-
 const MAINNET_ID = 1; // STOKENET_ID = 2
 
 const HOME_PATH = homedir();

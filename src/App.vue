@@ -276,6 +276,10 @@ export default defineComponent({
   max-height: 100% !important;
 }
 
+.view-layout::-webkit-scrollbar {
+  display: none !important;
+}
+
 .view-50vh-max-height {
   overflow: scroll !important;
   margin: 20px 0 0 0 !important;
@@ -339,24 +343,31 @@ export default defineComponent({
   box-shadow: 7px 7px 17px #000000ef !important;
 }
 
+.cet-container {
+  min-height: 672px !important;
+  max-height: 672px !important;
+}
+
 .a-layout {
-  min-height: 100vh !important;
-  max-height: 100vh !important;
+  min-height: 672px !important;
+  max-height: 672px !important;
+}
+
+.ant-menu {
+  overflow: scroll !important;
+  max-height: 590px !important;
+}
+
+.ant-menu::-webkit-scrollbar {
+  display: none !important;
 }
 
 .ant-layout-sider {
   top: 0 !important;
   left: 0 !important;
   bottom: 0 !important;
-  overflow: scroll !important;
   user-select: none !important;
-  min-height: 100vh !important;
-  max-height: 100vh !important;
   background-color: #22272e !important;
-}
-
-.ant-layout-sider::-webkit-scrollbar {
-  display: none !important;
 }
 
 .a-layout-header {
@@ -400,6 +411,10 @@ export default defineComponent({
   background: #ffffff !important;
   border: 1px solid #d0d0d0 !important;
   box-shadow: 0px 0px 15px #ceccce !important;
+}
+
+.a-layout-content::-webkit-scrollbar {
+  display: none !important;
 }
 
 .ant-menu {

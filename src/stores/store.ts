@@ -28,8 +28,9 @@ export default defineStore("store", {
       RadixTool.data.set("networkId", id);
       this.networkId = id;
     },
-    setLanguage(symbol: string) {
-      RadixTool.data.set("language", symbol);
+    async setLanguage(symbol: string) {
+      await RadixTool.data.set("language", symbol);
+      RadixTool.translate(symbol);
       this.language = symbol;
     },
     setShowNetwork(isShow: boolean) {

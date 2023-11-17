@@ -1078,7 +1078,7 @@ export default defineComponent({
 .list-move,
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.4s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .list-enter-from,

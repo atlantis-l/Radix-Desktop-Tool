@@ -226,22 +226,12 @@ export default defineComponent({
 /* ************************* Global ************************* */
 
 @font-face {
-  font-family: "PingFang SC";
-  src: url("/fonts/PingFang SC.ttf");
-}
-
-@font-face {
-  font-family: "SF-Pro-Text-Regular";
-  src: url("/fonts/SF-Pro-Text-Regular.otf") format("opentype");
-}
-
-@font-face {
-  font-family: "SF-Pro-Display-Regular";
-  src: url("/fonts/SF-Pro-Display-Regular.otf") format("opentype");
+  font-family: "PingFangSC-Regular";
+  src: url("/fonts/PingFangSC-Regular.woff2") format("woff2");
 }
 
 * {
-  font-family: "PingFang SC", "SF-Pro-Display-Regular", "SF-Pro-Text-Regular" !important;
+  font-family: "PingFangSC-Regular" !important;
 }
 
 .ant-row {

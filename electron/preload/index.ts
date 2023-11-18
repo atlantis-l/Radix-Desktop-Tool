@@ -88,8 +88,8 @@ import { contextBridge, ipcRenderer } from "electron";
 import { Titlebar, TitlebarColor } from "custom-electron-titlebar";
 
 const TITLE = {
-  en: "⚙️ Radix Tool ⚙️",
-  zh: "⚙️ Radix 工具 ⚙️",
+  en: "「 Radix Tool 」",
+  zh: "「 Radix 工具 」",
 };
 
 const options = {

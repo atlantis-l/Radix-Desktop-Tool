@@ -48,6 +48,11 @@ if (!app.requestSingleInstanceLock()) {
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
+const TITLE = {
+  en: "「 Radix Tool 」",
+  zh: "「 Radix 工具 」",
+};
+
 let win: BrowserWindow | undefined = undefined;
 
 const url = process.env.VITE_DEV_SERVER_URL;
@@ -78,6 +83,8 @@ function setMenu() {
   const menu = new Menu();
 
   if (config.language === "zh") {
+    win.setTitle(TITLE.zh);
+
     menu.append(
       new MenuItem({
         label: "应用",
@@ -185,6 +192,8 @@ function setMenu() {
       ],
     });
   } else if (config.language === "en") {
+    win.setTitle(TITLE.en);
+
     menu.append(
       new MenuItem({
         label: "App",

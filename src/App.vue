@@ -318,13 +318,13 @@ export default defineComponent({
 }
 
 .ant-float-btn-body {
-  background-color: #41454a !important;
   transition: box-shadow 0.4s !important;
-  box-shadow: 0 0 7px #000000ef !important;
+  box-shadow: 0 0 7px #40549d !important;
+  background-image: linear-gradient(35deg, #1dddbf, #052cc0) !important;
 }
 
 .ant-float-btn-body:hover {
-  box-shadow: 7px 7px 17px #000000ef !important;
+  box-shadow: 7px 7px 17px #40549d !important;
 }
 
 body {

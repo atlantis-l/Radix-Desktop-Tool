@@ -290,7 +290,11 @@
         </a-button>
       </a-col>
       <a-col span="4">
-        <a-button danger class="view-max-width" @click="clearAllTransfers">
+        <a-button
+          danger
+          @click="clearAllTransfers"
+          class="view-max-width view-red-btn"
+        >
           {{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.clearAll.button`,
@@ -300,8 +304,7 @@
       </a-col>
       <a-col span="5" class="view-no-padding-right">
         <a-button
-          type="primary"
-          class="view-max-width"
+          class="view-max-width view-blue-btn"
           :loading="isSending"
           @click="openConfirmModal"
         >
@@ -315,9 +318,9 @@
     </a-row>
     <!------------------------ Header ------------------------>
 
-    <a-divider>{{
-      $t(`View.TokenTransfer.MultipleToMultiple.template.divider.text`)
-    }}</a-divider>
+    <a-divider>
+      {{ $t(`View.TokenTransfer.MultipleToMultiple.template.divider.text`) }}
+    </a-divider>
 
     <!------------------------ Content ------------------------>
     <a-layout-content ref="content" class="view-layout-content">
@@ -328,7 +331,7 @@
           v-for="(option, index) in customOptions"
         >
           <a-col flex="1" class="view-no-padding-left">
-            <a-button type="text" class="view-max-width-with-border">
+            <a-button type="text" class="view-max-width-with-border-id-btn">
               #{{ index }}
             </a-button>
           </a-col>
@@ -374,7 +377,7 @@
                 </span>
               </template>
               <a-button
-                class="view-max-width"
+                class="view-max-width view-blue-btn"
                 @click="activateSelectTokenModal(index)"
               >
                 <CreateIcon icon="ArrowRightOutlined" />
@@ -412,7 +415,7 @@
                 danger
                 type="text"
                 @click="deleteTransfer(index)"
-                class="view-max-width-with-border"
+                class="view-max-width-with-border-delete-btn"
               >
                 <CreateIcon icon="CloseOutlined" />
               </a-button>
@@ -1068,9 +1071,38 @@ export default defineComponent({
   display: none !important;
 }
 
+.view-max-width-with-border-id-btn {
+  width: 100% !important;
+  color: #ffffff !important;
+  background-clip: border-box !important;
+  border: 1px solid transparent !important;
+  background-origin: border-box !important;
+  background-image: linear-gradient(35deg, #1dddbf, #052cc0) !important;
+}
+
+.view-max-width-with-border-delete-btn {
+  width: 100% !important;
+  color: #000000 !important;
+  background-clip: border-box !important;
+  border: 1px solid transparent !important;
+  background-origin: border-box !important;
+  background-image: linear-gradient(35deg, #fff000, #ff0000) !important;
+}
+
 .view-blue-btn {
-  color: rgb(23, 119, 255) !important;
-  border: 1px rgb(23, 119, 255) solid !important;
+  color: #ffffff !important;
+  background-clip: border-box !important;
+  border: 1px solid transparent !important;
+  background-origin: border-box !important;
+  background-image: linear-gradient(35deg, #1dddbf, #052cc0) !important;
+}
+
+.view-red-btn {
+  color: #000000 !important;
+  background-clip: border-box !important;
+  border: 1px solid transparent !important;
+  background-origin: border-box !important;
+  background-image: linear-gradient(35deg, #fff000, #ff0000) !important;
 }
 
 .view-nft-selector {

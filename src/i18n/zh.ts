@@ -51,17 +51,17 @@ export default {
           feePayerModal: {
             title: "付费方钱包",
             addonBefore: "私钥",
-            placeholder: "利用私钥生成Radix地址",
+            placeholder: "根据私钥生成Radix地址",
           },
           confirmTransactionModal: {
             title: "交易发送确认",
             addonBefore: "文本信息",
-            placeholder: "链上文本消息(可选项)",
+            placeholder: "链上文本消息(可不填)",
           },
           senderModal: {
             title: "发送方钱包",
             addonBefore: "私钥",
-            placeholder: "利用私钥生成Radix地址",
+            placeholder: "根据私钥生成Radix地址",
           },
           selectTokenModal: {
             title: "选择代币",
@@ -71,13 +71,14 @@ export default {
           header: {
             feePayer: {
               addonBefore: "付费方",
-              feePayerAddress: "付费方地址",
-              placeholder: "点击指定付费钱包",
+              feePayerAddress: "费用支付方地址",
+              placeholder: "点击指定交易费用支付钱包",
             },
             feeLock: {
               addonBefore: "费用锁定",
               placeholder: "交易费用",
-              tooltip: "必须在预估费用的基础上适当增加, 确保交易成功",
+              tooltip:
+                "使用XRD支付(必须在预估费用的基础上适当增加, 确保交易成功)",
             },
             estimateFee: {
               button: "预估费用",
@@ -86,7 +87,7 @@ export default {
               button: "添加转账",
             },
             clearAll: {
-              button: "清除全部",
+              button: "清空转账",
             },
             feePayerXrdBalance: {
               tooltip: "点击刷新余额",
@@ -150,7 +151,7 @@ export default {
               error: "交易失败",
             },
             getXrdBalance: {
-              loading: "XRD余额正在获取",
+              loading: "正在获取XRD余额",
               success: "XRD余额已刷新",
             },
             activateSelectTokenModal: {

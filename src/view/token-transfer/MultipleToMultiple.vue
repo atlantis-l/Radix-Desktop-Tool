@@ -242,7 +242,7 @@
         </a-tooltip>
       </a-col>
       <a-col span="5" class="view-no-padding-right">
-        <a-button class="view-max-width" @click="estimateFee">
+        <a-button class="view-max-width view-blue-btn" @click="estimateFee">
           {{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.estimateFee.button`,
@@ -281,7 +281,7 @@
         </a-tooltip>
       </a-col>
       <a-col span="4">
-        <a-button class="view-max-width" @click="addTransfer">
+        <a-button class="view-max-width view-blue-btn" @click="addTransfer">
           {{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.addTransfer.button`,
@@ -1066,6 +1066,11 @@ export default defineComponent({
 
 .view-layout-content::-webkit-scrollbar {
   display: none !important;
+}
+
+.view-blue-btn {
+  color: rgb(23, 119, 255) !important;
+  border: 1px rgb(23, 119, 255) solid !important;
 }
 
 .view-nft-selector {

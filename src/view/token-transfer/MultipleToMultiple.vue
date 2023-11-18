@@ -1058,6 +1058,12 @@ export default defineComponent({
   background-color: #ffffff !important;
 }
 
+.view-layout-content {
+  margin-top: -5px !important;
+  padding-top: 5px !important;
+  overflow: scroll !important;
+}
+
 .view-layout-content::-webkit-scrollbar {
   display: none !important;
 }

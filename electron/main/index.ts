@@ -316,9 +316,9 @@ async function loadPage() {
 async function createWindow() {
   win = new BrowserWindow({
     width: 1100,
+    height: 700,
     resizable: false,
     titleBarStyle: "hidden",
-    height: PLATFORM === "darwin" ? 700 : 701,
     webPreferences: { preload, sandbox: false, spellcheck: false },
   });
 

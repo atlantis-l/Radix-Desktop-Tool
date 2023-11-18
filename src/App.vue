@@ -1,7 +1,7 @@
 <template>
   <a-config-provider :locale="store.locale">
     <a-app>
-      <a-layout class="a-layout">
+      <a-layout>
         <!------------------------ Sider ------------------------>
         <a-layout-sider
           :trigger="null"
@@ -136,9 +136,9 @@
 
 <script lang="ts">
 import store from "./stores/store";
+import { defineComponent } from "vue";
 import { CreateIcon } from "./common";
 import { message } from "ant-design-vue";
-import { defineComponent } from "vue";
 
 export default defineComponent({
   components: { CreateIcon },
@@ -271,19 +271,13 @@ export default defineComponent({
 }
 
 .view-50vh-max-height {
-  overflow: scroll !important;
-  margin: 20px 0 0 0 !important;
   padding: 9px !important;
   min-height: 50vh !important;
+  overflow: scroll !important;
   max-height: 50vh !important;
+  margin: 20px 0 0 0 !important;
   border-radius: 8px !important;
   border: 1px dashed #d9d9d9 !important;
-}
-
-.view-layout-content {
-  margin-top: -5px !important;
-  padding-top: 5px !important;
-  overflow: scroll !important;
 }
 
 .view-centered-col {
@@ -333,31 +327,36 @@ export default defineComponent({
   box-shadow: 7px 7px 17px #000000ef !important;
 }
 
+body {
+  display: flex !important;
+}
+
 .cet-container {
-  min-height: 672px !important;
-  max-height: 672px !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-.a-layout {
-  min-height: 672px !important;
-  max-height: 672px !important;
+#app {
+  flex: 1 !important;
+  height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-.ant-menu {
-  overflow: scroll !important;
-  max-height: 590px !important;
-}
-
-.ant-menu::-webkit-scrollbar {
-  display: none !important;
+.ant-app {
+  flex: 1 !important;
+  height: 0 !important;
+  display: flex !important;
 }
 
 .ant-layout-sider {
-  top: 0 !important;
-  left: 0 !important;
-  bottom: 0 !important;
   user-select: none !important;
   background-color: #22272e !important;
+}
+
+.ant-layout-sider-children {
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .a-layout-header {
@@ -395,8 +394,8 @@ export default defineComponent({
 
 .a-layout-content {
   margin: 23px !important;
+  display: flex !important;
   padding: 24px !important;
-  overflow: scroll !important;
   border-radius: 8px !important;
   background: #ffffff !important;
   border: 1px solid #d0d0d0 !important;
@@ -409,7 +408,12 @@ export default defineComponent({
 
 .ant-menu {
   color: #ffffff !important;
+  overflow: scroll !important;
   background-color: #22272e !important;
+}
+
+.ant-menu::-webkit-scrollbar {
+  display: none !important;
 }
 
 .ant-menu-submenu-selected .ant-menu-submenu-title {
@@ -426,7 +430,7 @@ export default defineComponent({
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease !important;
+  transition: all 0.2s ease-in-out !important;
 }
 
 .fade-leave-to,

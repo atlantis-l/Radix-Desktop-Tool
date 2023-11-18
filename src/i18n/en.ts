@@ -17,7 +17,7 @@ export default {
     BalanceCheck: {
       title: "Balance Check",
       singleWallet: "Single Wallet",
-      multipleWallets: "Multiple Wallets",
+      multipleWallets: "Wallets",
     },
     HistoryCheck: {
       title: "History Check",

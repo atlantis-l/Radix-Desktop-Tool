@@ -1,6 +1,18 @@
 <template>
   <a-config-provider :locale="store.locale">
     <a-app>
+      <svg style="width: 0; height: 0">
+        <defs>
+          <linearGradient id="svgGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color: #000000" />
+            <stop offset="100%" style="stop-color: #ff0000" />
+          </linearGradient>
+          <linearGradient id="svgGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color: #000000" />
+            <stop offset="100%" style="stop-color: #1dddbf" />
+          </linearGradient>
+        </defs>
+      </svg>
       <a-layout>
         <!------------------------ Sider ------------------------>
         <a-layout-sider
@@ -300,9 +312,40 @@ export default defineComponent({
   width: 100% !important;
 }
 
-.view-max-width-with-border {
-  width: 100% !important;
-  border: 1px dashed !important;
+.custom-btn {
+  color: #ff0000;
+  transition: none;
+  animation-duration: 10s;
+  background-size: 300px 300px;
+  background-position: 50% 50%;
+  animation-play-state: paused;
+  animation-name: radix-animation;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  border: 1px solid transparent !important;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: linear-gradient(to left, #ffffff, #ffffff),
+    radial-gradient(
+      #052cc0,
+      #1dddbf,
+      #ff00e6,
+      rgb(0, 255, 47),
+      rgb(255, 115, 0)
+    );
+}
+
+.custom-btn:hover {
+  color: #1dddbf !important;
+  animation-play-state: running;
+}
+
+.custom-btn::before {
+  color: #000000;
+  position: absolute;
+  content: attr(text);
+  mask: linear-gradient(to left, transparent, white);
+  -webkit-mask: linear-gradient(to left, transparent, white);
 }
 /* ************************* Global ************************* */
 
@@ -392,14 +435,62 @@ body {
   width: 110px !important;
 }
 
+@keyframes radix-animation {
+  0% {
+    background-position: 50% 50%;
+  }
+  11% {
+    background-position: 0% 0%;
+  }
+  22% {
+    background-position: 50% 25%;
+  }
+  33% {
+    background-position: 100% 0%;
+  }
+  44% {
+    background-position: 75% 50%;
+  }
+  55% {
+    background-position: 100% 100%;
+  }
+  66% {
+    background-position: 50% 75%;
+  }
+  77% {
+    background-position: 0% 100%;
+  }
+  88% {
+    background-position: 25% 50%;
+  }
+  100% {
+    background-position: 50% 50%;
+  }
+}
+
 .a-layout-content {
+  animation-duration: 50s;
   margin: 23px !important;
   display: flex !important;
   padding: 24px !important;
+  background-position: 50% 50%;
   border-radius: 8px !important;
-  background: #ffffff !important;
-  border: 1px solid #d0d0d0 !important;
+  background-size: 3000px 3000px;
+  animation-name: radix-animation;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  background-clip: padding-box, border-box;
+  border: 1px solid transparent !important;
+  background-origin: padding-box, border-box;
   box-shadow: 0px 0px 15px #ceccce !important;
+  background-image: linear-gradient(to right, #ffffff, #ffffff),
+    radial-gradient(
+      #052cc0,
+      #1dddbf,
+      #ff00e6,
+      rgb(0, 255, 47),
+      rgb(255, 115, 0)
+    );
 }
 
 .a-layout-content::-webkit-scrollbar {

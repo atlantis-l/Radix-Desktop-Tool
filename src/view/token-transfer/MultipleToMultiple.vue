@@ -242,7 +242,15 @@
         </a-tooltip>
       </a-col>
       <a-col span="5" class="view-no-padding-right">
-        <a-button class="view-max-width view-blue-btn" @click="estimateFee">
+        <a-button
+          class="view-max-width custom-btn"
+          :text="
+            $t(
+              `View.TokenTransfer.MultipleToMultiple.template.header.estimateFee.button`,
+            )
+          "
+          @click="estimateFee"
+        >
           {{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.estimateFee.button`,
@@ -281,7 +289,15 @@
         </a-tooltip>
       </a-col>
       <a-col span="4">
-        <a-button class="view-max-width view-blue-btn" @click="addTransfer">
+        <a-button
+          class="view-max-width custom-btn"
+          :text="
+            $t(
+              `View.TokenTransfer.MultipleToMultiple.template.header.addTransfer.button`,
+            )
+          "
+          @click="addTransfer"
+        >
           {{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.addTransfer.button`,
@@ -291,9 +307,13 @@
       </a-col>
       <a-col span="4">
         <a-button
-          danger
           @click="clearAllTransfers"
-          class="view-max-width view-red-btn"
+          :text="
+            $t(
+              `View.TokenTransfer.MultipleToMultiple.template.header.clearAll.button`,
+            )
+          "
+          class="view-max-width custom-btn"
         >
           {{
             $t(
@@ -304,8 +324,13 @@
       </a-col>
       <a-col span="5" class="view-no-padding-right">
         <a-button
-          class="view-max-width view-blue-btn"
+          class="view-max-width custom-btn"
           :loading="isSending"
+          :text="
+            $t(
+              `View.TokenTransfer.MultipleToMultiple.template.header.sendTransaction.button`,
+            )
+          "
           @click="openConfirmModal"
         >
           {{
@@ -331,7 +356,11 @@
           v-for="(option, index) in customOptions"
         >
           <a-col flex="1" class="view-no-padding-left">
-            <a-button type="text" class="view-max-width-with-border-id-btn">
+            <a-button
+              type="text"
+              class="view-max-width custom-btn"
+              :text="`#${index}`"
+            >
               #{{ index }}
             </a-button>
           </a-col>
@@ -377,7 +406,7 @@
                 </span>
               </template>
               <a-button
-                class="view-max-width view-blue-btn"
+                class="view-max-width custom-btn"
                 @click="activateSelectTokenModal(index)"
               >
                 <CreateIcon icon="ArrowRightOutlined" />
@@ -412,10 +441,9 @@
                 </span>
               </template>
               <a-button
-                danger
                 type="text"
                 @click="deleteTransfer(index)"
-                class="view-max-width-with-border-delete-btn"
+                class="view-max-width custom-btn"
               >
                 <CreateIcon icon="CloseOutlined" />
               </a-button>
@@ -819,6 +847,38 @@ export default defineComponent({
           //@ts-ignore
           top: this.$refs.content.$el.scrollHeight,
         });
+
+        const content = document.getElementsByClassName("a-layout-content")[0];
+
+        const arrowList = content.getElementsByClassName("anticon-arrow-right");
+        const closeList = content.getElementsByClassName("anticon-close");
+
+        for (let i = 0; i < arrowList.length; i++) {
+          //@ts-ignore
+          arrowList[i].firstElementChild.style.fill = "url(#svgGradient)";
+          //@ts-ignore
+          closeList[i].firstElementChild.style.fill = "url(#svgGradient)";
+          //@ts-ignore
+          arrowList[i].parentElement.onmouseover = () => {
+            //@ts-ignore
+            arrowList[i].firstElementChild.style.fill = "url(#svgGradient1)";
+          };
+          //@ts-ignore
+          arrowList[i].parentElement.onmouseleave = () => {
+            //@ts-ignore
+            arrowList[i].firstElementChild.style.fill = "url(#svgGradient)";
+          };
+          //@ts-ignore
+          closeList[i].parentElement.onmouseover = () => {
+            //@ts-ignore
+            closeList[i].firstElementChild.style.fill = "url(#svgGradient1)";
+          };
+          //@ts-ignore
+          closeList[i].parentElement.onmouseleave = () => {
+            //@ts-ignore
+            closeList[i].firstElementChild.style.fill = "url(#svgGradient)";
+          };
+        }
       }, 100);
     },
     activateFeePayerModal() {
@@ -1069,40 +1129,6 @@ export default defineComponent({
 
 .view-layout-content::-webkit-scrollbar {
   display: none !important;
-}
-
-.view-max-width-with-border-id-btn {
-  width: 100% !important;
-  color: #ffffff !important;
-  background-clip: border-box !important;
-  border: 1px solid transparent !important;
-  background-origin: border-box !important;
-  background-image: linear-gradient(35deg, #1dddbf, #052cc0) !important;
-}
-
-.view-max-width-with-border-delete-btn {
-  width: 100% !important;
-  color: #000000 !important;
-  background-clip: border-box !important;
-  border: 1px solid transparent !important;
-  background-origin: border-box !important;
-  background-image: linear-gradient(35deg, #fff000, #ff0000) !important;
-}
-
-.view-blue-btn {
-  color: #ffffff !important;
-  background-clip: border-box !important;
-  border: 1px solid transparent !important;
-  background-origin: border-box !important;
-  background-image: linear-gradient(35deg, #1dddbf, #052cc0) !important;
-}
-
-.view-red-btn {
-  color: #000000 !important;
-  background-clip: border-box !important;
-  border: 1px solid transparent !important;
-  background-origin: border-box !important;
-  background-image: linear-gradient(35deg, #fff000, #ff0000) !important;
 }
 
 .view-nft-selector {

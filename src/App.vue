@@ -292,6 +292,10 @@ export default defineComponent({
   border: 1px dashed #d9d9d9 !important;
 }
 
+.view-50vh-max-height::-webkit-scrollbar {
+  display: none !important;
+}
+
 .view-centered-col {
   text-align: center !important;
 }
@@ -315,7 +319,7 @@ export default defineComponent({
 .custom-btn {
   color: #ff0000;
   transition: none;
-  animation-duration: 10s;
+  animation-duration: 20s;
   background-size: 300px 300px;
   background-position: 50% 50%;
   animation-play-state: paused;
@@ -469,13 +473,13 @@ body {
 }
 
 .a-layout-content {
-  animation-duration: 50s;
+  animation-duration: 20s;
   margin: 23px !important;
   display: flex !important;
   padding: 24px !important;
   background-position: 50% 50%;
   border-radius: 8px !important;
-  background-size: 3000px 3000px;
+  background-size: 1200px 1200px;
   animation-name: radix-animation;
   animation-timing-function: linear;
   animation-iteration-count: infinite;

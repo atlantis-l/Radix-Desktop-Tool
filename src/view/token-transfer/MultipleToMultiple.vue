@@ -325,7 +325,6 @@
       <a-col span="5" class="view-no-padding-right">
         <a-button
           class="view-max-width custom-btn"
-          :loading="isSending"
           :text="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.sendTransaction.button`,
@@ -496,7 +495,6 @@ export default defineComponent({
       feeLock: "",
       store: store(),
       senderIndex: 0,
-      isSending: false,
       senderPrivateKey: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
@@ -752,12 +750,10 @@ export default defineComponent({
     },
     async sendTransaction() {
       this.openConfirmTransaction = false;
-      this.isSending = true;
 
       const previwResult = await this.previewTransaction();
 
       if (!previwResult) {
-        this.isSending = false;
         return;
       }
 
@@ -778,8 +774,6 @@ export default defineComponent({
         this.customOptions,
         txMessage.length ? txMessage : undefined,
       );
-
-      this.isSending = false;
 
       if (result.status === Status.FAIL) {
         message.error({

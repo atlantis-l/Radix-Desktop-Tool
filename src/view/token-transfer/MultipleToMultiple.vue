@@ -826,7 +826,8 @@ export default defineComponent({
         //清除没有内容的代币信息
         option.transferInfos = tempInfos;
 
-        option.fromWallet &&
+        tempInfos.length &&
+          option.fromWallet &&
           option.toAddress.trim().length &&
           tempOptions.push(option);
       });

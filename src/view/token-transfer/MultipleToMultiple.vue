@@ -405,10 +405,11 @@
                 </span>
               </template>
               <a-button
+                text="➔"
                 class="view-max-width custom-btn"
                 @click="activateSelectTokenModal(index)"
               >
-                <CreateIcon icon="ArrowRightOutlined" />
+                ➔
               </a-button>
             </a-tooltip>
           </a-col>
@@ -440,11 +441,12 @@
                 </span>
               </template>
               <a-button
+                text="✕"
                 type="text"
                 @click="deleteTransfer(index)"
                 class="view-max-width custom-btn"
               >
-                <CreateIcon icon="CloseOutlined" />
+                ✕
               </a-button>
             </a-tooltip>
           </a-col>
@@ -841,38 +843,6 @@ export default defineComponent({
           //@ts-ignore
           top: this.$refs.content.$el.scrollHeight,
         });
-
-        const content = document.getElementsByClassName("a-layout-content")[0];
-
-        const arrowList = content.getElementsByClassName("anticon-arrow-right");
-        const closeList = content.getElementsByClassName("anticon-close");
-
-        for (let i = 0; i < arrowList.length; i++) {
-          //@ts-ignore
-          arrowList[i].firstElementChild.style.fill = "url(#svgGradient)";
-          //@ts-ignore
-          closeList[i].firstElementChild.style.fill = "url(#svgGradient)";
-          //@ts-ignore
-          arrowList[i].parentElement.onmouseover = () => {
-            //@ts-ignore
-            arrowList[i].firstElementChild.style.fill = "url(#svgGradient1)";
-          };
-          //@ts-ignore
-          arrowList[i].parentElement.onmouseleave = () => {
-            //@ts-ignore
-            arrowList[i].firstElementChild.style.fill = "url(#svgGradient)";
-          };
-          //@ts-ignore
-          closeList[i].parentElement.onmouseover = () => {
-            //@ts-ignore
-            closeList[i].firstElementChild.style.fill = "url(#svgGradient1)";
-          };
-          //@ts-ignore
-          closeList[i].parentElement.onmouseleave = () => {
-            //@ts-ignore
-            closeList[i].firstElementChild.style.fill = "url(#svgGradient)";
-          };
-        }
       }, 100);
     },
     activateFeePayerModal() {

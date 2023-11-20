@@ -1,18 +1,6 @@
 <template>
   <a-config-provider :locale="store.locale">
     <a-app>
-      <svg style="width: 0; height: 0">
-        <defs>
-          <linearGradient id="svgGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color: #000000" />
-            <stop offset="100%" style="stop-color: #ff0000" />
-          </linearGradient>
-          <linearGradient id="svgGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color: #000000" />
-            <stop offset="100%" style="stop-color: #1dddbf" />
-          </linearGradient>
-        </defs>
-      </svg>
       <a-layout>
         <!------------------------ Sider ------------------------>
         <a-layout-sider
@@ -318,9 +306,9 @@ export default defineComponent({
 
 .custom-btn {
   color: #ff0000;
-  transition: none;
+  transition: all 0.3s;
   animation-duration: 20s;
-  background-size: 300px 300px;
+  background-size: 300% 250%;
   background-position: 50% 50%;
   animation-play-state: paused;
   animation-name: radix-animation;
@@ -328,7 +316,6 @@ export default defineComponent({
   animation-iteration-count: infinite;
   border: 1px solid transparent !important;
   background-clip: padding-box, border-box;
-  background-origin: padding-box, border-box;
   background-image: linear-gradient(to left, #ffffff, #ffffff),
     radial-gradient(
       #052cc0,
@@ -473,19 +460,14 @@ body {
 }
 
 .a-layout-content {
-  animation-duration: 20s;
   margin: 23px !important;
   display: flex !important;
   padding: 24px !important;
-  background-position: 50% 50%;
+  background-position: 70% 80%;
   border-radius: 8px !important;
   background-size: 1200px 1200px;
-  animation-name: radix-animation;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
   background-clip: padding-box, border-box;
   border: 1px solid transparent !important;
-  background-origin: padding-box, border-box;
   box-shadow: 0px 0px 15px #ceccce !important;
   background-image: linear-gradient(to right, #ffffff, #ffffff),
     radial-gradient(

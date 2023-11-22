@@ -307,9 +307,9 @@ export default defineComponent({
 .custom-btn {
   color: #ff0000;
   transition: all 0.3s;
-  animation-duration: 20s;
-  background-size: 300% 250%;
-  background-position: 50% 50%;
+  animation-duration: 30s;
+  background-size: 320px 320px;
+  background-position: 75% 60%;
   animation-play-state: paused;
   animation-name: radix-animation;
   animation-timing-function: linear;
@@ -401,19 +401,19 @@ body {
 }
 
 #trigger {
-  top: 1.5px !important;
+  top: 1px !important;
+  padding: 0 22.5px !important;
   position: relative !important;
 }
 
 .ant-layout-header .trigger {
-  font-size: 18px !important;
+  font-size: 18px;
+  transition: transform 0.3s;
   cursor: pointer !important;
-  padding: 0 22.5px !important;
-  transition: color 0.2s !important;
 }
 
 .ant-layout-header .trigger:hover {
-  color: #ffaa5b !important;
+  transform: scale(1.3);
 }
 
 .a-breadcrumb {
@@ -428,34 +428,34 @@ body {
 
 @keyframes radix-animation {
   0% {
-    background-position: 50% 50%;
+    background-position: 75% 60%;
   }
   11% {
-    background-position: 0% 0%;
-  }
-  22% {
-    background-position: 50% 25%;
-  }
-  33% {
-    background-position: 100% 0%;
-  }
-  44% {
-    background-position: 75% 50%;
-  }
-  55% {
     background-position: 100% 100%;
   }
-  66% {
+  22% {
     background-position: 50% 75%;
   }
-  77% {
+  33% {
     background-position: 0% 100%;
   }
-  88% {
+  44% {
     background-position: 25% 50%;
   }
-  100% {
+  55% {
+    background-position: 0% 0%;
+  }
+  66% {
+    background-position: 50% 25%;
+  }
+  77% {
+    background-position: 100% 0%;
+  }
+  88% {
     background-position: 50% 50%;
+  }
+  100% {
+    background-position: 75% 60%;
   }
 }
 

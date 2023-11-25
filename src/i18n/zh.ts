@@ -56,7 +56,7 @@ export default {
           confirmTransactionModal: {
             title: "交易发送确认",
             addonBefore: "文本信息",
-            placeholder: "链上文本消息(可不填)",
+            placeholder: "链上文本消息(选填)",
           },
           senderModal: {
             title: "发送方钱包",
@@ -65,14 +65,14 @@ export default {
           },
           selectTokenModal: {
             title: "选择代币",
-            placeholder1: "选择要发送的代币",
-            placeholder2: "选择要发送的NFT ID",
+            placeholder1: "选择代币",
+            placeholder2: "选择NFT ID",
           },
           header: {
             feePayer: {
               addonBefore: "付费方",
               feePayerAddress: "费用支付方地址",
-              placeholder: "点击指定交易费用支付钱包",
+              placeholder: "交易费用支付钱包",
             },
             feeLock: {
               addonBefore: "费用锁定",
@@ -91,7 +91,7 @@ export default {
             },
             feePayerXrdBalance: {
               tooltip: "点击刷新余额",
-              addonBefore: "XRD 余额",
+              addonBefore: "XRD余额",
               placeholder: "付费方的XRD余额",
             },
             sendTransaction: {
@@ -105,7 +105,7 @@ export default {
             sender: {
               address: "发送方地址",
               addonBefore: "发送方",
-              placeholder: "点击设置发送方钱包",
+              placeholder: "发送方钱包",
             },
             selectToken: {
               tooltip: "选择代币",
@@ -126,7 +126,7 @@ export default {
           },
           methods: {
             setSender: {
-              loading: "代币信息正在获取",
+              loading: "正在获取代币信息",
               success: "代币信息已获取",
               error: "代币信息获取失败",
               pkError: "私钥格式不匹配",
@@ -164,10 +164,43 @@ export default {
         },
       },
       SingleToMultiple: {
-        message: "一对多",
+        template: {
+          header: {
+            importWallets: {
+              button: "导入钱包",
+            },
+            dataNotValid: "信息输入不完整",
+            simTx: "发送交易时是否进行交易模拟",
+          },
+          divider: {
+            text: "转账信息",
+          },
+          content: {
+            token: "代币",
+            amount: "数量",
+            walletAmount: "钱包数量",
+            tokenAddress: "代币地址",
+            totalTokenAmount: "代币发送总量",
+            tokenTip: "只能发送同质化代币(FT)",
+            amountPlaceholder: "代币数量",
+            amountTip: "选填(不填则以导入数据为准)",
+          },
+        },
+        script: {
+          noPreviewFee: "未预估费用",
+          enableSimTx: "开启交易模拟",
+          disableSimTx: "关闭交易模拟",
+        },
       },
       MultipleToSingle: {
-        message: "多对一",
+        template: {
+          content: {
+            receiver: {
+              addonBefore: "接收方",
+              placeholder: "接收方钱包",
+            },
+          },
+        },
       },
     },
     BalanceCheck: {
@@ -182,7 +215,17 @@ export default {
       message: "历史检查",
     },
     WalletCreate: {
-      message: "钱包创建",
+      template: {
+        create: "创 建",
+        amount: "钱包数量",
+        placeholder: "整数",
+      },
+      script: {
+        address: "地址",
+        fileName: "钱包",
+        error: "输入错误",
+        privateKey: "私钥",
+      },
     },
     TokenCreate: {
       message: "代币创建",

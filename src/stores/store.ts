@@ -7,6 +7,7 @@ const RadixTool: RadixTool = window.RadixTool;
 
 const state = {};
 
+state.simTx = await RadixTool.data.get("simTx");
 state.language = await RadixTool.data.get("language");
 state.networkId = await RadixTool.data.get("networkId");
 state.currentPath = await RadixTool.data.get("currentPath");
@@ -16,6 +17,7 @@ state.menuFoldState = await RadixTool.data.get("menuFoldState");
 
 export default defineStore("store", {
   state: () => ({
+    simTx: state.simTx,
     language: state.language,
     networkId: state.networkId,
     showNetwork: state.showNetwork,
@@ -24,6 +26,9 @@ export default defineStore("store", {
     menuFoldState: state.menuFoldState,
   }),
   actions: {
+    setSimTx(flag: boolean) {
+      RadixTool.data.set("simTx", flag);
+    },
     setNetworkId(id: number) {
       RadixTool.data.set("networkId", id);
       this.networkId = id;

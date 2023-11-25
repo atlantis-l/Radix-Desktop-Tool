@@ -246,6 +246,18 @@ export default defineComponent({
   display: none !important;
 }
 
+.ant-statistic {
+  user-select: none !important;
+}
+
+.ant-statistic-content {
+  font-size: 18px !important;
+}
+
+.ant-upload-select {
+  display: block !important;
+}
+
 .ant-notification {
   user-select: none !important;
 }
@@ -282,6 +294,11 @@ export default defineComponent({
 
 .view-50vh-max-height::-webkit-scrollbar {
   display: none !important;
+}
+
+.view-nft-selector-label .ant-select-selector {
+  border: 1px solid #d9d9d9 !important;
+  background-color: rgba(0, 0, 0, 0.02) !important;
 }
 
 .view-centered-col {

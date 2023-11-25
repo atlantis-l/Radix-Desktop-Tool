@@ -65,14 +65,14 @@ export default {
           },
           selectTokenModal: {
             title: "Select Token",
-            placeholder1: "Select Tokens to send",
-            placeholder2: "Select NFT IDs to send",
+            placeholder1: "Select Tokens",
+            placeholder2: "Select NFT IDs",
           },
           header: {
             feePayer: {
               addonBefore: "Fee Payer",
               feePayerAddress: "Fee Payer Address",
-              placeholder: "Click to specify fee payment wallet",
+              placeholder: "Transaction Fee Payment Wallet",
             },
             feeLock: {
               addonBefore: "Fee Lock",
@@ -92,7 +92,7 @@ export default {
             feePayerXrdBalance: {
               tooltip: "Click to refresh balance",
               addonBefore: "XRD Balance",
-              placeholder: "Fee Payer XRD balance",
+              placeholder: "Fee Payer XRD Balance",
             },
             sendTransaction: {
               button: "Send Transaction",
@@ -105,7 +105,7 @@ export default {
             sender: {
               address: "Sender address",
               addonBefore: "Sender",
-              placeholder: "Click to set up sender wallet",
+              placeholder: "Sender wallet",
             },
             selectToken: {
               tooltip: "Select Token",

@@ -15,6 +15,7 @@
         <a-input
           showCount
           allowClear
+          @pressEnter="setFeePayer"
           v-model:value="feePayerWalletPrivateKey"
           :addonBefore="
             $t(
@@ -40,6 +41,7 @@
       >
         <a-input
           allowClear
+          @pressEnter="sendTransaction"
           v-model:value="transactionMessage"
           :addonBefore="
             $t(
@@ -64,6 +66,7 @@
         <a-input
           showCount
           allowClear
+          @pressEnter="setSender"
           v-model:value="senderPrivateKey"
           :addonBefore="
             $t(
@@ -102,7 +105,7 @@
           "
         >
           <template #option="{ label, address }">
-            <a-tooltip placement="topLeft">
+            <a-tooltip placement="left">
               <template #title>
                 <span>{{ address }}</span>
               </template>
@@ -138,7 +141,7 @@
 
             <!----------------- NonFungible Token Selector ----------------->
             <a-col flex="1" v-else-if="transferInfo.tokenType === 1">
-              <a-input-group compact class="view-max-width">
+              <a-input-group compact style="display: flex">
                 <!-- @vue-ignore -->
                 <a-select
                   :open="false"
@@ -165,7 +168,7 @@
                     "
                   >
                     <template #option="{ label }">
-                      <a-tooltip placement="topLeft">
+                      <a-tooltip placement="left">
                         <template #title>
                           <span>{{ label }}</span>
                         </template>
@@ -465,15 +468,16 @@ import {
   TokenSender,
   CustomOption,
   TransferInfo,
+  getCurrentEpoch,
   TransactionStatus,
   ResourcesOfAccount,
   RadixNetworkChecker,
   RadixWalletGenerator,
 } from "@atlantis-l/radix-tool";
-import { defineComponent } from "vue";
-import store from "../../stores/store";
-import { message } from "ant-design-vue";
 import { CreateIcon, formatNumber, selectXrdAddress } from "../../common";
+import { message } from "ant-design-vue";
+import store from "../../stores/store";
+import { defineComponent } from "vue";
 
 interface Option {
   name: string;
@@ -542,11 +546,8 @@ export default defineComponent({
       this.tokenOptions[1].address = this.label.nftLabel;
     },
     "store.networkId"(id: number) {
-      //@ts-ignore
       this.tokenSender.networkId = id;
-      //@ts-ignore
       this.networkChecker.networkId = id;
-      //@ts-ignore
       this.walletGenerator.networkId = id;
     },
     selectedTokens(newTokens: string[], oldTokens: string[]) {
@@ -646,6 +647,7 @@ export default defineComponent({
           this.openSenderModal = false;
 
           message.loading({
+            duration: 0,
             content: `「 #${index} ${this.$t(
               `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.loading`,
             )} 」`,
@@ -764,6 +766,7 @@ export default defineComponent({
       this.tokenSender.feeLock = this.feeLock;
 
       message.loading({
+        duration: 0,
         content: `「 ${this.$t(
           `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.loading`,
         )} 」`,
@@ -775,6 +778,7 @@ export default defineComponent({
       const result = await this.tokenSender.sendCustom(
         this.customOptions,
         txMessage.length ? txMessage : undefined,
+        await getCurrentEpoch(this.store.networkId),
       );
 
       if (result.status === Status.FAIL) {
@@ -799,11 +803,13 @@ export default defineComponent({
           key,
         });
 
-        message.loading(
-          `「 ${this.$t(
+        message.loading({
+          duration: 0,
+          key: "checkTx",
+          content: `「 ${this.$t(
             `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.loading`,
           )} 」`,
-        );
+        });
 
         this.checkTx(result.transactionId as string);
       }
@@ -861,6 +867,7 @@ export default defineComponent({
       const key = "previewTransaction";
 
       message.loading({
+        duration: 0,
         content: `「 ${this.$t(
           `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.loading`,
         )} 」`,
@@ -870,6 +877,7 @@ export default defineComponent({
       try {
         const result = await this.tokenSender.sendCustomPreview(
           this.customOptions,
+          await getCurrentEpoch(this.store.networkId),
         );
 
         if (result.errorMessage) {
@@ -902,6 +910,8 @@ export default defineComponent({
       }
     },
     async checkTx(txId: string) {
+      const key = "checkTx";
+
       try {
         const txResult = await this.networkChecker.checkTransaction(txId);
 
@@ -909,11 +919,12 @@ export default defineComponent({
           txResult.transaction.transaction_status ===
           TransactionStatus.CommittedSuccess
         ) {
-          message.success(
-            `「 ${this.$t(
+          message.success({
+            key,
+            content: `「 ${this.$t(
               `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success`,
             )} 」`,
-          );
+          });
           this.clearAllTransfers();
           this.refreshXrdBalance();
           return;
@@ -923,11 +934,12 @@ export default defineComponent({
           txResult.transaction.transaction_status !== TransactionStatus.Pending
         ) {
           console.error(txResult.transaction.error_message);
-          message.error(
-            `「 ${this.$t(
+          message.error({
+            key,
+            content: `「 ${this.$t(
               `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.error`,
             )} 」`,
-          );
+          });
           this.refreshXrdBalance();
           return;
         }
@@ -947,6 +959,7 @@ export default defineComponent({
       const key = "XRD Balance";
 
       message.loading({
+        duration: 0,
         content: `「 ${this.$t(
           `View.TokenTransfer.MultipleToMultiple.script.methods.getXrdBalance.loading`,
         )} 」`,
@@ -1097,7 +1110,7 @@ export default defineComponent({
 }
 
 .view-nft-selector {
-  width: 50% !important;
+  flex: 1 !important;
 }
 
 .view-nft-selector-label {

@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { createRouter, createWebHashHistory } from "vue-router";
-import * as View from "../view";
+import * as View from "../views";
 
 const router = createRouter({
   history: createWebHashHistory(),

@@ -319,7 +319,12 @@ async function createWindow() {
     height: 700,
     resizable: false,
     titleBarStyle: "hidden",
-    webPreferences: { preload, sandbox: false, spellcheck: false },
+    webPreferences: {
+      preload,
+      sandbox: false,
+      spellcheck: false,
+      nodeIntegrationInWorker: true,
+    },
   });
 
   attachTitlebarToWindow(win);
@@ -364,15 +369,17 @@ const CONFIG_FILE = ".radix-tool";
 const CONFIG_FILE_PATH = join(HOME_PATH, CONFIG_FILE);
 
 interface Config {
+  simTx: boolean;
   language: string;
-  showNetwork: boolean;
-  menuFoldState: boolean;
   networkId: number;
   currentPath: string;
+  showNetwork: boolean;
   selectedKeys: string[];
+  menuFoldState: boolean;
 }
 
 const DEFAULT_CONFIG: Config = {
+  simTx: true,
   language: "en",
   showNetwork: false,
   menuFoldState: false,

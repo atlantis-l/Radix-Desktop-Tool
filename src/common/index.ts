@@ -24,8 +24,8 @@ const formatNumber = (number: string) => {
 
 const sleep = (
   count: number,
-  step: number = 100,
-  ms: number = 5000,
+  step: number = 5,
+  ms: number = 50,
 ): Promise<unknown> | void => {
   if (count % step === 0 && count !== 0) {
     return new Promise((r) => setTimeout(r, ms));

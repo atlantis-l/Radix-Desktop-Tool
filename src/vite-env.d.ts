@@ -6,6 +6,11 @@ declare module "*.vue" {
   export default component;
 }
 
+declare interface Data {
+  action: string;
+  args: any[];
+}
+
 declare interface Event {
   keyPath: string[];
 }

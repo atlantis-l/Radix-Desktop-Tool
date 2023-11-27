@@ -227,7 +227,7 @@ export default defineComponent({
 
 @font-face {
   font-family: "PingFangSC-Regular";
-  src: url("/fonts/PingFangSC-Regular.woff2") format("woff2");
+  src: url("PingFangSC-Regular.woff2") format("woff2");
 }
 
 * {

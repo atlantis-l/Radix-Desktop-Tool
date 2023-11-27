@@ -16,12 +16,11 @@ export default defineConfig(({ command }) => {
 
   return {
     build: {
-      chunkSizeWarningLimit: 9999,
+      chunkSizeWarningLimit: 99999,
       rollupOptions: {
         output: {
-          entryFileNames: "assets/[name].js",
-          chunkFileNames: "assets/[name].js",
-          assetFileNames: "assets/[name].[ext]",
+          entryFileNames: "[name].js",
+          assetFileNames: "[name].[ext]",
         },
       },
       target: "ESNext",
@@ -97,6 +96,5 @@ export default defineConfig(({ command }) => {
           port: +url.port,
         };
       })(),
-    clearScreen: false,
   };
 });

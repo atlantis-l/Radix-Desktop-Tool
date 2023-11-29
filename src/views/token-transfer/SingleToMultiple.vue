@@ -80,6 +80,31 @@
           "
         ></a-input>
       </a-modal>
+      <a-modal
+        centered
+        :width="270"
+        :footer="null"
+        :maskClosable="false"
+        v-model:open="openTransactionProgress"
+        style="text-align: center; user-select: none"
+        :title="
+          $t(
+            `View.TokenTransfer.SingleToMultiple.template.modal.transactionProgress`,
+          )
+        "
+      >
+        <a-progress
+          type="circle"
+          :stroke-color="{
+            '0%': '#052cc0',
+            '50%': '#1dddbf',
+            '100%': '#ff00e6',
+          }"
+          style="margin-top: 8px"
+          :status="progressStatus"
+          :percent="progressPercent"
+        />
+      </a-modal>
     </div>
     <!------------------------ Modal Group ------------------------>
 
@@ -222,7 +247,7 @@
               <CreateIcon icon="CheckOutlined" />
             </template>
             <template #unCheckedChildren>
-              <CreateIcon icon="LockOutlined" />
+              <CreateIcon icon="MinusOutlined" />
             </template>
           </a-switch>
         </a-tooltip>
@@ -394,7 +419,6 @@
 
 <script lang="ts">
 import {
-  Status,
   Wallet,
   TokenType,
   TokenSender,
@@ -412,7 +436,7 @@ import {
   formatNumber,
   selectXrdAddress,
 } from "../../common";
-import SingleToMultipleWorker from "../../workers/SingleToMultipleWorker?worker&inline";
+import SingleToMultipleWorker from "../../workers/Worker?worker&inline";
 import { message } from "ant-design-vue";
 import store from "../../stores/store";
 import { defineComponent } from "vue";
@@ -444,13 +468,16 @@ export default defineComponent({
       fileList: [],
       store: store(),
       tokenAmount: "",
+      progressCount: 0,
       senderPrivateKey: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
       openSenderModal: false,
+      progressStatus: "normal",
       openFeePayerModal: false,
       feePayerWalletPrivateKey: "",
       openConfirmTransaction: false,
+      openTransactionProgress: false,
       commitStatusList: [] as number[],
       previewFeeList: [] as PreviewFee[],
       customOptions: [] as CustomOption[],
@@ -531,6 +558,14 @@ export default defineComponent({
     feePayerAddress() {
       return this.feePayerWallet ? this.feePayerWallet.address : undefined;
     },
+    progressPercent() {
+      const totalCount =
+        Math.ceil(this.customOptions.length / MAX_WALLET_PER_TX) * 2 + 1;
+      return Math.floor(
+        ((this.progressCount + this.commitStatusList.length) / totalCount) *
+          100,
+      );
+    },
     totalTokenAmount() {
       if (this.tokenAmount.trim().length) {
         const singleAmount = parseFloat(this.tokenAmount);
@@ -580,10 +615,22 @@ export default defineComponent({
   },
   mounted() {
     worker.onmessage = (msg: MessageEvent<Data>) => {
-      if (msg.data.action === "addPreviewFee") {
-        this.addPreviewFee(msg.data);
-      } else if (msg.data.action === "addCommitStatus") {
-        this.addCommitStatus(msg.data);
+      const actionList = msg.data.action.split(".");
+
+      const action = {
+        executor: actionList[0],
+        method: actionList[1],
+      };
+
+      if (action.executor === "SingleToMultiple") {
+        switch (action.method) {
+          case "addPreviewFee":
+            this.addPreviewFee(msg.data);
+            break;
+          case "addCommitStatus":
+            this.addCommitStatus(msg.data);
+            break;
+        }
       }
     };
   },
@@ -722,7 +769,13 @@ export default defineComponent({
       });
     },
     async sendTransaction() {
+      this.progressCount = 0;
       this.commitStatusList = [];
+      this.progressStatus = "normal";
+
+      setTimeout(() => {
+        this.openTransactionProgress = true;
+      }, 500);
 
       const key = "sendTransaction";
 
@@ -766,10 +819,10 @@ export default defineComponent({
           };
         });
 
-        await sleep(i);
+        await sleep(i, 10, 4000);
 
         worker.postMessage({
-          action: "sendCustom",
+          action: "SingleToMultiple.sendCustom",
           args: [
             txMessage,
             currentEpoch,
@@ -779,6 +832,8 @@ export default defineComponent({
             feePercentList[i].mul(this.feeLock).toNumber().toFixed(18),
           ],
         });
+
+        this.progressCount++;
 
         if (end === this.customOptions.length) break;
       }
@@ -864,10 +919,10 @@ export default defineComponent({
           };
         });
 
-        await sleep(i);
+        await sleep(i, 10, 1000);
 
         worker.postMessage({
-          action: "sendCustomPreview",
+          action: "SingleToMultiple.sendCustomPreview",
           args: [
             i,
             currentEpoch,
@@ -928,6 +983,8 @@ export default defineComponent({
           txResult.transaction.transaction_status ===
           TransactionStatus.CommittedSuccess
         ) {
+          this.progressCount++;
+          this.progressStatus = "success";
           message.success({
             key,
             content: `「 ${this.$t(
@@ -942,6 +999,8 @@ export default defineComponent({
         if (
           txResult.transaction.transaction_status !== TransactionStatus.Pending
         ) {
+          this.progressCount++;
+          this.progressStatus = "exception";
           console.error(txResult.transaction.error_message);
           message.error({
             key,

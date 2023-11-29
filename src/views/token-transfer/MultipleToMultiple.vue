@@ -465,6 +465,8 @@ import {
   Status,
   Wallet,
   TokenType,
+  PublicKey,
+  PrivateKey,
   TokenSender,
   CustomOption,
   TransferInfo,
@@ -775,8 +777,15 @@ export default defineComponent({
 
       const txMessage = this.transactionMessage.trim();
 
+      const map = new Map<string, PrivateKey>();
+
+      this.customOptions.forEach((option) =>
+        map.set(option.fromWallet.address, option.fromWallet.privateKey),
+      );
+
       const result = await this.tokenSender.sendCustom(
         this.customOptions,
+        [...map.values()],
         txMessage.length ? txMessage : undefined,
         await getCurrentEpoch(this.store.networkId),
       );
@@ -874,9 +883,16 @@ export default defineComponent({
         key,
       });
 
+      const map = new Map<string, PublicKey>();
+
+      this.customOptions.forEach((option) =>
+        map.set(option.fromWallet.address, option.fromWallet.publicKey),
+      );
+
       try {
         const result = await this.tokenSender.sendCustomPreview(
           this.customOptions,
+          [...map.values()],
           await getCurrentEpoch(this.store.networkId),
         );
 

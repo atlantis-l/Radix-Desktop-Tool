@@ -165,6 +165,9 @@ export default {
       },
       SingleToMultiple: {
         template: {
+          modal: {
+            transactionProgress: "交易进度",
+          },
           header: {
             importWallets: {
               button: "导入钱包",

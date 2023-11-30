@@ -2,6 +2,7 @@
 import { defineStore } from "pinia";
 import zh from "ant-design-vue/es/locale/zh_CN";
 import en from "ant-design-vue/es/locale/en_US";
+import CustomWorker from "../workers/worker?worker&inline";
 
 const RadixTool: RadixTool = window.RadixTool;
 
@@ -15,8 +16,11 @@ state.showNetwork = await RadixTool.data.get("showNetwork");
 state.selectedKeys = await RadixTool.data.get("selectedKeys");
 state.menuFoldState = await RadixTool.data.get("menuFoldState");
 
+const worker = new CustomWorker();
+
 export default defineStore("store", {
   state: () => ({
+    worker,
     simTx: state.simTx,
     language: state.language,
     networkId: state.networkId,

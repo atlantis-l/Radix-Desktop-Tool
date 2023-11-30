@@ -523,23 +523,6 @@ export default defineComponent({
       addressAndResourceMap: new Map<string, ResourcesOfAccount>(),
     };
   },
-  mounted() {
-    //初始化转账列表
-    this.addTransfer();
-    //初始化代币选项
-    this.tokenOptions.push(
-      {
-        label: this.label.ftLabel,
-        address: this.label.ftLabel,
-        options: [],
-      },
-      {
-        label: this.label.nftLabel,
-        address: this.label.nftLabel,
-        options: [],
-      },
-    );
-  },
   watch: {
     "store.language"() {
       this.tokenOptions[0].label = this.label.ftLabel;
@@ -1106,6 +1089,23 @@ export default defineComponent({
     getFromWalletAddress(option: CustomOption) {
       return option.fromWallet ? option.fromWallet.address : "";
     },
+  },
+  mounted() {
+    //初始化转账列表
+    this.addTransfer();
+    //初始化代币选项
+    this.tokenOptions.push(
+      {
+        label: this.label.ftLabel,
+        address: this.label.ftLabel,
+        options: [],
+      },
+      {
+        label: this.label.nftLabel,
+        address: this.label.nftLabel,
+        options: [],
+      },
+    );
   },
 });
 </script>

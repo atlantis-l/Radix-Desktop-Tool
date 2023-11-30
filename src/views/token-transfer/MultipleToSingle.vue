@@ -157,11 +157,7 @@
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
               )
             "
-            :placeholder="
-              $t(
-                `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-              )
-            "
+            :placeholder="feeLockPlaceholder"
           />
         </a-tooltip>
       </a-col>
@@ -213,12 +209,7 @@
         </a-tooltip>
       </a-col>
       <a-col span="4">
-        <a-upload
-          name="file"
-          :maxCount="1"
-          v-model:file-list="fileList"
-          :customRequest="uploadCallback"
-        >
+        <a-upload name="file" :maxCount="1" :customRequest="uploadCallback">
           <a-button
             class="view-max-width custom-btn"
             :text="
@@ -421,7 +412,6 @@
 import {
   Wallet,
   TokenType,
-  TokenSender,
   CustomOption,
   TransferInfo,
   getCurrentEpoch,
@@ -436,7 +426,6 @@ import {
   formatNumber,
   selectXrdAddress,
 } from "../../common";
-import SingleToMultipleWorker from "../../workers/Worker?worker&inline";
 import { message } from "ant-design-vue";
 import store from "../../stores/store";
 import { defineComponent } from "vue";
@@ -455,17 +444,15 @@ enum CustomMethod {
 
 const MAX_WALLET_PER_TX = 50;
 
-const worker = new SingleToMultipleWorker();
-
 export default defineComponent({
   components: {
     CreateIcon,
   },
   data() {
     return {
+      gutter: 10,
       feeLock: "",
       wallets: [],
-      fileList: [],
       store: store(),
       tokenAmount: "",
       progressCount: 0,
@@ -485,18 +472,26 @@ export default defineComponent({
       selectedToken: undefined as string | undefined,
       feePayerWallet: undefined as Wallet | undefined,
       customMethod: undefined as CustomMethod | undefined,
-      //@ts-ignore
-      tokenSender: new TokenSender(store().networkId, undefined),
+      feeLockPlaceholder: undefined as string | undefined,
       networkChecker: new RadixNetworkChecker(store().networkId),
       walletGenerator: new RadixWalletGenerator(store().networkId),
       resourcesOfSender: undefined as ResourcesOfAccount | undefined,
     };
   },
   watch: {
+    wallets() {
+      this.previewFeeList = [];
+    },
     tokenAmount() {
       this.previewFeeList = [];
     },
+    senderWallet() {
+      this.previewFeeList = [];
+    },
     selectedToken() {
+      this.previewFeeList = [];
+    },
+    feePayerWallet() {
       this.previewFeeList = [];
     },
     "store.simTx"(flag: boolean) {
@@ -509,15 +504,11 @@ export default defineComponent({
       message.success({ content: `「 ${msg} 」`, key: "simTx" });
     },
     "store.networkId"(id: number) {
-      this.tokenSender.networkId = id;
       this.networkChecker.networkId = id;
       this.walletGenerator.networkId = id;
     },
   },
   computed: {
-    gutter() {
-      return 10;
-    },
     tokenOptions() {
       //@ts-ignore
       const options = [];
@@ -613,31 +604,8 @@ export default defineComponent({
       return placeholder;
     },
   },
-  mounted() {
-    worker.onmessage = (msg: MessageEvent<Data>) => {
-      const actionList = msg.data.action.split(".");
-
-      const action = {
-        executor: actionList[0],
-        method: actionList[1],
-      };
-
-      if (action.executor === "SingleToMultiple") {
-        switch (action.method) {
-          case "addPreviewFee":
-            this.addPreviewFee(msg.data);
-            break;
-          case "addCommitStatus":
-            this.addCommitStatus(msg.data);
-            break;
-        }
-      }
-    };
-  },
   methods: {
     setSender() {
-      this.previewFeeList = [];
-
       this.walletGenerator
         .generateWalletByPrivateKey(this.senderPrivateKey)
         .then(async (wallet) => {
@@ -656,15 +624,11 @@ export default defineComponent({
         });
     },
     setFeePayer() {
-      this.previewFeeList = [];
-
       this.walletGenerator
         .generateWalletByPrivateKey(this.feePayerWalletPrivateKey)
         .then((wallet) => {
           //扣费钱包
           this.feePayerWallet = wallet;
-          this.tokenSender.mainWallet = wallet;
-          this.tokenSender.feePayerWallet = wallet;
           //关闭对话框
           this.openFeePayerModal = false;
           //获取钱包XRD余额
@@ -689,18 +653,6 @@ export default defineComponent({
       }
       this.customMethod = CustomMethod.ESTIMATE_FEE;
       this.previewTransaction();
-    },
-    uploadCallback() {
-      this.previewFeeList = [];
-      //@ts-ignore
-      Papa.parse(this.fileList[0].originFileObj, {
-        skipEmptyLines: "greedy",
-        header: true,
-        complete: (file) => {
-          //@ts-ignore
-          this.wallets = file.data;
-        },
-      });
     },
     openConfirmModal() {
       if (!this.previewFeeList.length) {
@@ -821,7 +773,7 @@ export default defineComponent({
 
         await sleep(i, 10, 4000);
 
-        worker.postMessage({
+        this.store.worker.postMessage({
           action: "SingleToMultiple.sendCustom",
           args: [
             txMessage,
@@ -869,7 +821,7 @@ export default defineComponent({
               totalFee = totalFee.plus(fee);
             });
 
-            this.feeLock = totalFee.toString();
+            this.feeLockPlaceholder = formatNumber(totalFee.toString());
           } else if (CustomMethod.SEND_TRANSACTION === this.customMethod) {
             this.sendTransaction();
           }
@@ -888,8 +840,6 @@ export default defineComponent({
       this.validateTransferInfo();
 
       this.previewFeeList = [];
-
-      this.tokenSender.feeLock = "0";
 
       const key = "previewTransaction";
 
@@ -921,7 +871,7 @@ export default defineComponent({
 
         await sleep(i, 10, 1000);
 
-        worker.postMessage({
+        this.store.worker.postMessage({
           action: "SingleToMultiple.sendCustomPreview",
           args: [
             i,
@@ -1055,6 +1005,17 @@ export default defineComponent({
           });
         });
     },
+    uploadCallback({ file }: { file: File }) {
+      //@ts-ignore
+      Papa.parse(file, {
+        skipEmptyLines: "greedy",
+        header: true,
+        complete: (file) => {
+          //@ts-ignore
+          this.wallets = file.data;
+        },
+      });
+    },
     async getResourcesOfSender(wallet: Wallet) {
       const key = "loadSender";
 
@@ -1087,6 +1048,32 @@ export default defineComponent({
         });
       }
     },
+  },
+  mounted() {
+    this.feeLockPlaceholder = this.$t(
+      `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+    );
+  },
+  activated() {
+    this.store.worker.onmessage = (msg: MessageEvent<Data>) => {
+      const actionList = msg.data.action.split(".");
+
+      const action = {
+        executor: actionList[0],
+        method: actionList[1],
+      };
+
+      if (action.executor === "SingleToMultiple") {
+        switch (action.method) {
+          case "addPreviewFee":
+            this.addPreviewFee(msg.data);
+            break;
+          case "addCommitStatus":
+            this.addCommitStatus(msg.data);
+            break;
+        }
+      }
+    };
   },
 });
 </script>

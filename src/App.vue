@@ -234,6 +234,10 @@ export default defineComponent({
   font-family: "PingFangSC-Regular" !important;
 }
 
+.cet-container {
+  overflow: unset !important;
+}
+
 .ant-row {
   margin: 0 0 20px 0 !important;
 }

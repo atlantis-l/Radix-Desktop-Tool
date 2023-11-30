@@ -309,7 +309,7 @@ async function loadPage() {
   if (!win) return;
 
   process.env.VITE_DEV_SERVER_URL
-    ? await win.loadURL(url)
+    ? await win.loadURL(url as string)
     : await win.loadFile(indexHtml);
 }
 

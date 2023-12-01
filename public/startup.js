@@ -4,7 +4,7 @@
   var canvas = document.querySelector("#webgl");
 
   // Scroll variables
-  var count = 0.0005;
+  var count = Math.random();
   var flag = false;
 
   // initialize REGL from a canvas element
@@ -36,8 +36,8 @@
   regl.frame(function (ctx) {
     // Resize a canvas element with the aspect ratio (100vw, 100vh)
     var aspect = canvas.scrollWidth / canvas.scrollHeight;
-    canvas.width = 1100;
-    canvas.height = 672;
+    canvas.width = 1200;
+    canvas.height = 772;
 
     // Clear the draw buffer
     regl.clear({ color: [0, 0, 0, 0] });
@@ -66,7 +66,9 @@
     });
   });
 
+  document.body.style.opacity = "1";
+
   setTimeout(function () {
     document.body.classList.remove("loading");
-  }, 1000);
+  }, 1900);
 })();

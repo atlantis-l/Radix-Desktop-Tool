@@ -389,6 +389,7 @@ const DEFAULT_CONFIG: Config = {
 };
 
 let config: Config;
+let flag = false;
 
 app.whenReady().then(() => {
   //初始化参数
@@ -418,6 +419,14 @@ app.whenReady().then(() => {
   ipcMain.handle("get", (_event, key: string) => {
     //@ts-ignore
     return config[key];
+  });
+
+  ipcMain.handle("getFlag", () => {
+    return flag;
+  });
+
+  ipcMain.handle("setFlag", (_event, _flag: boolean) => {
+    flag = _flag;
   });
 
   createWindow();

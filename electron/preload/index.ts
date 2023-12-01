@@ -149,10 +149,13 @@ function useLoading() {
   `;
 
   oCanvas.id = "webgl";
-  oCanvas.style.cursor = "pointer";
   oSection.classList.add("startup-content", "startup-main");
 
   oCanvas.onclick = () => {
+    oCanvas.onclick = () => {};
+    window.onbeforeunload = () => {};
+    ipcRenderer.invoke("setFlag", true);
+
     oCanvas.addEventListener("transitionend", () => {
       const container = document.getElementsByClassName("cet-container")[0];
       container.removeChild(oCanvas);
@@ -178,30 +181,27 @@ function useLoading() {
       safeDOM.append(document.body, reglScript, false);
       safeDOM.append(document.body, oScript, false);
 
-      setTimeout(() => {
-        safeDOM.append(document.head, oLink, false);
-        safeDOM.append(document.body, startupScript, false);
+      safeDOM.append(document.head, oLink, false);
 
-        setTimeout(() => {
-          if (app) {
-            app.style.opacity = "1";
-          }
-        }, 100);
-      }, 500);
+      reglScript.onload = () => {
+        safeDOM.append(document.body, startupScript, false);
+      };
     },
   };
 }
 
 const { appendLoading } = useLoading();
 
-let app: HTMLElement | null;
-
 domReady().then(() => {
-  app = document.getElementById("app");
-  if (app) {
-    app.style.opacity = "0";
-  }
-  appendLoading();
+  ipcRenderer.invoke("getFlag").then((flag: boolean) => {
+    if (!flag) {
+      window.onbeforeunload = () => {
+        document.body.style.opacity = "0";
+      };
+      document.body.style.opacity = "0";
+      appendLoading();
+    }
+  });
 });
 
 // ---------------------------- CUSTOM ---------------------------- //

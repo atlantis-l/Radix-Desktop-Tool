@@ -2,9 +2,9 @@
   "compilerOptions": {
     "strict": true,
     "allowJs": true,
-    "jsx": "preserve",
     "target": "ESNext",
     "module": "ESNext",
+    "skipLibCheck": true,
     "removeComments": true,
     "esModuleInterop": true,
     "isolatedModules": true,

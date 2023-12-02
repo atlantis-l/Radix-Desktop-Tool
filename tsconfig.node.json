@@ -3,6 +3,7 @@
     "strict": true,
     "composite": true,
     "module": "ESNext",
+    "skipLibCheck": true,
     "removeComments": true,
     "isolatedModules": true,
     "moduleResolution": "Bundler",

@@ -193,12 +193,16 @@ function useLoading() {
 const { appendLoading } = useLoading();
 
 domReady().then(() => {
+  const app = document.getElementById("app");
+
   ipcRenderer.invoke("getFlag").then((flag: boolean) => {
     if (!flag) {
       window.onbeforeunload = () => {
-        document.body.style.opacity = "0";
+        //@ts-ignore
+        app.style.opacity = "0";
       };
-      document.body.style.opacity = "0";
+      //@ts-ignore
+      app.style.opacity = "0";
       appendLoading();
     }
   });

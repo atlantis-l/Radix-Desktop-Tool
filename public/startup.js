@@ -66,7 +66,9 @@
     });
   });
 
-  document.body.style.opacity = "1";
+  const app = document.getElementById("app");
+
+  app.style.opacity = "1";
 
   setTimeout(function () {
     document.body.classList.remove("loading");

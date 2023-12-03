@@ -5,6 +5,7 @@
       <a-modal
         centered
         @ok="setFeePayer"
+        :forceRender="true"
         v-model:open="openFeePayerModal"
         :title="
           $t(
@@ -16,6 +17,7 @@
           showCount
           allowClear
           @pressEnter="setFeePayer"
+          ref="feePayerWalletPrivateKey"
           v-model:value="feePayerWalletPrivateKey"
           :addonBefore="
             $t(
@@ -31,6 +33,7 @@
       </a-modal>
       <a-modal
         centered
+        :forceRender="true"
         @ok="sendTransaction"
         v-model:open="openConfirmTransaction"
         :title="
@@ -41,6 +44,7 @@
       >
         <a-input
           allowClear
+          ref="transactionMessage"
           @pressEnter="sendTransaction"
           v-model:value="transactionMessage"
           :addonBefore="
@@ -58,6 +62,7 @@
       <a-modal
         centered
         @ok="setSender"
+        :forceRender="true"
         v-model:open="openSenderModal"
         :title="`${$t(
           `View.TokenTransfer.MultipleToMultiple.template.senderModal.title`,
@@ -66,6 +71,7 @@
         <a-input
           showCount
           allowClear
+          ref="senderPrivateKey"
           @pressEnter="setSender"
           v-model:value="senderPrivateKey"
           :addonBefore="
@@ -83,6 +89,7 @@
       <a-modal
         centered
         :footer="null"
+        :forceRender="true"
         v-model:open="openSelectTokenModal"
         :title="`${$t(
           `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.title`,
@@ -133,7 +140,7 @@
                   class="view-max-width"
                   :addonBefore="transferInfo.name"
                   v-model:value="transferInfo.amount"
-                  :placeholder="formatNumber(transferInfo.placeholder)"
+                  :placeholder="transferInfo.placeholder"
                 ></a-input>
               </a-tooltip>
             </a-col>
@@ -236,11 +243,7 @@
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
               )
             "
-            :placeholder="
-              $t(
-                `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-              )
-            "
+            :placeholder="feeLockPlaceholder"
           />
         </a-tooltip>
       </a-col>
@@ -333,7 +336,7 @@
               `View.TokenTransfer.MultipleToMultiple.template.header.sendTransaction.button`,
             )
           "
-          @click="openConfirmModal"
+          @click="activateConfirmModal"
         >
           {{
             $t(
@@ -500,10 +503,13 @@ export default defineComponent({
   },
   data() {
     return {
+      gutter: 10,
       feeLock: "",
+      focusInput: "",
       store: store(),
       senderIndex: 0,
       senderPrivateKey: "",
+      feeLockPlaceholder: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
       openSenderModal: false,
@@ -515,8 +521,7 @@ export default defineComponent({
       selectedTokens: [] as string[],
       tokenOptions: [] as TokenOption[],
       customOptions: [] as CustomOption[],
-      feePayerWallet: undefined as Wallet | undefined,
-      //@ts-ignore
+      feePayerWallet: undefined as Wallet | undefined, //@ts-ignore
       tokenSender: new TokenSender(store().networkId, undefined),
       networkChecker: new RadixNetworkChecker(store().networkId),
       walletGenerator: new RadixWalletGenerator(store().networkId),
@@ -529,6 +534,15 @@ export default defineComponent({
       this.tokenOptions[0].address = this.label.ftLabel;
       this.tokenOptions[1].label = this.label.nftLabel;
       this.tokenOptions[1].address = this.label.nftLabel;
+    },
+    focusInput(ref: string) {
+      if (ref.length) {
+        setTimeout(() => {
+          //@ts-ignore
+          this.$refs[ref].focus();
+          this.focusInput = "";
+        }, 100);
+      }
     },
     "store.networkId"(id: number) {
       this.tokenSender.networkId = id;
@@ -553,7 +567,7 @@ export default defineComponent({
                 amount: "",
                 //@ts-ignore
                 name: splited[2],
-                placeholder: splited[3],
+                placeholder: formatNumber(splited[3]),
                 optionValue: tokenInfo,
               });
             }
@@ -602,9 +616,6 @@ export default defineComponent({
           `View.TokenTransfer.MultipleToMultiple.script.mounted.nftLabel`,
         ),
       };
-    },
-    gutter() {
-      return 10;
     },
     feePayerAddress() {
       return this.feePayerWallet ? this.feePayerWallet.address : undefined;
@@ -719,15 +730,13 @@ export default defineComponent({
       //将转账列表滚动到最后一个元素处
       this.scrollContentToBottom();
     },
-    openConfirmModal() {
-      this.openConfirmTransaction = true;
-    },
     async estimateFee() {
       const result = await this.previewTransaction();
 
       if (!result) return;
 
-      this.feeLock = result.fee;
+      this.feeLockPlaceholder = formatNumber(result.fee);
+      this.feeLock = "";
     },
     clearAllTransfers() {
       this.customOptions = [];
@@ -736,6 +745,10 @@ export default defineComponent({
     },
     refreshXrdBalance() {
       this.feePayerAddress && this.getXrdBalance(this.feePayerAddress);
+    },
+    activateConfirmModal() {
+      this.focusInput = "transactionMessage";
+      this.openConfirmTransaction = true;
     },
     async sendTransaction() {
       this.openConfirmTransaction = false;
@@ -847,6 +860,7 @@ export default defineComponent({
     activateFeePayerModal() {
       const wallet = this.feePayerWallet;
       if (wallet) this.feePayerWalletPrivateKey = wallet.privateKeyHexString();
+      this.focusInput = "feePayerWalletPrivateKey";
       this.openFeePayerModal = true;
     },
     async previewTransaction() {
@@ -924,6 +938,7 @@ export default defineComponent({
               `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success`,
             )} 」`,
           });
+          this.transactionMessage = "";
           this.clearAllTransfers();
           this.refreshXrdBalance();
           return;
@@ -947,9 +962,6 @@ export default defineComponent({
       setTimeout(() => {
         this.checkTx(txId);
       }, 4000);
-    },
-    formatNumber(number: string) {
-      return formatNumber(number);
     },
     deleteTransfer(index: number) {
       this.customOptions.splice(index, 1);
@@ -996,6 +1008,7 @@ export default defineComponent({
 
       this.senderIndex = index;
       this.openSenderModal = true;
+      this.focusInput = "senderPrivateKey";
     },
     activateSelectTokenModal(index: number) {
       this.loadingSelectedTokens = true;
@@ -1091,6 +1104,9 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.feeLockPlaceholder = this.$t(
+      `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+    );
     //初始化转账列表
     this.addTransfer();
     //初始化代币选项

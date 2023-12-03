@@ -319,6 +319,7 @@ async function createWindow() {
     height: 700,
     resizable: false,
     titleBarStyle: "hidden",
+    backgroundColor: "#000",
     webPreferences: {
       preload,
       sandbox: false,

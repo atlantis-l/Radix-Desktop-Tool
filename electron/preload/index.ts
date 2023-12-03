@@ -197,14 +197,16 @@ domReady().then(() => {
 
   ipcRenderer.invoke("getFlag").then((flag: boolean) => {
     if (!flag) {
-      if (app) app.style.transition = "all 0.8s ease-in-out";
       appendLoading();
+      setTimeout(() => {
+        document.body.style.opacity = "1";
+      }, 800);
     } else {
-      if (app) app.style.opacity = "1";
+      setTimeout(() => {
+        if (app) app.style.opacity = "1";
+        document.body.style.opacity = "1";
+      }, 400);
     }
-    setTimeout(() => {
-      document.body.style.opacity = "1";
-    }, 800);
   });
 });
 
@@ -223,7 +225,7 @@ const options = {
   maximizable: false,
   menuTransparency: 0.5,
   titleHorizontalAlignment: "center",
-  backgroundColor: TitlebarColor.fromHex("#333333"),
+  backgroundColor: TitlebarColor.fromHex("#000"),
   icon: path.join(__dirname, "../../dist/electron.png"),
 };
 

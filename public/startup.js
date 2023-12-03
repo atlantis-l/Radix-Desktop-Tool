@@ -1,4 +1,4 @@
-!(function () {
+!(() => {
   "use strict";
 
   var canvas = document.querySelector("#webgl");
@@ -10,11 +10,6 @@
   // initialize REGL from a canvas element
   var regl = createREGL({
     canvas: canvas,
-    onDone: function (error, regl) {
-      if (error) {
-        alert(error);
-      }
-    },
   });
 
   // Create a REGL draw command
@@ -33,7 +28,7 @@
   });
 
   // Hook a callback to execute each frame
-  regl.frame(function (ctx) {
+  regl.frame((ctx) => {
     // Resize a canvas element with the aspect ratio (100vw, 100vh)
     var aspect = canvas.scrollWidth / canvas.scrollHeight;
     canvas.width = 1200;
@@ -65,12 +60,4 @@
       velocity: 0,
     });
   });
-
-  const app = document.getElementById("app");
-
-  app.style.opacity = "1";
-
-  setTimeout(function () {
-    document.body.classList.remove("loading");
-  }, 1900);
 })();

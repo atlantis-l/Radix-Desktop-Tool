@@ -161,9 +161,10 @@ function useLoading() {
       container.removeChild(oCanvas);
       container.removeChild(oSection);
       safeDOM.remove(document.head, oLink);
-      safeDOM.remove(document.body, reglScript);
-      safeDOM.remove(document.body, oScript);
-      safeDOM.remove(document.body, startupScript);
+      container.removeChild(reglScript);
+      container.removeChild(oScript);
+      container.removeChild(startupScript);
+      if (app) app.style.opacity = "1";
     });
 
     oCanvas.style.opacity = "0";
@@ -172,16 +173,13 @@ function useLoading() {
 
   return {
     appendLoading() {
-      document.documentElement.className = "js";
-      document.body.classList.add("loading");
+      safeDOM.append(document.head, oLink, false);
 
       safeDOM.append(document.body, oSection, true);
       safeDOM.append(document.body, oCanvas, true);
 
       safeDOM.append(document.body, reglScript, false);
       safeDOM.append(document.body, oScript, false);
-
-      safeDOM.append(document.head, oLink, false);
 
       reglScript.onload = () => {
         safeDOM.append(document.body, startupScript, false);
@@ -190,21 +188,23 @@ function useLoading() {
   };
 }
 
+let app: HTMLElement | null;
+
 const { appendLoading } = useLoading();
 
 domReady().then(() => {
-  const app = document.getElementById("app");
+  app = document.getElementById("app");
 
   ipcRenderer.invoke("getFlag").then((flag: boolean) => {
     if (!flag) {
-      window.onbeforeunload = () => {
-        //@ts-ignore
-        app.style.opacity = "0";
-      };
-      //@ts-ignore
-      app.style.opacity = "0";
+      if (app) app.style.transition = "all 0.8s ease-in-out";
       appendLoading();
+    } else {
+      if (app) app.style.opacity = "1";
     }
+    setTimeout(() => {
+      document.body.style.opacity = "1";
+    }, 800);
   });
 });
 

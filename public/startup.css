@@ -52,36 +52,6 @@ main::before {
   fill: currentColor;
 }
 
-/* Page Loader */
-
-.js .loading::before {
-  content: "";
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  transition: all 0.8s ease;
-}
-
-.js .loading::after {
-  content: "";
-  position: fixed;
-  z-index: 1001;
-  top: 50%;
-  left: 50%;
-  width: 100px;
-  height: 100px;
-  transition: all 0.8s ease;
-  margin: -50px 0 0 -50px;
-  pointer-events: none;
-  border-radius: 50%;
-  background: #3b3b3b;
-  animation: loaderAnim 0.8s ease infinite alternate forwards;
-}
-
 @keyframes loaderAnim {
   to {
     transform: scale3d(0.5, 0.5, 1);
@@ -97,7 +67,7 @@ main::before {
 .startup-main {
   min-height: 500vh;
   position: absolute;
-  transition: all 0.8s ease;
+  transition: all 0.4s ease-in-out;
 }
 
 .startup-main::before,
@@ -240,13 +210,13 @@ main::before {
   display: inline-block;
   padding: 1em;
   vertical-align: top;
-  transition: color 0.3s;
+  transition: color 0.3s ease-in-out;
 }
 
 .media-item__img {
   max-width: 100%;
   opacity: 0.6;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .media-item:hover .media-item__img,
@@ -270,7 +240,7 @@ main::before {
   display: block;
   width: 100vw;
   height: 100vh;
-  transition: all 0.8s ease;
+  transition: all 0.4s ease-in-out;
 }
 
 @media screen and (max-width: 40em) {

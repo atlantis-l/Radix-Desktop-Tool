@@ -5,6 +5,7 @@
       <a-modal
         centered
         @ok="setFeePayer"
+        :forceRender="true"
         v-model:open="openFeePayerModal"
         :title="
           $t(
@@ -16,6 +17,7 @@
           showCount
           allowClear
           @pressEnter="setFeePayer"
+          ref="feePayerWalletPrivateKey"
           v-model:value="feePayerWalletPrivateKey"
           :addonBefore="
             $t(
@@ -31,6 +33,7 @@
       </a-modal>
       <a-modal
         centered
+        :forceRender="true"
         @ok="processTransaction"
         v-model:open="openConfirmTransaction"
         :title="
@@ -41,6 +44,7 @@
       >
         <a-input
           allowClear
+          ref="transactionMessage"
           @pressEnter="processTransaction"
           v-model:value="transactionMessage"
           :addonBefore="
@@ -58,6 +62,7 @@
       <a-modal
         centered
         @ok="setSender"
+        :forceRender="true"
         v-model:open="openSenderModal"
         :title="
           $t(`View.TokenTransfer.MultipleToMultiple.template.senderModal.title`)
@@ -66,6 +71,7 @@
         <a-input
           showCount
           allowClear
+          ref="senderPrivateKey"
           @pressEnter="setSender"
           v-model:value="senderPrivateKey"
           :addonBefore="
@@ -84,6 +90,7 @@
         centered
         :width="270"
         :footer="null"
+        :forceRender="true"
         :maskClosable="false"
         v-model:open="openTransactionProgress"
         style="text-align: center; user-select: none"
@@ -251,7 +258,7 @@
               `View.TokenTransfer.MultipleToMultiple.template.header.sendTransaction.button`,
             )
           "
-          @click="openConfirmModal"
+          @click="activateConfirmModal"
         >
           {{
             $t(
@@ -268,7 +275,7 @@
     </a-divider>
 
     <!------------------------ Content ------------------------>
-    <a-layout-content ref="content" class="view-layout-content">
+    <a-layout-content class="view-layout-content">
       <a-row :gutter="gutter">
         <a-col span="8" class="view-no-padding-left">
           <a-tooltip>
@@ -454,11 +461,13 @@ export default defineComponent({
       feeLock: "",
       wallets: [],
       store: store(),
+      focusInput: "",
       tokenAmount: "",
       progressCount: 0,
       senderPrivateKey: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
+      feeLockPlaceholder: "",
       openSenderModal: false,
       progressStatus: "normal",
       openFeePayerModal: false,
@@ -472,7 +481,6 @@ export default defineComponent({
       selectedToken: undefined as string | undefined,
       feePayerWallet: undefined as Wallet | undefined,
       customMethod: undefined as CustomMethod | undefined,
-      feeLockPlaceholder: undefined as string | undefined,
       networkChecker: new RadixNetworkChecker(store().networkId),
       walletGenerator: new RadixWalletGenerator(store().networkId),
       resourcesOfSender: undefined as ResourcesOfAccount | undefined,
@@ -493,6 +501,29 @@ export default defineComponent({
     },
     feePayerWallet() {
       this.previewFeeList = [];
+    },
+    focusInput(ref: string) {
+      if (ref.length) {
+        setTimeout(() => {
+          //@ts-ignore
+          this.$refs[ref].focus();
+          this.focusInput = "";
+        }, 100);
+      }
+    },
+    isCommitDone(flag: boolean) {
+      if (flag) {
+        this.previewFeeList = [];
+      }
+    },
+    isPreviewDone(flag: boolean) {
+      if (flag) {
+        if (this.previewFeeList.map((fee) => fee.fee).includes("error")) {
+          this.previewFeeList = [];
+          return;
+        }
+        this.previewFeeList.sort((a, b) => a.order - b.order);
+      }
     },
     "store.simTx"(flag: boolean) {
       this.store.setSimTx(flag);
@@ -545,6 +576,26 @@ export default defineComponent({
       }
       //@ts-ignore
       return options;
+    },
+    requestCount() {
+      return Math.ceil(this.customOptions.length / MAX_WALLET_PER_TX);
+    },
+    isPreviewDone() {
+      return this.previewFeeList.length === this.requestCount;
+    },
+    isCommitDone() {
+      return this.commitStatusList.length === this.requestCount;
+    },
+    feePercentList() {
+      let totalPreviewFee = new Decimal(0);
+
+      this.previewFeeList.forEach((fee) => {
+        totalPreviewFee = totalPreviewFee.plus(fee.fee);
+      });
+
+      return this.previewFeeList.map((fee) =>
+        new Decimal(fee.fee).div(totalPreviewFee),
+      );
     },
     feePayerAddress() {
       return this.feePayerWallet ? this.feePayerWallet.address : undefined;
@@ -652,18 +703,8 @@ export default defineComponent({
         return;
       }
       this.customMethod = CustomMethod.ESTIMATE_FEE;
+      this.validateTransferInfo();
       this.previewTransaction();
-    },
-    openConfirmModal() {
-      if (!this.previewFeeList.length) {
-        message.warning(
-          `「 ${this.$t(
-            `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
-          )} 」`,
-        );
-        return;
-      }
-      this.openConfirmTransaction = true;
     },
     refreshXrdBalance() {
       this.feePayerAddress && this.getXrdBalance(this.feePayerAddress);
@@ -688,7 +729,6 @@ export default defineComponent({
         this.customMethod = CustomMethod.SEND_TRANSACTION;
         this.previewTransaction();
       } else {
-        this.validateTransferInfo();
         this.sendTransaction();
       }
     },
@@ -696,7 +736,27 @@ export default defineComponent({
       if (this.senderWallet) {
         this.senderPrivateKey = this.senderWallet.privateKeyHexString();
       }
+      this.focusInput = "senderPrivateKey";
       this.openSenderModal = true;
+    },
+    activateConfirmModal() {
+      if (!this.customOptions.length || !this.isPreviewDone) {
+        message.warning(
+          `「 ${this.$t(
+            `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
+          )} 」`,
+        );
+      } else if (!this.feeLock.trim().length) {
+        message.warn(
+          `「 ${this.$t(
+            `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
+          )} 」`,
+        );
+        return;
+      } else {
+        this.focusInput = "transactionMessage";
+        this.openConfirmTransaction = true;
+      }
     },
     validateTransferInfo() {
       //@ts-ignore
@@ -741,18 +801,6 @@ export default defineComponent({
 
       const txMessage = this.transactionMessage.trim();
 
-      this.previewFeeList.sort((a, b) => a.order - b.order);
-
-      let totalPreviewFee = new Decimal(0);
-
-      this.previewFeeList.forEach((fee) => {
-        totalPreviewFee = totalPreviewFee.plus(fee.fee);
-      });
-
-      const feePercentList = this.previewFeeList.map((fee) =>
-        new Decimal(fee.fee).div(totalPreviewFee),
-      );
-
       const currentEpoch = await getCurrentEpoch(this.store.networkId);
 
       for (let i = 0; ; i++) {
@@ -781,7 +829,7 @@ export default defineComponent({
             this.store.networkId,
             JSON.stringify(options),
             this.feePayerWallet?.privateKeyHexString(),
-            feePercentList[i].mul(this.feeLock).toNumber().toFixed(18),
+            this.feePercentList[i].mul(this.feeLock).toNumber().toFixed(18),
           ],
         });
 
@@ -793,6 +841,7 @@ export default defineComponent({
     activateFeePayerModal() {
       const wallet = this.feePayerWallet;
       if (wallet) this.feePayerWalletPrivateKey = wallet.privateKeyHexString();
+      this.focusInput = "feePayerWalletPrivateKey";
       this.openFeePayerModal = true;
     },
     addPreviewFee(data: Data) {
@@ -800,13 +849,17 @@ export default defineComponent({
 
       const key = "previewTransaction";
 
-      if (
-        this.previewFeeList.length ===
-        Math.ceil(this.customOptions.length / MAX_WALLET_PER_TX)
-      ) {
+      if (this.isPreviewDone) {
         const feeList = this.previewFeeList.map((fee) => fee.fee);
 
-        if (!feeList.includes("error")) {
+        if (feeList.includes("error")) {
+          message.error({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+            )} 」`,
+            key,
+          });
+        } else {
           message.success({
             content: `「 ${this.$t(
               `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.success`,
@@ -822,23 +875,14 @@ export default defineComponent({
             });
 
             this.feeLockPlaceholder = formatNumber(totalFee.toString());
+            this.feeLock = "";
           } else if (CustomMethod.SEND_TRANSACTION === this.customMethod) {
             this.sendTransaction();
           }
-        } else {
-          this.previewFeeList = [];
-          message.error({
-            content: `「 ${this.$t(
-              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
-            )} 」`,
-            key,
-          });
         }
       }
     },
     async previewTransaction() {
-      this.validateTransferInfo();
-
       this.previewFeeList = [];
 
       const key = "previewTransaction";
@@ -890,13 +934,15 @@ export default defineComponent({
 
       const key = "sendTransaction";
 
-      if (
-        this.commitStatusList.length ===
-        Math.ceil(this.customOptions.length / MAX_WALLET_PER_TX)
-      ) {
-        this.previewFeeList = [];
-
-        if (!this.commitStatusList.includes(0)) {
+      if (this.isCommitDone) {
+        if (this.commitStatusList.includes(0)) {
+          message.error({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.error`,
+            )} 」`,
+            key,
+          });
+        } else {
           message.success({
             content: `「 ${this.$t(
               `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.success`,
@@ -913,13 +959,6 @@ export default defineComponent({
           });
 
           this.checkTx(data.args[0].transactionId as string);
-        } else {
-          message.error({
-            content: `「 ${this.$t(
-              `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.error`,
-            )} 」`,
-            key,
-          });
         }
       }
     },
@@ -941,6 +980,7 @@ export default defineComponent({
               `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success`,
             )} 」`,
           });
+          this.transactionMessage = "";
           this.refreshXrdBalance();
           this.getResourcesOfSender(this.senderWallet as Wallet);
           return;
@@ -967,9 +1007,6 @@ export default defineComponent({
       setTimeout(() => {
         this.checkTx(txId);
       }, 4000);
-    },
-    formatNumber(number: string) {
-      return formatNumber(number);
     },
     getXrdBalance(address: string) {
       const key = "XRD Balance";

@@ -740,7 +740,7 @@ export default defineComponent({
       this.openSenderModal = true;
     },
     activateConfirmModal() {
-      if (!this.isPreviewDone) {
+      if (!this.customOptions.length || !this.isPreviewDone) {
         message.warning(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,

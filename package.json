@@ -17,7 +17,7 @@
   },
   "scripts": {
     "format": "prettier . --write",
-    "dev": "export VITE_CJS_IGNORE_WARNING=true && vite",
+    "dev": "prettier . --write && export VITE_CJS_IGNORE_WARNING=true && vite",
     "build-dist": "prettier . --write && vue-tsc --noEmit && export VITE_CJS_IGNORE_WARNING=true && vite build",
     "build-mac": "prettier . --write && vue-tsc --noEmit && export VITE_CJS_IGNORE_WARNING=true && export CSC_IDENTITY_AUTO_DISCOVERY=false && vite build && electron-builder --mac --x64",
     "build-win": "prettier . --write && vue-tsc --noEmit && export VITE_CJS_IGNORE_WARNING=true && export CSC_IDENTITY_AUTO_DISCOVERY=false && vite build && electron-builder --win --x64"

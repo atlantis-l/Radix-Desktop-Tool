@@ -1,7 +1,10 @@
 import {
   Wallet,
+  PublicKey,
+  PrivateKey,
   TokenSender,
   TransferInfo,
+  RadixNetworkChecker,
   RadixWalletGenerator,
 } from "@atlantis-l/radix-tool";
 
@@ -30,91 +33,151 @@ onmessage = (msg: MessageEvent<Data>) => {
         break;
     }
   }
+
+  if (action.executor === "MultipleToSingle") {
+    switch (action.method) {
+      case "sendCustom":
+        MultipleToSingle.sendCustom(msg.data);
+        break;
+      case "sendCustomPreview":
+        MultipleToSingle.sendCustomPreview(msg.data);
+        break;
+      case "getResourcesOfSenders":
+        MultipleToSingle.getResourcesOfSenders(msg.data);
+        break;
+    }
+  }
+};
+
+const sendCustom = async (data: Data) => {
+  const feeLock = data.args[5] as string;
+  const txMessage = data.args[0] as string;
+  const networkId = data.args[2] as number;
+  const currentEpoch = data.args[1] as number;
+  const feePayerPrivateKey = data.args[4] as string;
+  const walletGenerator = new RadixWalletGenerator(networkId);
+  const tempOptions = JSON.parse(data.args[3]) as TempOption[];
+
+  const feePayerWallet =
+    await walletGenerator.generateWalletByPrivateKey(feePayerPrivateKey);
+
+  const addressAndPrivateKeyMap = new Map<string, PrivateKey>();
+
+  for (let i = 0; i < tempOptions.length; i++) {
+    tempOptions[i].fromWallet =
+      await walletGenerator.generateWalletByPrivateKey(
+        tempOptions[i].fromPrivateKey,
+      );
+
+    addressAndPrivateKeyMap.set(
+      tempOptions[i].fromWallet.address,
+      tempOptions[i].fromWallet.privateKey,
+    );
+  }
+
+  addressAndPrivateKeyMap.delete(feePayerWallet.address);
+
+  const tokenSender = new TokenSender(networkId, feePayerWallet);
+
+  tokenSender.feeLock = feeLock;
+
+  tokenSender
+    .sendCustom(
+      tempOptions,
+      [...addressAndPrivateKeyMap.values()],
+      txMessage.length ? txMessage : undefined,
+      currentEpoch,
+    )
+    .then((result) => {
+      postMessage({
+        action: `${data.action.split(".")[0]}.addCommitStatus`,
+        args: [{ status: result.status, transactionId: result.transactionId }],
+      } as Data);
+    });
+};
+
+const sendCustomPreview = async (data: Data) => {
+  const order = data.args[0] as number;
+  const networkId = data.args[2] as number;
+  const currentEpoch = data.args[1] as number;
+  const feePayerPrivateKey = data.args[4] as string;
+  const walletGenerator = new RadixWalletGenerator(networkId);
+  const tempOptions = JSON.parse(data.args[3]) as TempOption[];
+
+  const feePayerWallet =
+    await walletGenerator.generateWalletByPrivateKey(feePayerPrivateKey);
+
+  const addressAndPublicKeyMap = new Map<string, PublicKey>();
+
+  for (let i = 0; i < tempOptions.length; i++) {
+    tempOptions[i].fromWallet =
+      await walletGenerator.generateWalletByPrivateKey(
+        tempOptions[i].fromPrivateKey,
+      );
+
+    addressAndPublicKeyMap.set(
+      tempOptions[i].fromWallet.address,
+      tempOptions[i].fromWallet.publicKey,
+    );
+  }
+
+  addressAndPublicKeyMap.delete(feePayerWallet.address);
+
+  const tokenSender = new TokenSender(networkId, feePayerWallet);
+
+  tokenSender
+    .sendCustomPreview(
+      tempOptions,
+      [...addressAndPublicKeyMap.values()],
+      currentEpoch,
+    )
+    .then((result) => {
+      if (result.errorMessage) {
+        console.error(result.errorMessage);
+        result.fee = "error";
+      }
+
+      postMessage({
+        action: `${data.action.split(".")[0]}.addPreviewFee`,
+        args: [{ order, fee: result.fee }],
+      } as Data);
+    })
+    .catch((e) => {
+      console.error((e as Error).message);
+      postMessage({
+        action: `${data.action.split(".")[0]}.addPreviewFee`,
+        args: [{ order, fee: "error" }],
+      } as Data);
+    });
 };
 
 const SingleToMultiple = {
-  sendCustom: async (data: Data) => {
-    const feeLock = data.args[5] as string;
-    const txMessage = data.args[0] as string;
-    const networkId = data.args[2] as number;
-    const currentEpoch = data.args[1] as number;
-    const feePayerPrivateKey = data.args[4] as string;
-    const walletGenerator = new RadixWalletGenerator(networkId);
-    const tempOptions = JSON.parse(data.args[3]) as TempOption[];
+  sendCustom,
+  sendCustomPreview,
+};
 
-    for (let i = 0; i < tempOptions.length; i++) {
-      tempOptions[i].fromWallet =
-        await walletGenerator.generateWalletByPrivateKey(
-          tempOptions[i].fromPrivateKey,
-        );
+const MultipleToSingle = {
+  sendCustom,
+  sendCustomPreview,
+  getResourcesOfSenders: async (data: Data) => {
+    const addressList = data.args[0] as string[];
+    const networkId = data.args[1] as number;
+
+    const checker = new RadixNetworkChecker(networkId);
+
+    try {
+      const resouresOfAccountList =
+        await checker.checkResourcesOfAccounts(addressList);
+
+      postMessage({
+        action: "MultipleToSingle.setResourcesOfSenders",
+        args: [JSON.stringify(resouresOfAccountList)],
+      } as Data);
+    } catch (_e) {
+      postMessage({
+        action: "MultipleToSingle.setResourcesOfSenders",
+        args: [],
+      } as Data);
     }
-
-    const feePayerWallet =
-      await walletGenerator.generateWalletByPrivateKey(feePayerPrivateKey);
-
-    const tokenSender = new TokenSender(networkId, feePayerWallet);
-
-    tokenSender.feeLock = feeLock;
-
-    tokenSender
-      .sendCustom(
-        tempOptions,
-        [tempOptions[0].fromWallet.privateKey],
-        txMessage.length ? txMessage : undefined,
-        currentEpoch,
-      )
-      .then((result) => {
-        postMessage({
-          action: "SingleToMultiple.addCommitStatus",
-          args: [
-            { status: result.status, transactionId: result.transactionId },
-          ],
-        } as Data);
-      });
-  },
-  sendCustomPreview: async (data: Data) => {
-    const order = data.args[0] as number;
-    const networkId = data.args[2] as number;
-    const currentEpoch = data.args[1] as number;
-    const feePayerPrivateKey = data.args[4] as string;
-    const walletGenerator = new RadixWalletGenerator(networkId);
-    const tempOptions = JSON.parse(data.args[3]) as TempOption[];
-
-    for (let i = 0; i < tempOptions.length; i++) {
-      tempOptions[i].fromWallet =
-        await walletGenerator.generateWalletByPrivateKey(
-          tempOptions[i].fromPrivateKey,
-        );
-    }
-
-    const feePayerWallet =
-      await walletGenerator.generateWalletByPrivateKey(feePayerPrivateKey);
-
-    const tokenSender = new TokenSender(networkId, feePayerWallet);
-
-    tokenSender
-      .sendCustomPreview(
-        tempOptions,
-        [tempOptions[0].fromWallet.publicKey],
-        currentEpoch,
-      )
-      .then((result) => {
-        if (result.errorMessage) {
-          console.error(result.errorMessage);
-          result.fee = "error";
-        }
-
-        postMessage({
-          action: "SingleToMultiple.addPreviewFee",
-          args: [{ order, fee: result.fee }],
-        } as Data);
-      })
-      .catch((e) => {
-        console.error((e as Error).message);
-        postMessage({
-          action: "SingleToMultiple.addPreviewFee",
-          args: [{ order, fee: "error" }],
-        } as Data);
-      });
   },
 };

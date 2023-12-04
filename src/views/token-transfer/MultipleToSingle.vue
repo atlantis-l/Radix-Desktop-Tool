@@ -61,33 +61,6 @@
       </a-modal>
       <a-modal
         centered
-        @ok="setSender"
-        :forceRender="true"
-        v-model:open="openSenderModal"
-        :title="
-          $t(`View.TokenTransfer.MultipleToMultiple.template.senderModal.title`)
-        "
-      >
-        <a-input
-          showCount
-          allowClear
-          ref="senderPrivateKey"
-          @pressEnter="setSender"
-          v-model:value="senderPrivateKey"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.senderModal.addonBefore`,
-            )
-          "
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.senderModal.placeholder`,
-            )
-          "
-        ></a-input>
-      </a-modal>
-      <a-modal
-        centered
         :width="270"
         :footer="null"
         :forceRender="true"
@@ -245,7 +218,7 @@
               <CreateIcon icon="CheckOutlined" />
             </template>
             <template #unCheckedChildren>
-              <CreateIcon icon="MinusOutlined" />
+              <CreateIcon icon="LockOutlined" />
             </template>
           </a-switch>
         </a-tooltip>
@@ -278,36 +251,6 @@
     <a-layout-content class="view-layout-content">
       <a-row :gutter="gutter">
         <a-col span="8" class="view-no-padding-left">
-          <a-tooltip>
-            <template #title>
-              <span>
-                {{
-                  senderWallet
-                    ? senderWallet.address
-                    : $t(
-                        `View.TokenTransfer.MultipleToMultiple.template.content.sender.address`,
-                      )
-                }}
-              </span>
-            </template>
-            <a-input
-              readonly
-              @click="activateSenderModal"
-              :value="senderWallet?.address"
-              :addonBefore="
-                $t(
-                  `View.TokenTransfer.MultipleToMultiple.template.content.sender.addonBefore`,
-                )
-              "
-              :placeholder="
-                $t(
-                  `View.TokenTransfer.MultipleToMultiple.template.content.sender.placeholder`,
-                )
-              "
-            />
-          </a-tooltip>
-        </a-col>
-        <a-col span="8">
           <a-tooltip>
             <template #title>
               {{
@@ -353,12 +296,12 @@
             </a-input-group>
           </a-tooltip>
         </a-col>
-        <a-col span="8" class="view-no-padding-right">
+        <a-col span="8">
           <a-tooltip>
             <template #title>
               {{
                 $t(
-                  `View.TokenTransfer.SingleToMultiple.template.content.amountTip`,
+                  `View.TokenTransfer.MultipleToSingle.template.content.amountTip`,
                 )
               }}
             </template>
@@ -374,6 +317,22 @@
               "
             />
           </a-tooltip>
+        </a-col>
+        <a-col span="8" class="view-no-padding-right">
+          <a-input
+            allowClear
+            v-model:value="receiverAddress"
+            :addonBefore="
+              $t(
+                `View.TokenTransfer.MultipleToMultiple.template.content.receiver.addonBefore`,
+              )
+            "
+            :placeholder="
+              $t(
+                `View.TokenTransfer.MultipleToMultiple.template.content.receiver.placeholder`,
+              )
+            "
+          />
         </a-col>
       </a-row>
       <a-row>
@@ -419,8 +378,9 @@
 import {
   Wallet,
   TokenType,
-  CustomOption,
+  ResourceInfo,
   TransferInfo,
+  CustomOption,
   getCurrentEpoch,
   TransactionStatus,
   ResourcesOfAccount,
@@ -449,7 +409,7 @@ enum CustomMethod {
   SEND_TRANSACTION,
 }
 
-const MAX_WALLET_PER_TX = 50;
+const MAX_WALLET_PER_TX = 16;
 
 export default defineComponent({
   components: {
@@ -464,11 +424,10 @@ export default defineComponent({
       focusInput: "",
       tokenAmount: "",
       progressCount: 0,
-      senderPrivateKey: "",
+      receiverAddress: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
       feeLockPlaceholder: "",
-      openSenderModal: false,
       progressStatus: "normal",
       openFeePayerModal: false,
       feePayerWalletPrivateKey: "",
@@ -477,13 +436,13 @@ export default defineComponent({
       commitStatusList: [] as number[],
       previewFeeList: [] as PreviewFee[],
       customOptions: [] as CustomOption[],
-      senderWallet: undefined as Wallet | undefined,
       selectedToken: undefined as string | undefined,
       feePayerWallet: undefined as Wallet | undefined,
       customMethod: undefined as CustomMethod | undefined,
       networkChecker: new RadixNetworkChecker(store().networkId),
       walletGenerator: new RadixWalletGenerator(store().networkId),
-      resourcesOfSender: undefined as ResourcesOfAccount | undefined,
+      addressAndResourcesMap: new Map<string, ResourcesOfAccount>(),
+      resourcesOfSenders: undefined as ResourcesOfAccount | undefined,
     };
   },
   watch: {
@@ -544,8 +503,8 @@ export default defineComponent({
       //@ts-ignore
       const options = [];
 
-      if (this.resourcesOfSender) {
-        this.resourcesOfSender.fungible.forEach((info) => {
+      if (this.resourcesOfSenders) {
+        this.resourcesOfSenders.fungible.forEach((info) => {
           if (info.amount === "0") return;
 
           let tempLabel = info.name;
@@ -558,10 +517,6 @@ export default defineComponent({
             );
 
           let label = `「 ${tempLabel} 」`;
-
-          label += `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.balance`,
-          )}: ${formatNumber(info.amount as string)} 」`;
 
           label += `「 ${this.$t(
             `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.address`,
@@ -609,30 +564,32 @@ export default defineComponent({
       );
     },
     totalTokenAmount() {
-      if (this.tokenAmount.trim().length) {
-        const singleAmount = parseFloat(this.tokenAmount);
-        return !singleAmount
-          ? "0"
-          : new Decimal(singleAmount * this.wallets.length);
-      } else if (
-        this.wallets.length &&
-        this.wallets[0][
-          this.$t(`View.TokenTransfer.SingleToMultiple.template.content.amount`)
-        ]
-      ) {
-        let amount = new Decimal(0);
+      if (this.selectedToken && this.selectedToken.length) {
+        let amt = new Decimal(0);
 
-        this.wallets.forEach((data) => {
-          amount = amount.plus(
-            data[
-              this.$t(
-                `View.TokenTransfer.SingleToMultiple.template.content.amount`,
-              )
-            ],
-          );
-        });
+        [...this.addressAndResourcesMap.values()].forEach(
+          (resourcesOfAccount) => {
+            const info = resourcesOfAccount.fungible.find(
+              (fungible) => fungible.resourceAddress === this.selectedToken,
+            );
+            if (info) {
+              amt = amt.plus(info.amount as string);
+            }
+          },
+        );
 
-        return amount;
+        if (this.tokenAmount.trim().length) {
+          const singleAmount = parseFloat(this.tokenAmount.trim());
+
+          if (!Number.isNaN(singleAmount)) {
+            const totalAmount = new Decimal(singleAmount * this.wallets.length);
+            return amt.greaterThan(totalAmount) ? totalAmount : amt;
+          } else {
+            return "0";
+          }
+        } else {
+          return amt;
+        }
       } else {
         return "0";
       }
@@ -641,11 +598,20 @@ export default defineComponent({
       let placeholder;
 
       if (this.selectedToken && this.selectedToken.length) {
-        const token = this.resourcesOfSender?.fungible.find((token) => {
-          return token.resourceAddress === this.selectedToken;
-        });
+        let amount = new Decimal(0);
 
-        placeholder = formatNumber(token?.amount as string);
+        [...this.addressAndResourcesMap.values()].forEach(
+          (resourcesOfAccount) => {
+            const info = resourcesOfAccount.fungible.find(
+              (fungible) => fungible.resourceAddress === this.selectedToken,
+            );
+            if (info) {
+              amount = amount.plus(info.amount as string);
+            }
+          },
+        );
+
+        placeholder = formatNumber(amount.toString());
       } else {
         placeholder = this.$t(
           `View.TokenTransfer.SingleToMultiple.template.content.amountPlaceholder`,
@@ -656,24 +622,6 @@ export default defineComponent({
     },
   },
   methods: {
-    setSender() {
-      this.walletGenerator
-        .generateWalletByPrivateKey(this.senderPrivateKey)
-        .then(async (wallet) => {
-          this.senderWallet = wallet;
-          //关闭对话框
-          this.openSenderModal = false;
-
-          this.getResourcesOfSender(wallet);
-        })
-        .catch((_e) => {
-          message.error(
-            `「 ${this.$t(
-              `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.pkError`,
-            )} 」`,
-          );
-        });
-    },
     setFeePayer() {
       this.walletGenerator
         .generateWalletByPrivateKey(this.feePayerWalletPrivateKey)
@@ -711,11 +659,10 @@ export default defineComponent({
     },
     validateInputData() {
       if (
+        !this.selectedToken ||
         !this.feePayerWallet ||
         !this.wallets.length ||
-        !this.senderWallet ||
-        !this.selectedToken ||
-        !this.tokenAmount.trim().length
+        !this.receiverAddress.trim().length
       ) {
         return false;
       }
@@ -731,13 +678,6 @@ export default defineComponent({
       } else {
         this.sendTransaction();
       }
-    },
-    activateSenderModal() {
-      if (this.senderWallet) {
-        this.senderPrivateKey = this.senderWallet.privateKeyHexString();
-      }
-      this.focusInput = "senderPrivateKey";
-      this.openSenderModal = true;
     },
     activateConfirmModal() {
       if (!this.customOptions.length || !this.isPreviewDone) {
@@ -760,25 +700,66 @@ export default defineComponent({
     },
     validateTransferInfo() {
       //@ts-ignore
-      this.customOptions = this.wallets.map((data) => {
-        return {
-          fromWallet: this.senderWallet,
-          toAddress: data[this.$t(`View.WalletCreate.script.address`)],
-          transferInfos: [
-            {
-              tokenType: TokenType.FUNGIBLE,
-              tokenAddress: this.selectedToken,
-              amount: this.tokenAmount.trim().length
-                ? this.tokenAmount.trim()
-                : data[
-                    this.$t(
-                      `View.TokenTransfer.SingleToMultiple.template.content.amount`,
-                    )
-                  ],
-            } as TransferInfo,
-          ],
-        };
-      });
+      const customOptions = [];
+
+      this.wallets
+        .map((data) => {
+          const privateKey = data[
+            this.$t(`View.WalletCreate.script.privateKey`)
+          ] as string;
+
+          const address = data[
+            this.$t(`View.WalletCreate.script.address`)
+          ] as string;
+
+          let amount: string | undefined;
+
+          const resources = this.addressAndResourcesMap.get(address);
+
+          if (resources) {
+            const fungible = resources.fungible.find(
+              (fungible) => fungible.resourceAddress === this.selectedToken,
+            );
+
+            if (fungible) {
+              amount = fungible.amount;
+            } else {
+              amount = "0";
+            }
+          }
+
+          if (this.tokenAmount.trim().length) {
+            if (
+              new Decimal(amount as string).greaterThan(
+                new Decimal(this.tokenAmount.trim()),
+              )
+            ) {
+              amount = this.tokenAmount.trim();
+            }
+          }
+
+          return {
+            fromPrivateKey: privateKey,
+            toAddress: this.receiverAddress,
+            transferInfos: [
+              {
+                tokenType: TokenType.FUNGIBLE,
+                tokenAddress: this.selectedToken,
+                amount,
+              } as TransferInfo,
+            ],
+          };
+        })
+        .forEach((customOption) => {
+          const amount = customOption.transferInfos[0].amount as string;
+          if (amount !== "0") {
+            //@ts-ignore
+            customOptions.push(customOption);
+          }
+        });
+
+      //@ts-ignore
+      this.customOptions = customOptions;
     },
     async sendTransaction() {
       this.progressCount = 0;
@@ -811,18 +792,12 @@ export default defineComponent({
             ? this.customOptions.length
             : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
 
-        const options = this.customOptions.slice(start, end).map((option) => {
-          return {
-            toAddress: option.toAddress,
-            transferInfos: option.transferInfos,
-            fromPrivateKey: option.fromWallet.privateKeyHexString(),
-          };
-        });
+        const options = this.customOptions.slice(start, end);
 
         await sleep(i, 10, 4000);
 
         this.store.worker.postMessage({
-          action: "SingleToMultiple.sendCustom",
+          action: "MultipleToSingle.sendCustom",
           args: [
             txMessage,
             currentEpoch,
@@ -905,18 +880,12 @@ export default defineComponent({
             ? this.customOptions.length
             : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
 
-        const options = this.customOptions.slice(start, end).map((option) => {
-          return {
-            toAddress: option.toAddress,
-            transferInfos: option.transferInfos,
-            fromPrivateKey: option.fromWallet.privateKeyHexString(),
-          };
-        });
+        const options = this.customOptions.slice(start, end);
 
-        await sleep(i, 10, 1000);
+        await sleep(i, 50, 1000);
 
         this.store.worker.postMessage({
-          action: "SingleToMultiple.sendCustomPreview",
+          action: "MultipleToSingle.sendCustomPreview",
           args: [
             i,
             currentEpoch,
@@ -982,7 +951,7 @@ export default defineComponent({
           });
           this.transactionMessage = "";
           this.refreshXrdBalance();
-          this.getResourcesOfSender(this.senderWallet as Wallet);
+          this.getResourcesOfSenders();
           return;
         }
 
@@ -999,7 +968,7 @@ export default defineComponent({
             )} 」`,
           });
           this.refreshXrdBalance();
-          this.getResourcesOfSender(this.senderWallet as Wallet);
+          this.getResourcesOfSenders();
           return;
         }
       } catch (_e) {}
@@ -1007,6 +976,26 @@ export default defineComponent({
       setTimeout(() => {
         this.checkTx(txId);
       }, 4000);
+    },
+    async getResourcesOfSenders() {
+      const key = "loadSender";
+
+      message.loading({
+        duration: 0,
+        content: `「 ${this.$t(
+          `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.loading`,
+        )} 」`,
+        key,
+      });
+
+      const addressList = this.wallets.map(
+        (data) => data[this.$t(`View.WalletCreate.script.address`)],
+      );
+
+      this.store.worker.postMessage({
+        action: "MultipleToSingle.getResourcesOfSenders",
+        args: [addressList, this.store.networkId],
+      });
     },
     getXrdBalance(address: string) {
       const key = "XRD Balance";
@@ -1042,6 +1031,51 @@ export default defineComponent({
           });
         });
     },
+    setResourcesOfSenders(data: Data) {
+      const key = "loadSender";
+
+      if (data.args.length) {
+        const resouresOfAccountList = JSON.parse(
+          data.args[0],
+        ) as ResourcesOfAccount[];
+
+        const fungibleMap = new Map<string, ResourceInfo>();
+        this.addressAndResourcesMap = new Map<string, ResourcesOfAccount>();
+
+        resouresOfAccountList.forEach((resouresOfAccount) => {
+          this.addressAndResourcesMap.set(
+            resouresOfAccount.address,
+            resouresOfAccount,
+          );
+
+          resouresOfAccount.fungible.forEach((fungible) => {
+            if (fungible.amount && fungible.amount !== "0") {
+              fungibleMap.set(fungible.resourceAddress, fungible);
+            }
+          });
+        });
+
+        this.resourcesOfSenders = {
+          address: "",
+          fungible: [...fungibleMap.values()],
+          nonFungible: [],
+        };
+
+        message.success({
+          content: `「 ${this.$t(
+            `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.success`,
+          )} 」`,
+          key,
+        });
+      } else {
+        message.error({
+          content: `「 ${this.$t(
+            `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.error`,
+          )} 」`,
+          key,
+        });
+      }
+    },
     uploadCallback({ file }: { file: File }) {
       //@ts-ignore
       Papa.parse(file, {
@@ -1050,40 +1084,9 @@ export default defineComponent({
         complete: (file) => {
           //@ts-ignore
           this.wallets = file.data;
+          this.getResourcesOfSenders();
         },
       });
-    },
-    async getResourcesOfSender(wallet: Wallet) {
-      const key = "loadSender";
-
-      message.loading({
-        duration: 0,
-        content: `「 ${this.$t(
-          `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.loading`,
-        )} 」`,
-        key,
-      });
-
-      try {
-        //获取Sender代币信息
-        this.resourcesOfSender = (
-          await this.networkChecker.checkResourcesOfAccounts([wallet.address])
-        )[0];
-
-        message.success({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.success`,
-          )} 」`,
-          key,
-        });
-      } catch (_e) {
-        message.error({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.error`,
-          )} 」`,
-          key,
-        });
-      }
     },
   },
   mounted() {
@@ -1100,13 +1103,16 @@ export default defineComponent({
         method: actionList[1],
       };
 
-      if (action.executor === "SingleToMultiple") {
+      if (action.executor === "MultipleToSingle") {
         switch (action.method) {
           case "addPreviewFee":
             this.addPreviewFee(msg.data);
             break;
           case "addCommitStatus":
             this.addCommitStatus(msg.data);
+            break;
+          case "setResourcesOfSenders":
+            this.setResourcesOfSenders(msg.data);
             break;
         }
       }

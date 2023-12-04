@@ -91,7 +91,7 @@ export default {
             },
             feePayerXrdBalance: {
               tooltip: "点击刷新余额",
-              addonBefore: "XRD余额",
+              addonBefore: "XRD 余额",
               placeholder: "付费方的XRD余额",
             },
             sendTransaction: {
@@ -144,6 +144,7 @@ export default {
               loading: "正在进行模拟交易",
               error: "模拟交易失败",
               success: "模拟交易成功",
+              exceed: "超过不同发送方限制数量",
             },
             checkTx: {
               loading: "等待交易完成",
@@ -198,6 +199,7 @@ export default {
       MultipleToSingle: {
         template: {
           content: {
+            amountTip: "选填(不填则发送全部)",
             receiver: {
               addonBefore: "接收方",
               placeholder: "接收方钱包",

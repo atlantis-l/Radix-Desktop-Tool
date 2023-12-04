@@ -497,6 +497,8 @@ interface TokenOption {
   options: Option[];
 }
 
+const MAX_DIFF_SENDER_AMOUNT = 16;
+
 export default defineComponent({
   components: {
     CreateIcon,
@@ -746,6 +748,7 @@ export default defineComponent({
         );
         return;
       }
+
       const result = await this.previewTransaction();
 
       if (!result) return;
@@ -817,6 +820,8 @@ export default defineComponent({
       this.customOptions.forEach((option) =>
         map.set(option.fromWallet.address, option.fromWallet.privateKey),
       );
+
+      map.delete(this.feePayerAddress as string);
 
       const result = await this.tokenSender.sendCustom(
         this.customOptions,
@@ -904,6 +909,22 @@ export default defineComponent({
     },
     async previewTransaction() {
       this.validateTransferInfos();
+
+      const set = new Set<string>(
+        this.customOptions.map(
+          (customOption) => customOption.fromWallet.address,
+        ),
+      );
+
+      if (set.size > MAX_DIFF_SENDER_AMOUNT) {
+        message.warning({
+          content: `「 ${this.$t(
+            `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
+          )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
+        });
+
+        return;
+      }
 
       this.tokenSender.feeLock = "0";
       this.tokenSender.mainWallet = this.feePayerWallet as Wallet;

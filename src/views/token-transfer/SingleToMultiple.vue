@@ -245,7 +245,7 @@
               <CreateIcon icon="CheckOutlined" />
             </template>
             <template #unCheckedChildren>
-              <CreateIcon icon="MinusOutlined" />
+              <CreateIcon icon="LockOutlined" />
             </template>
           </a-switch>
         </a-tooltip>
@@ -715,7 +715,12 @@ export default defineComponent({
         !this.wallets.length ||
         !this.senderWallet ||
         !this.selectedToken ||
-        !this.tokenAmount.trim().length
+        (!this.tokenAmount.trim().length &&
+          !this.wallets[0][
+            this.$t(
+              `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+            )
+          ])
       ) {
         return false;
       }
@@ -762,7 +767,7 @@ export default defineComponent({
       //@ts-ignore
       this.customOptions = this.wallets.map((data) => {
         return {
-          fromWallet: this.senderWallet,
+          fromPrivateKey: this.senderWallet?.privateKeyHexString(),
           toAddress: data[this.$t(`View.WalletCreate.script.address`)],
           transferInfos: [
             {
@@ -811,13 +816,7 @@ export default defineComponent({
             ? this.customOptions.length
             : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
 
-        const options = this.customOptions.slice(start, end).map((option) => {
-          return {
-            toAddress: option.toAddress,
-            transferInfos: option.transferInfos,
-            fromPrivateKey: option.fromWallet.privateKeyHexString(),
-          };
-        });
+        const options = this.customOptions.slice(start, end);
 
         await sleep(i, 10, 4000);
 
@@ -905,15 +904,9 @@ export default defineComponent({
             ? this.customOptions.length
             : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
 
-        const options = this.customOptions.slice(start, end).map((option) => {
-          return {
-            toAddress: option.toAddress,
-            transferInfos: option.transferInfos,
-            fromPrivateKey: option.fromWallet.privateKeyHexString(),
-          };
-        });
+        const options = this.customOptions.slice(start, end);
 
-        await sleep(i, 10, 1000);
+        await sleep(i, 50, 1000);
 
         this.store.worker.postMessage({
           action: "SingleToMultiple.sendCustomPreview",

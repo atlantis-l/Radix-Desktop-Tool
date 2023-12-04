@@ -508,6 +508,7 @@ export default defineComponent({
       focusInput: "",
       store: store(),
       senderIndex: 0,
+      isPreviewDone: false,
       senderPrivateKey: "",
       feeLockPlaceholder: "",
       feePayerXrdBalance: "",
@@ -529,6 +530,9 @@ export default defineComponent({
     };
   },
   watch: {
+    feePayerAddress() {
+      this.isPreviewDone = false;
+    },
     "store.language"() {
       this.tokenOptions[0].label = this.label.ftLabel;
       this.tokenOptions[0].address = this.label.ftLabel;
@@ -543,6 +547,9 @@ export default defineComponent({
           this.focusInput = "";
         }, 100);
       }
+    },
+    "customOptions.length"() {
+      this.isPreviewDone = false;
     },
     "store.networkId"(id: number) {
       this.tokenSender.networkId = id;
@@ -743,6 +750,7 @@ export default defineComponent({
 
       if (!result) return;
 
+      this.isPreviewDone = true;
       this.feeLockPlaceholder = formatNumber(result.fee);
       this.feeLock = "";
     },
@@ -762,10 +770,17 @@ export default defineComponent({
           )} 」`,
         );
         return;
-      } else if (!this.feeLock.trim().length) {
+      } else if (!this.isPreviewDone) {
         message.warning(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
+          )} 」`,
+        );
+        return;
+      } else if (!this.feeLock.trim().length) {
+        message.warn(
+          `「 ${this.$t(
+            `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
           )} 」`,
         );
         return;
@@ -774,6 +789,7 @@ export default defineComponent({
       this.openConfirmTransaction = true;
     },
     async sendTransaction() {
+      this.isPreviewDone = false;
       this.openConfirmTransaction = false;
 
       const previwResult = await this.previewTransaction();

@@ -731,6 +731,14 @@ export default defineComponent({
       this.scrollContentToBottom();
     },
     async estimateFee() {
+      if (!this.feePayerAddress) {
+        message.warn(
+          `「 ${this.$t(
+            `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
+          )} 」`,
+        );
+        return;
+      }
       const result = await this.previewTransaction();
 
       if (!result) return;
@@ -747,6 +755,21 @@ export default defineComponent({
       this.feePayerAddress && this.getXrdBalance(this.feePayerAddress);
     },
     activateConfirmModal() {
+      if (!this.feePayerAddress) {
+        message.warn(
+          `「 ${this.$t(
+            `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
+          )} 」`,
+        );
+        return;
+      } else if (!this.feeLock.trim().length) {
+        message.warning(
+          `「 ${this.$t(
+            `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
+          )} 」`,
+        );
+        return;
+      }
       this.focusInput = "transactionMessage";
       this.openConfirmTransaction = true;
     },

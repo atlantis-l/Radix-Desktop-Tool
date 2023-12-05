@@ -811,10 +811,9 @@ export default defineComponent({
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
 
-        const end =
-          i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX > this.customOptions.length
-            ? this.customOptions.length
-            : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+        let end = i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+
+        end = end > this.customOptions.length ? this.customOptions.length : end;
 
         const options = this.customOptions.slice(start, end);
 
@@ -899,10 +898,9 @@ export default defineComponent({
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
 
-        const end =
-          i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX > this.customOptions.length
-            ? this.customOptions.length
-            : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+        let end = i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+
+        end = end > this.customOptions.length ? this.customOptions.length : end;
 
         const options = this.customOptions.slice(start, end);
 

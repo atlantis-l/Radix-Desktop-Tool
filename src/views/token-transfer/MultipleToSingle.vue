@@ -565,60 +565,49 @@ export default defineComponent({
     },
     totalTokenAmount() {
       if (this.selectedToken && this.selectedToken.length) {
-        let amt = new Decimal(0);
-
-        [...this.addressAndResourcesMap.values()].forEach(
-          (resourcesOfAccount) => {
-            const info = resourcesOfAccount.fungible.find(
-              (fungible) => fungible.resourceAddress === this.selectedToken,
-            );
-            if (info) {
-              amt = amt.plus(info.amount as string);
-            }
-          },
-        );
+        let amount = this.selectedTokenAmount;
 
         if (this.tokenAmount.trim().length) {
           const singleAmount = parseFloat(this.tokenAmount.trim());
 
-          if (!Number.isNaN(singleAmount)) {
+          if (singleAmount) {
             const totalAmount = new Decimal(singleAmount * this.wallets.length);
-            return amt.greaterThan(totalAmount) ? totalAmount : amt;
+
+            return amount.greaterThan(totalAmount) ? totalAmount : amount;
           } else {
             return "0";
           }
         } else {
-          return amt;
+          return amount;
         }
       } else {
         return "0";
       }
     },
     amountPlaceholder() {
-      let placeholder;
-
       if (this.selectedToken && this.selectedToken.length) {
-        let amount = new Decimal(0);
-
-        [...this.addressAndResourcesMap.values()].forEach(
-          (resourcesOfAccount) => {
-            const info = resourcesOfAccount.fungible.find(
-              (fungible) => fungible.resourceAddress === this.selectedToken,
-            );
-            if (info) {
-              amount = amount.plus(info.amount as string);
-            }
-          },
-        );
-
-        placeholder = formatNumber(amount.toString());
+        return formatNumber(this.selectedTokenAmount.toString());
       } else {
-        placeholder = this.$t(
+        return this.$t(
           `View.TokenTransfer.SingleToMultiple.template.content.amountPlaceholder`,
         );
       }
+    },
+    selectedTokenAmount() {
+      let amount = new Decimal(0);
 
-      return placeholder;
+      [...this.addressAndResourcesMap.values()].forEach(
+        (resourcesOfAccount) => {
+          const info = resourcesOfAccount.fungible.find(
+            (fungible) => fungible.resourceAddress === this.selectedToken,
+          );
+          if (info) {
+            amount = amount.plus(info.amount as string);
+          }
+        },
+      );
+
+      return amount;
     },
   },
   methods: {
@@ -787,10 +776,9 @@ export default defineComponent({
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
 
-        const end =
-          i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX > this.customOptions.length
-            ? this.customOptions.length
-            : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+        let end = i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+
+        end = end > this.customOptions.length ? this.customOptions.length : end;
 
         const options = this.customOptions.slice(start, end);
 
@@ -875,10 +863,9 @@ export default defineComponent({
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
 
-        const end =
-          i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX > this.customOptions.length
-            ? this.customOptions.length
-            : i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+        let end = i * MAX_WALLET_PER_TX + MAX_WALLET_PER_TX;
+
+        end = end > this.customOptions.length ? this.customOptions.length : end;
 
         const options = this.customOptions.slice(start, end);
 

@@ -4,9 +4,11 @@ import {
   PrivateKey,
   TokenSender,
   TransferInfo,
+  ResourcesOfAccount,
   RadixNetworkChecker,
   RadixWalletGenerator,
 } from "@atlantis-l/radix-tool";
+import { sleep } from "../common";
 
 interface TempOption {
   toAddress: string;
@@ -14,6 +16,8 @@ interface TempOption {
   fromPrivateKey: string;
   transferInfos: TransferInfo[];
 }
+
+const MAX_ADDRESS_PER_CHECK = 1000;
 
 onmessage = (msg: MessageEvent<Data>) => {
   const actionList = msg.data.action.split(".");
@@ -166,8 +170,26 @@ const MultipleToSingle = {
     const checker = new RadixNetworkChecker(networkId);
 
     try {
-      const resouresOfAccountList =
-        await checker.checkResourcesOfAccounts(addressList);
+      const resouresOfAccountList = [] as ResourcesOfAccount[];
+
+      for (let i = 0; ; i++) {
+        const start = i * MAX_ADDRESS_PER_CHECK;
+
+        let end = i * MAX_ADDRESS_PER_CHECK + MAX_ADDRESS_PER_CHECK;
+
+        end = end > addressList.length ? addressList.length : end;
+
+        const subList = addressList.slice(start, end);
+
+        await sleep(i, 1, 1000);
+
+        const resouresOfAccountSubList =
+          await checker.checkResourcesOfAccounts(subList);
+
+        resouresOfAccountList.push(...resouresOfAccountSubList);
+
+        if (end === addressList.length) break;
+      }
 
       postMessage({
         action: `${data.action.split(".")[0]}.setResourcesOfSenders`,

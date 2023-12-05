@@ -14,11 +14,6 @@ export default {
       singleToMultiple: "一对多",
       multipleToSingle: "多对一",
     },
-    BalanceCheck: {
-      title: "余额检查",
-      singleWallet: "单个钱包",
-      multipleWallets: "多个钱包",
-    },
     HistoryCheck: {
       title: "历史检查",
     },
@@ -206,14 +201,6 @@ export default {
             },
           },
         },
-      },
-    },
-    BalanceCheck: {
-      SingleWallet: {
-        message: "单个钱包",
-      },
-      MultipleWallets: {
-        message: "多个钱包",
       },
     },
     HistoryCheck: {

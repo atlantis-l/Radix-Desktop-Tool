@@ -44,25 +44,6 @@ const router = createRouter({
       ],
     },
     {
-      name: "BalanceCheck",
-      path: "/BalanceCheck",
-      icon: "DollarCircleTwoTone",
-      children: [
-        {
-          name: "singleWallet",
-          path: "singleWallet",
-          icon: "WalletOutlined",
-          component: View.BalanceCheck.SingleWallet,
-        },
-        {
-          name: "multipleWallets",
-          path: "multipleWallets",
-          icon: "WalletOutlined",
-          component: View.BalanceCheck.MultipleWallets,
-        },
-      ],
-    },
-    {
       name: "HistoryCheck",
       path: "/HistoryCheck",
       icon: "ClockCircleTwoTone",

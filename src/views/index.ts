@@ -15,5 +15,5 @@ export {
   PackageDeploy,
   ManifestExecute,
 };
-export * as BalanceCheck from "./balance-check";
+
 export * as TokenTransfer from "./token-transfer";

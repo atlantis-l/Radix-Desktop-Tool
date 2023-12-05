@@ -14,11 +14,6 @@ export default {
       singleToMultiple: "Single To Multiple",
       multipleToSingle: "Multiple To Single",
     },
-    BalanceCheck: {
-      title: "Balance Check",
-      singleWallet: "Single Wallet",
-      multipleWallets: "Wallets",
-    },
     HistoryCheck: {
       title: "History Check",
     },
@@ -168,14 +163,6 @@ export default {
       },
       MultipleToSingle: {
         message: "Multiple To Single",
-      },
-    },
-    BalanceCheck: {
-      SingleWallet: {
-        message: "Single Wallet",
-      },
-      MultipleWallets: {
-        message: "Multiple Wallets",
       },
     },
     HistoryCheck: {

@@ -1,4 +1,4 @@
-import en from "./en";
-import zh from "./zh";
+import zh from "./zh.json";
+import en from "./en.json";
 
-export { en, zh };
+export { zh, en };

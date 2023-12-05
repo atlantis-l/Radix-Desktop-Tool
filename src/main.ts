@@ -1,7 +1,7 @@
 import App from "./App.vue";
 import router from "./routes";
-import { en, zh } from "./langs";
 import { createApp } from "vue";
+import { zh, en } from "./langs";
 import Antd from "ant-design-vue";
 import { createPinia } from "pinia";
 import { createI18n } from "vue-i18n";

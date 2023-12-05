@@ -2,7 +2,7 @@
 import { defineStore } from "pinia";
 import zh from "ant-design-vue/es/locale/zh_CN";
 import en from "ant-design-vue/es/locale/en_US";
-import CustomWorker from "../workers/worker?worker&inline";
+import CustomWorker from "../workers/customWorker?worker&inline";
 
 const RadixTool: RadixTool = window.RadixTool;
 

@@ -170,12 +170,12 @@ const MultipleToSingle = {
         await checker.checkResourcesOfAccounts(addressList);
 
       postMessage({
-        action: "MultipleToSingle.setResourcesOfSenders",
+        action: `${data.action.split(".")[0]}.setResourcesOfSenders`,
         args: [JSON.stringify(resouresOfAccountList)],
       } as Data);
     } catch (_e) {
       postMessage({
-        action: "MultipleToSingle.setResourcesOfSenders",
+        action: `${data.action.split(".")[0]}.setResourcesOfSenders`,
         args: [],
       } as Data);
     }

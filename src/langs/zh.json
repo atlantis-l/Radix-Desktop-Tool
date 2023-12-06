@@ -237,7 +237,7 @@
     "WalletCreate": {
       "template": {
         "create": "创 建",
-        "amount": "钱包数量",
+        "amount": "数量",
         "placeholder": "整数"
       },
       "script": {

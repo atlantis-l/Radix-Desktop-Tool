@@ -358,13 +358,7 @@ export default defineComponent({
   border: 1px solid transparent !important;
   background-clip: padding-box, border-box;
   background-image: linear-gradient(to left, #ffffff, #ffffff),
-    radial-gradient(
-      #052cc0,
-      #1dddbf,
-      #ff00e6,
-      rgb(0, 255, 47),
-      rgb(255, 115, 0)
-    );
+    radial-gradient(#052cc0, #1dddbf, #ff00e6, #1dddbf, #052cc0);
 }
 
 .custom-btn:hover {
@@ -511,13 +505,7 @@ body {
   border: 1px solid transparent !important;
   box-shadow: 0px 0px 15px #ceccce !important;
   background-image: linear-gradient(to right, #ffffff, #ffffff),
-    radial-gradient(
-      #052cc0,
-      #1dddbf,
-      #ff00e6,
-      rgb(0, 255, 47),
-      rgb(255, 115, 0)
-    );
+    radial-gradient(#052cc0, #1dddbf, #ff00e6, #1dddbf, #052cc0);
 }
 
 .a-layout-content::-webkit-scrollbar {

@@ -65,7 +65,7 @@
                         </a-tag>
                       </a-col>
 
-                      <a-col>
+                      <a-col v-else>
                         <a-tag
                           :color="
                             change[`balance_change`].startsWith(`-`)
@@ -490,7 +490,9 @@
                 <a-tooltip placement="left">
                   <template #title>{{
                     tx.transaction_status === `CommittedSuccess`
-                      ? "交易成功"
+                      ? $t(
+                          "View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success",
+                        )
                       : tx.error_message
                   }}</template>
                   <CheckCircleTwoTone
@@ -807,6 +809,7 @@ export default defineComponent({
 
 .ant-tag {
   user-select: none !important;
+  margin-inline-end: 0 !important;
 }
 
 .ant-modal .ant-card {

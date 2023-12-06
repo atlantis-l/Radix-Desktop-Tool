@@ -148,7 +148,7 @@
             "activateSelectTokenModal": {
               "unnamedToken": "Unnamed Token",
               "balance": "Balance",
-              "amount": "Quantity",
+              "amount": "Amount",
               "address": "Address"
             }
           }
@@ -162,7 +162,7 @@
         },
         "template": {
           "content": {
-            "amount": "Quantity",
+            "amount": "Amount",
             "amountPlaceholder": "Number of tokens",
             "amountTip": "Optional (If not filled in, the imported data will prevail)",
             "token": "Token",
@@ -242,7 +242,7 @@
         "privateKey": "Private Key"
       },
       "template": {
-        "amount": "Number of wallets",
+        "amount": "Amount",
         "create": "Create",
         "placeholder": "Integer"
       }

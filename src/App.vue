@@ -155,10 +155,11 @@ export default defineComponent({
           ? //@ts-ignore
             this.$t(`Menu.${String(location.name)}.title`)
           : this.$t(
-              //@ts-ignore
-              `Menu.${String(array.toReversed().pop().name)}.${String(
-                location.name,
-              )}`,
+              this.$t(
+                "menu-string-array-toreversed-pop-name-string-location-name",
+                //@ts-ignore
+                [String(array.toReversed().pop().name), String(location.name)],
+              ),
             );
       });
     },
@@ -214,8 +215,8 @@ export default defineComponent({
       this.$i18n.locale = language;
       message.success(
         language === "en"
-          ? "Current Language:「 English 」"
-          : "当前语言:「 中文 」",
+          ? this.$t("current-language-english")
+          : this.$t("dang-qian-yu-yan-zhong-wen"),
       );
     },
   },

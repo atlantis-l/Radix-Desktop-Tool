@@ -133,7 +133,8 @@
             "previewTransaction": {
               "loading": "Simulated trading in progress",
               "error": "Simulated transaction failed",
-              "success": "Simulated transaction successful"
+              "success": "Simulated transaction successful",
+              "exceed": "Exceeded the limit number of different senders"
             },
             "checkTx": {
               "loading": "Waiting for transaction to complete",
@@ -153,8 +154,49 @@
           }
         }
       },
-      "SingleToMultiple": {},
-      "MultipleToSingle": {}
+      "SingleToMultiple": {
+        "script": {
+          "disableSimTx": "Disable Tx simulation",
+          "enableSimTx": "Enable Tx Simulation",
+          "noPreviewFee": "Unestimated Fee"
+        },
+        "template": {
+          "content": {
+            "amount": "Quantity",
+            "amountPlaceholder": "Number of tokens",
+            "amountTip": "Optional (If not filled in, the imported data will prevail)",
+            "token": "Token",
+            "tokenAddress": "Token Address",
+            "tokenTip": "Only fungible tokens (FT) can be sent",
+            "totalTokenAmount": "Total amount of tokens sent",
+            "walletAmount": "Number of wallets"
+          },
+          "divider": {
+            "text": "Transfer Information"
+          },
+          "header": {
+            "dataNotValid": "Incomplete information input",
+            "importWallets": {
+              "button": "Import Wallet"
+            },
+            "simTx": "Whether to perform transaction simulation when sending transaction"
+          },
+          "modal": {
+            "transactionProgress": "Transaction Progress"
+          }
+        }
+      },
+      "MultipleToSingle": {
+        "template": {
+          "content": {
+            "amountTip": "Optional (If left blank, all will be sent)",
+            "receiver": {
+              "addonBefore": "Receiver",
+              "placeholder": "Receiver Wallet"
+            }
+          }
+        }
+      }
     },
     "HistoryCheck": {
       "template": {
@@ -169,6 +211,15 @@
         },
         "divider": {
           "text": "Transaction List"
+        },
+        "content": {
+          "message": "Message"
+        },
+        "modal": {
+          "deposit": "Deposit",
+          "title": "Asset Changes",
+          "txFee": "Transaction Fee",
+          "withdraw": "Withdraw"
         }
       },
       "script": {
@@ -176,10 +227,26 @@
         "noPrevious": "Reached first page",
         "getTxList": "Getting transaction list",
         "gotTxList": "Transaction list obtained",
-        "txListError": "Transaction list request failed"
+        "txListError": "Transaction list request failed",
+        "copied": "Copied",
+        "getTxInfo": "Retrieving transaction information",
+        "getTxInfoError": "Failed to obtain transaction information",
+        "gotTxInfo": "Transaction information has been obtained"
       }
     },
-    "WalletCreate": {},
+    "WalletCreate": {
+      "script": {
+        "address": "Address",
+        "error": "Input error",
+        "fileName": "Wallet",
+        "privateKey": "Private Key"
+      },
+      "template": {
+        "amount": "Number of wallets",
+        "create": "Create",
+        "placeholder": "Integer"
+      }
+    },
     "TokenCreate": {
       "message": "Token Create"
     },
@@ -192,5 +259,9 @@
     "XRDFaucet": {
       "message": "XRD Faucet"
     }
-  }
+  },
+  "1-info-resourceaddress-templabel-info-ids-join": "1:{0}:{1}:{2}",
+  "current-language-english": "Current Language:「English」",
+  "dang-qian-yu-yan-zhong-wen": "Current language: \"Chinese\"",
+  "menu-string-array-toreversed-pop-name-string-location-name": "Menu.{0}.{1}"
 }

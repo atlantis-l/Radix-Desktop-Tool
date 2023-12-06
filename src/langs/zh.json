@@ -259,5 +259,9 @@
     "XRDFaucet": {
       "message": "XRD领取"
     }
-  }
+  },
+  "current-language-english": "Current Language:「 English 」",
+  "dang-qian-yu-yan-zhong-wen": "当前语言:「 中文 」",
+  "menu-string-array-toreversed-pop-name-string-location-name": "Menu.{0}.{1}",
+  "1-info-resourceaddress-templabel-info-ids-join": "1:{0}:{1}:{2}"
 }

@@ -366,7 +366,7 @@
               class="view-max-width custom-btn"
               :text="`#${index + 1}`"
             >
-              #{{ index + 1 }}
+              {{ `#${index + 1}` }}
             </a-button>
           </a-col>
           <a-col flex="11">
@@ -407,7 +407,7 @@
                     $t(
                       `View.TokenTransfer.MultipleToMultiple.template.content.selectToken.tooltip`,
                     )
-                  }}「 #{{ index + 1 }} 」
+                  }}{{ `「 #${index + 1} 」` }}
                 </span>
               </template>
               <a-button
@@ -415,7 +415,7 @@
                 class="view-max-width custom-btn"
                 @click="activateSelectTokenModal(index)"
               >
-                ➔
+                {{ `➔` }}
               </a-button>
             </a-tooltip>
           </a-col>
@@ -443,7 +443,7 @@
                     $t(
                       `View.TokenTransfer.MultipleToMultiple.template.content.deleteBtn.tooltip`,
                     )
-                  }}「 #{{ index + 1 }} 」?
+                  }}{{ `「 #${index + 1} 」?` }}
                 </span>
               </template>
               <a-button
@@ -452,7 +452,7 @@
                 @click="deleteTransfer(index)"
                 class="view-max-width custom-btn"
               >
-                ✕
+                {{ `✕` }}
               </a-button>
             </a-tooltip>
           </a-col>
@@ -1141,9 +1141,10 @@ export default defineComponent({
                 `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.address`,
               )}: ${info.resourceAddress} 」`;
 
-              const value = `1:${
-                info.resourceAddress
-              }:${tempLabel}:${info.ids?.join(",")}`;
+              const value = this.$t(
+                "1-info-resourceaddress-templabel-info-ids-join",
+                [info.resourceAddress, tempLabel, info.ids?.join(",")],
+              );
 
               this.tokenOptions[1].options.push({
                 label: label,

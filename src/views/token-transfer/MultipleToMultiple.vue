@@ -66,7 +66,7 @@
         v-model:open="openSenderModal"
         :title="`${$t(
           `View.TokenTransfer.MultipleToMultiple.template.senderModal.title`,
-        )}「 #${senderIndex} 」`"
+        )}「 #${senderIndex + 1} 」`"
       >
         <a-input
           showCount
@@ -93,7 +93,7 @@
         v-model:open="openSelectTokenModal"
         :title="`${$t(
           `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.title`,
-        )}「 #${senderIndex} 」`"
+        )}「 #${senderIndex + 1} 」`"
       >
         <!------------------------ Header ------------------------>
         <a-select
@@ -364,9 +364,9 @@
             <a-button
               type="text"
               class="view-max-width custom-btn"
-              :text="`#${index}`"
+              :text="`#${index + 1}`"
             >
-              #{{ index }}
+              #{{ index + 1 }}
             </a-button>
           </a-col>
           <a-col flex="11">
@@ -407,7 +407,7 @@
                     $t(
                       `View.TokenTransfer.MultipleToMultiple.template.content.selectToken.tooltip`,
                     )
-                  }}「 #{{ index }} 」
+                  }}「 #{{ index + 1 }} 」
                 </span>
               </template>
               <a-button
@@ -443,7 +443,7 @@
                     $t(
                       `View.TokenTransfer.MultipleToMultiple.template.content.deleteBtn.tooltip`,
                     )
-                  }}「 #{{ index }} 」?
+                  }}「 #{{ index + 1 }} 」?
                 </span>
               </template>
               <a-button
@@ -653,7 +653,7 @@ export default defineComponent({
 
           message.loading({
             duration: 0,
-            content: `「 #${index} ${this.$t(
+            content: `「 #${index + 1} ${this.$t(
               `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.loading`,
             )} 」`,
             key: `#${index}`,
@@ -675,14 +675,14 @@ export default defineComponent({
             }
 
             message.success({
-              content: `「 #${index} ${this.$t(
+              content: `「 #${index + 1} ${this.$t(
                 `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.success`,
               )} 」`,
               key: `#${index}`,
             });
           } catch (_e) {
             message.error({
-              content: `「 #${index} ${this.$t(
+              content: `「 #${index + 1} ${this.$t(
                 `View.TokenTransfer.MultipleToMultiple.script.methods.setSender.error`,
               )} 」`,
               key: `#${index}`,
@@ -1192,8 +1192,6 @@ export default defineComponent({
 }
 
 .view-layout-content {
-  margin-top: -5px !important;
-  padding-top: 5px !important;
   overflow: scroll !important;
 }
 

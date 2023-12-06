@@ -211,6 +211,15 @@
         },
         "divider": {
           "text": "交易列表"
+        },
+        "modal": {
+          "title": "资产变化",
+          "txFee": "交易费用",
+          "withdraw": "取出",
+          "deposit": "存入"
+        },
+        "content": {
+          "message": "消息"
         }
       },
       "script": {
@@ -218,7 +227,11 @@
         "getTxList": "正在获取交易列表",
         "gotTxList": "交易列表已获取",
         "noNext": "到达末页",
-        "noPrevious": "到达首页"
+        "noPrevious": "到达首页",
+        "getTxInfo": "正在获取交易信息",
+        "gotTxInfo": "交易信息已获取",
+        "getTxInfoError": "交易信息获取失败",
+        "copied": "已复制"
       }
     },
     "WalletCreate": {

@@ -1171,8 +1171,6 @@ export default defineComponent({
 }
 
 .view-layout-content {
-  margin-top: -5px !important;
-  padding-top: 5px !important;
   overflow: scroll !important;
 }
 

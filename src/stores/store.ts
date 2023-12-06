@@ -9,6 +9,7 @@ const RadixTool: RadixTool = window.RadixTool;
 const state = {};
 
 state.simTx = await RadixTool.data.get("simTx");
+state.pageSize = await RadixTool.data.get("pageSize");
 state.language = await RadixTool.data.get("language");
 state.networkId = await RadixTool.data.get("networkId");
 state.currentPath = await RadixTool.data.get("currentPath");
@@ -23,6 +24,7 @@ export default defineStore("store", {
     worker,
     simTx: state.simTx,
     language: state.language,
+    pageSize: state.pageSize,
     networkId: state.networkId,
     showNetwork: state.showNetwork,
     currentPath: state.currentPath,
@@ -32,6 +34,9 @@ export default defineStore("store", {
   actions: {
     setSimTx(flag: boolean) {
       RadixTool.data.set("simTx", flag);
+    },
+    setPageSize(size: number) {
+      RadixTool.data.set("pageSize", size);
     },
     setNetworkId(id: number) {
       RadixTool.data.set("networkId", id);

@@ -238,6 +238,15 @@ export default defineComponent({
   overflow: unset !important;
 }
 
+.ant-tooltip-inner {
+  max-height: 20vh !important;
+  overflow: scroll !important;
+}
+
+.ant-tooltip-inner::-webkit-scrollbar {
+  display: none !important;
+}
+
 .ant-row {
   margin: 0 0 20px 0 !important;
 }
@@ -248,6 +257,16 @@ export default defineComponent({
 
 .ant-upload-list {
   display: none !important;
+}
+
+.ant-card-body {
+  padding: 20px !important;
+}
+
+.ant-card-head {
+  user-select: none !important;
+  background-color: #d9d9d9 !important;
+  border-color: #d9d9d9 !important;
 }
 
 .ant-statistic {

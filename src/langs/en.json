@@ -153,12 +153,8 @@
           }
         }
       },
-      "SingleToMultiple": {
-        "message": "Single To Multiple"
-      },
-      "MultipleToSingle": {
-        "message": "Multiple To Single"
-      }
+      "SingleToMultiple": {},
+      "MultipleToSingle": {}
     },
     "HistoryCheck": {
       "template": {
@@ -183,9 +179,7 @@
         "txListError": "Transaction list request failed"
       }
     },
-    "WalletCreate": {
-      "message": "Wallet Create"
-    },
+    "WalletCreate": {},
     "TokenCreate": {
       "message": "Token Create"
     },

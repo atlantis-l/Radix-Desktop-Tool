@@ -265,9 +265,16 @@ export default defineComponent({
 }
 
 .ant-card-head {
+  cursor: pointer !important;
+  text-align: center !important;
   user-select: none !important;
   background-color: #d9d9d9 !important;
   border-color: #d9d9d9 !important;
+  transition: all 0.3s ease-in-out;
+}
+
+.ant-card-head:hover {
+  color: #531dab;
 }
 
 .ant-statistic {

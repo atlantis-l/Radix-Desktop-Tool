@@ -3,16 +3,42 @@
     <a-modal
       centered
       :footer="null"
-      :title="$t('View.HistoryCheck.template.modal.title')"
-      v-model:open="openModal"
       style="width: 800px"
+      v-model:open="openModal"
     >
-      <div style="height: 500px; overflow: scroll" class="modal-div">
+      <template #title>
+        <a-row :gutter="gutter">
+          <a-col>
+            <a-tag color="blue">
+              {{ `#${transactionIndex + 1}` }}
+            </a-tag>
+          </a-col>
+
+          <a-col>
+            <a-tag
+              style="cursor: pointer !important"
+              @click="
+                copy(transactionList[transactionIndex].intent_hash as string)
+              "
+            >
+              <template #icon>
+                <TagTwoTone two-tone-color="#1677ff" /> </template
+              >{{ transactionList[transactionIndex].intent_hash }}
+            </a-tag>
+          </a-col>
+        </a-row>
+      </template>
+
+      <div
+        style="height: 500px; overflow: scroll"
+        class="modal-div"
+        ref="content"
+      >
         <template v-for="changeList in balanceChanges">
           <a-row v-if="changeList[0].type">
             <a-card
-              :title="changeList[0]['entity_address']"
               class="view-max-width"
+              :title="changeList[0]['entity_address']"
             >
               <template v-for="(change, index) in changeList">
                 <a-row
@@ -21,7 +47,7 @@
                   }"
                   class="no-margin-row"
                 >
-                  <a-card class="view-max-width">
+                  <a-card class="view-max-width" hoverable>
                     <a-row
                       class="no-margin-row"
                       :gutter="gutter"
@@ -60,7 +86,7 @@
                       <a-col flex="1" />
 
                       <a-col v-if="change.type">
-                        <a-tag color="processing">
+                        <a-tag color="blue">
                           {{ $t("View.HistoryCheck.template.modal.txFee") }}
                         </a-tag>
                       </a-col>
@@ -204,7 +230,7 @@
                   }"
                   class="no-margin-row"
                 >
-                  <a-card class="view-max-width">
+                  <a-card class="view-max-width" hoverable>
                     <a-row
                       class="no-margin-row"
                       :gutter="gutter"
@@ -434,7 +460,7 @@
           <a-card class="view-max-width" @click="activateModal(i)">
             <a-row :gutter="gutter" class="no-margin-row">
               <a-col>
-                <a-tag>{{ `#${i + 1}` }}</a-tag>
+                <a-tag color="blue">{{ `#${i + 1}` }}</a-tag>
               </a-col>
 
               <a-col>
@@ -550,10 +576,10 @@ export default defineComponent({
       openModal: false,
       transactionIndex: 0,
       cursorList: [] as string[],
+      addressAndSymbolMap: new Map<string, string>(),
       currentCursor: undefined as string | undefined,
       transactionList: [] as CommittedTransactionInfo[],
       networkChecker: new RadixNetworkChecker(store().networkId),
-      addressAndSymbolMap: undefined as Map<string, string> | undefined,
       addressAndBalanceChangesMap: undefined as Map<string, any[]> | undefined,
     };
   },
@@ -702,53 +728,91 @@ export default defineComponent({
     activateModal(index: number) {
       this.transactionIndex = index;
 
-      const key = "activateModal";
+      const headOnClick = () => {
+        setTimeout(() => {
+          //@ts-ignore
+          const headList = this.$refs.content.getElementsByClassName(
+            "ant-card-head",
+          ) as HTMLElement[];
 
-      message.loading({
-        duration: 0,
-        content: `「 ${this.$t("View.HistoryCheck.script.getTxInfo")} 」`,
-        key,
-      });
+          if (headList && headList.length) {
+            [...headList].forEach((e) => {
+              const title = e.getElementsByClassName("ant-card-head-title")[0]
+                .textContent;
 
-      this.addressAndSymbolMap = new Map();
+              e.onclick = () => {
+                this.copy(title as string);
+              };
+            });
+          }
+        }, 100);
+      };
 
       if (this.balanceChanges && this.addressAndBalanceChangesMap) {
-        this.networkChecker
-          .checkResourcesOfAccounts([
-            ...this.addressAndBalanceChangesMap.keys(),
-          ])
-          .then((resourcesOfAccountList) => {
-            resourcesOfAccountList.forEach((rs) => {
-              rs.fungible.forEach((info) => {
-                this.addressAndSymbolMap?.set(
-                  info.resourceAddress,
-                  info.symbol ? info.symbol : info.name,
-                );
-              });
+        let hasAllSymbols = true;
 
-              rs.nonFungible.forEach((info) => {
-                this.addressAndSymbolMap?.set(
-                  info.resourceAddress,
-                  info.symbol ? info.symbol : info.name,
-                );
-              });
-            });
-
-            message.success({
-              content: `「 ${this.$t("View.HistoryCheck.script.gotTxInfo")} 」`,
-              key,
-            });
-
-            this.openModal = true;
-          })
-          .catch(() => {
-            message.error({
-              content: `「 ${this.$t(
-                "View.HistoryCheck.script.getTxInfoError",
-              )} 」`,
-              key,
-            });
+        this.addressAndBalanceChangesMap.forEach((changes) => {
+          changes.forEach((change) => {
+            if (!this.addressAndSymbolMap.get(change.resource_address)) {
+              hasAllSymbols = false;
+            }
           });
+        });
+
+        if (!hasAllSymbols) {
+          const key = "activateModal";
+
+          message.loading({
+            duration: 0,
+            content: `「 ${this.$t("View.HistoryCheck.script.getTxInfo")} 」`,
+            key,
+          });
+
+          this.networkChecker
+            .checkResourcesOfAccounts([
+              ...this.addressAndBalanceChangesMap.keys(),
+            ])
+            .then((resourcesOfAccountList) => {
+              resourcesOfAccountList.forEach((rs) => {
+                rs.fungible.forEach((info) => {
+                  this.addressAndSymbolMap?.set(
+                    info.resourceAddress,
+                    info.symbol ? info.symbol : info.name,
+                  );
+                });
+
+                rs.nonFungible.forEach((info) => {
+                  this.addressAndSymbolMap?.set(
+                    info.resourceAddress,
+                    info.symbol ? info.symbol : info.name,
+                  );
+                });
+              });
+
+              this.openModal = true;
+
+              message.success({
+                content: `「 ${this.$t(
+                  "View.HistoryCheck.script.gotTxInfo",
+                )} 」`,
+                key,
+              });
+
+              headOnClick();
+            })
+            .catch(() => {
+              message.error({
+                content: `「 ${this.$t(
+                  "View.HistoryCheck.script.getTxInfoError",
+                )} 」`,
+                key,
+              });
+            });
+        } else {
+          this.openModal = true;
+
+          headOnClick();
+        }
       }
     },
     getTransactionList(cursor?: string) {
@@ -814,6 +878,10 @@ export default defineComponent({
 
 .ant-modal .ant-card {
   cursor: auto !important;
+}
+
+.ant-modal .ant-tag {
+  font-size: 14px !important;
 }
 
 .ant-card {

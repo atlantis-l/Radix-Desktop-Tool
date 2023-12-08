@@ -16,7 +16,7 @@
     "HistoryCheck": {
       "title": "历史查询"
     },
-    "WalletCreate": {
+    "WalletGenerate": {
       "title": "钱包创建"
     },
     "TokenCreate": {
@@ -68,7 +68,7 @@
             "feeLock": {
               "addonBefore": "费用锁定",
               "placeholder": "交易费用",
-              "tooltip": "使用XRD支付(必须在预估费用的基础上适当增加, 确保交易成功)"
+              "tooltip": "必须在预估费用的基础上适当增加, 确保交易成功"
             },
             "estimateFee": {
               "button": "预估费用"
@@ -81,7 +81,7 @@
             },
             "feePayerXrdBalance": {
               "tooltip": "点击刷新余额",
-              "addonBefore": "XRD 余额",
+              "addonBefore": "余额",
               "placeholder": "付费方的XRD余额"
             },
             "sendTransaction": {
@@ -234,10 +234,10 @@
         "copied": "已复制"
       }
     },
-    "WalletCreate": {
+    "WalletGenerate": {
       "template": {
         "create": "创 建",
-        "amount": "数量",
+        "amount": "钱包数量",
         "placeholder": "整数"
       },
       "script": {
@@ -251,7 +251,25 @@
       "message": "代币创建"
     },
     "ManifestExecute": {
-      "message": "清单执行"
+      "message": "清单执行",
+      "template": {
+        "divider": {
+          "text": "交易清单"
+        },
+        "content": {
+          "textarea": {
+            "placeholder": "清单内容"
+          }
+        },
+        "header": {
+          "importManifest": "导入清单"
+        }
+      },
+      "script": {
+        "feeLockCode": "CALL_METHOD\n    Address(\"{0}\")\n    \"lock_fee\"\n    Decimal(\"{1}\")\n;",
+        "manifestParsedFailed": "交易清单解析失败",
+        "needImportWalletFile": "需要导入钱包文件"
+      }
     },
     "PackageDeploy": {
       "message": "代码部署"

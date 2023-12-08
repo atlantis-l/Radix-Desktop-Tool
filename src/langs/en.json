@@ -16,8 +16,8 @@
     "HistoryCheck": {
       "title": "History Check"
     },
-    "WalletCreate": {
-      "title": "Wallet Create"
+    "WalletGenerate": {
+      "title": "Wallet Generate"
     },
     "TokenCreate": {
       "title": "Token Create"
@@ -68,7 +68,7 @@
             "feeLock": {
               "addonBefore": "Fee Lock",
               "placeholder": "Transaction Fee",
-              "tooltip": "Pay with XRD(An appropriate increase must be made based on the estimated fee to ensure successful transaction)"
+              "tooltip": "Appropriate increases must be made based on the estimated fees to ensure successful transactions"
             },
             "estimateFee": {
               "button": "Estimate Fee"
@@ -81,7 +81,7 @@
             },
             "feePayerXrdBalance": {
               "tooltip": "Click to refresh balance",
-              "addonBefore": "XRD Balance",
+              "addonBefore": "Balance",
               "placeholder": "Fee Payer XRD Balance"
             },
             "sendTransaction": {
@@ -234,7 +234,7 @@
         "gotTxInfo": "Transaction information has been obtained"
       }
     },
-    "WalletCreate": {
+    "WalletGenerate": {
       "script": {
         "address": "Address",
         "error": "Input error",
@@ -242,8 +242,8 @@
         "privateKey": "Private Key"
       },
       "template": {
-        "amount": "Amount",
-        "create": "Create",
+        "amount": "Wallet Amount",
+        "create": "Generate",
         "placeholder": "Integer"
       }
     },
@@ -251,7 +251,25 @@
       "message": "Token Create"
     },
     "ManifestExecute": {
-      "message": "Manifest Execute"
+      "message": "Manifest Execute",
+      "template": {
+        "divider": {
+          "text": "Transaction Manifest"
+        },
+        "content": {
+          "textarea": {
+            "placeholder": "Manifest Content"
+          }
+        },
+        "header": {
+          "importManifest": "Import Manifest"
+        }
+      },
+      "script": {
+        "feeLockCode": "CALL_METHOD\n    Address(\"{0}\")\n    \"lock_fee\"\n    Decimal(\"{1}\")\n;",
+        "manifestParsedFailed": "Transaction Manifest parsing failed",
+        "needImportWalletFile": "Need to import wallet file"
+      }
     },
     "PackageDeploy": {
       "message": "Package Deploy"

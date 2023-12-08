@@ -1,22 +1,22 @@
 <template>
   <a-layout>
     <a-row :gutter="gutter">
-      <a-col span="7" class="view-no-padding-left">
+      <a-col span="10" class="view-no-padding-left">
         <a-input
           allowClear
           v-model:value="amount"
           @pressEnter="createWallet"
-          :addonBefore="$t(`View.WalletCreate.template.amount`)"
-          :placeholder="$t(`View.WalletCreate.template.placeholder`)"
+          :addonBefore="$t(`View.WalletGenerate.template.amount`)"
+          :placeholder="$t(`View.WalletGenerate.template.placeholder`)"
         ></a-input>
       </a-col>
       <a-col span="3">
         <a-button
           @click="createWallet"
           class="view-max-width custom-btn"
-          :text="$t(`View.WalletCreate.template.create`)"
+          :text="$t(`View.WalletGenerate.template.create`)"
         >
-          {{ $t(`View.WalletCreate.template.create`) }}
+          {{ $t(`View.WalletGenerate.template.create`) }}
         </a-button>
       </a-col>
     </a-row>
@@ -24,7 +24,7 @@
       <a-col>
         <a-statistic
           :value="fileData.data.length"
-          :title="$t(`View.WalletCreate.template.amount`)"
+          :title="$t(`View.WalletGenerate.template.amount`)"
         />
       </a-col>
     </a-row>
@@ -67,16 +67,16 @@ export default defineComponent({
       const amount = parseInt(this.amount.trim());
 
       if (!amount) {
-        message.error(`「 ${this.$t(`View.WalletCreate.script.error`)} 」`);
+        message.error(`「 ${this.$t(`View.WalletGenerate.script.error`)} 」`);
         return;
       }
 
       this.fileData.data = [];
       this.fileData.fields = [];
 
-      this.fileData.fields.push(this.$t(`View.WalletCreate.script.address`));
+      this.fileData.fields.push(this.$t(`View.WalletGenerate.script.address`));
 
-      this.fileData.fields.push(this.$t(`View.WalletCreate.script.privateKey`));
+      this.fileData.fields.push(this.$t(`View.WalletGenerate.script.privateKey`));
 
       for (let i = 0; i < amount; i++) {
         await sleep(i, 9, 1);
@@ -90,7 +90,7 @@ export default defineComponent({
 
       FileSaver.saveAs(
         new Blob([result], { type: "text/plain;charset=utf-8" }),
-        `${this.$t(`View.WalletCreate.script.fileName`)}.csv`,
+        `${this.$t(`View.WalletGenerate.script.fileName`)}.csv`,
       );
     },
   },

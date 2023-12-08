@@ -231,8 +231,21 @@ export default defineComponent({
   src: url("PingFangSC-Regular.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: "SF-Mono-Regular";
+  src: url("SF-Mono-Regular.woff2") format("woff2");
+}
+
 * {
   font-family: "PingFangSC-Regular" !important;
+}
+
+textarea {
+  font-family: "SF-Mono-Regular" !important;
+}
+
+textarea::-webkit-scrollbar {
+  display: none !important;
 }
 
 .cet-container {

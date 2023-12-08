@@ -196,7 +196,7 @@
 
     <!------------------------ Header ------------------------>
     <a-row :gutter="gutter">
-      <a-col span="11" class="view-no-padding-left">
+      <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
             <span>
@@ -226,7 +226,7 @@
           />
         </a-tooltip>
       </a-col>
-      <a-col span="8">
+      <a-col span="9">
         <a-tooltip>
           <template #title>
             <span>{{
@@ -243,6 +243,7 @@
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
               )
             "
+            addonAfter="XRD"
             :placeholder="feeLockPlaceholder"
           />
         </a-tooltip>
@@ -266,7 +267,7 @@
       </a-col>
     </a-row>
     <a-row :gutter="gutter" class="no-margin-row">
-      <a-col span="11" class="view-no-padding-left">
+      <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
             <span>
@@ -291,6 +292,7 @@
                 `View.TokenTransfer.MultipleToMultiple.template.header.feePayerXrdBalance.addonBefore`,
               )
             "
+            addonAfter="XRD"
           />
         </a-tooltip>
       </a-col>
@@ -311,7 +313,7 @@
           }}
         </a-button>
       </a-col>
-      <a-col span="4">
+      <a-col span="5">
         <a-button
           @click="clearAllTransfers"
           :text="
@@ -540,6 +542,12 @@ export default defineComponent({
       this.tokenOptions[0].address = this.label.ftLabel;
       this.tokenOptions[1].label = this.label.nftLabel;
       this.tokenOptions[1].address = this.label.nftLabel;
+
+      if (Number.isNaN(parseFloat(this.feeLockPlaceholder))) {
+        this.feeLockPlaceholder = this.$t(
+          `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+        );
+      }
     },
     focusInput(ref: string) {
       if (ref.length) {
@@ -772,24 +780,22 @@ export default defineComponent({
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
           )} 」`,
         );
-        return;
       } else if (!this.isPreviewDone) {
         message.warning(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
           )} 」`,
         );
-        return;
       } else if (!this.feeLock.trim().length) {
         message.warn(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
           )} 」`,
         );
-        return;
+      } else {
+        this.focusInput = "transactionMessage";
+        this.openConfirmTransaction = true;
       }
-      this.focusInput = "transactionMessage";
-      this.openConfirmTransaction = true;
     },
     async sendTransaction() {
       this.isPreviewDone = false;
@@ -797,9 +803,7 @@ export default defineComponent({
 
       const previwResult = await this.previewTransaction();
 
-      if (!previwResult) {
-        return;
-      }
+      if (!previwResult) return;
 
       const key = "sendTransaction";
 

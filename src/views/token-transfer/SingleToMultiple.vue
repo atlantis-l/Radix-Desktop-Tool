@@ -117,7 +117,7 @@
 
     <!------------------------ Header ------------------------>
     <a-row :gutter="gutter">
-      <a-col span="11" class="view-no-padding-left">
+      <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
             <span>
@@ -147,7 +147,7 @@
           />
         </a-tooltip>
       </a-col>
-      <a-col span="8">
+      <a-col span="9">
         <a-tooltip>
           <template #title>
             <span>{{
@@ -164,6 +164,7 @@
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
               )
             "
+            addonAfter="XRD"
             :placeholder="feeLockPlaceholder"
           />
         </a-tooltip>
@@ -187,7 +188,7 @@
       </a-col>
     </a-row>
     <a-row :gutter="gutter" class="no-margin-row">
-      <a-col span="11" class="view-no-padding-left">
+      <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
             <span>
@@ -212,6 +213,7 @@
                 `View.TokenTransfer.MultipleToMultiple.template.header.feePayerXrdBalance.addonBefore`,
               )
             "
+            addonAfter="XRD"
           />
         </a-tooltip>
       </a-col>
@@ -233,7 +235,7 @@
           </a-button>
         </a-upload>
       </a-col>
-      <a-col span="4" style="text-align: center; padding-top: 4px">
+      <a-col span="5" style="text-align: center; padding-top: 4px">
         <a-tooltip>
           <template #title>
             {{
@@ -502,6 +504,13 @@ export default defineComponent({
     feePayerWallet() {
       this.previewFeeList = [];
     },
+    "store.language"() {
+      if (Number.isNaN(parseFloat(this.feeLockPlaceholder))) {
+        this.feeLockPlaceholder = this.$t(
+          `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+        );
+      }
+    },
     focusInput(ref: string) {
       if (ref.length) {
         setTimeout(() => {
@@ -757,7 +766,6 @@ export default defineComponent({
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
           )} 」`,
         );
-        return;
       } else {
         this.focusInput = "transactionMessage";
         this.openConfirmTransaction = true;
@@ -768,7 +776,7 @@ export default defineComponent({
       this.customOptions = this.wallets.map((data) => {
         return {
           fromPrivateKey: this.senderWallet?.privateKeyHexString(),
-          toAddress: data[this.$t(`View.WalletCreate.script.address`)],
+          toAddress: data[this.$t(`View.WalletGenerate.script.address`)],
           transferInfos: [
             {
               tokenType: TokenType.FUNGIBLE,

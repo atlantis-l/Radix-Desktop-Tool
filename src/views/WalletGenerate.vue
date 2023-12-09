@@ -8,7 +8,7 @@
           @pressEnter="createWallet"
           :addonBefore="$t(`View.WalletGenerate.template.amount`)"
           :placeholder="$t(`View.WalletGenerate.template.placeholder`)"
-        ></a-input>
+        />
       </a-col>
       <a-col span="3">
         <a-button

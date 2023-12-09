@@ -1,12 +1,12 @@
 import { join } from "node:path";
 import { EventEmitter } from "node:stream";
-import { release, homedir } from "node:os";
+import { homedir, release } from "node:os";
 import contextMenu from "electron-context-menu";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { app, Menu, ipcMain, MenuItem, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, MenuItem } from "electron";
 import {
-  setupTitlebar,
   attachTitlebarToWindow,
+  setupTitlebar,
 } from "custom-electron-titlebar/main";
 
 // setup the titlebar main process

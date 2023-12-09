@@ -238,19 +238,19 @@
 
 <script lang="ts">
 import {
-  Status,
-  Wallet,
-  PublicKey,
-  PrivateKey,
+  CustomManifestExecutor,
+  getCurrentEpoch,
   Instruction,
   Instructions,
-  getCurrentEpoch,
-  TransactionStatus,
-  ResourcesOfAccount,
+  PrivateKey,
+  PublicKey,
   RadixEngineToolkit,
   RadixNetworkChecker,
   RadixWalletGenerator,
-  CustomManifestExecutor,
+  ResourcesOfAccount,
+  Status,
+  TransactionStatus,
+  Wallet,
 } from "@atlantis-l/radix-tool";
 import { CreateIcon, formatNumber, selectXrdAddress } from "../common";
 import { message } from "ant-design-vue";

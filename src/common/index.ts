@@ -1,6 +1,6 @@
 import { createVNode } from "vue";
 import * as icons from "@ant-design/icons-vue";
-import { notification, message as Message } from "ant-design-vue";
+import { message as Message, notification } from "ant-design-vue";
 
 const TOP = navigator.platform.toLowerCase().includes("win") ? "34px" : "32px";
 

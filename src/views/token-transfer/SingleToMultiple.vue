@@ -419,21 +419,21 @@
 
 <script lang="ts">
 import {
-  Wallet,
-  TokenType,
   CustomOption,
-  TransferInfo,
   getCurrentEpoch,
-  TransactionStatus,
-  ResourcesOfAccount,
   RadixNetworkChecker,
   RadixWalletGenerator,
+  ResourcesOfAccount,
+  TokenType,
+  TransactionStatus,
+  TransferInfo,
+  Wallet,
 } from "@atlantis-l/radix-tool";
 import {
-  sleep,
   CreateIcon,
   formatNumber,
   selectXrdAddress,
+  sleep,
 } from "../../common";
 import { message } from "ant-design-vue";
 import store from "../../stores/store";
@@ -744,17 +744,13 @@ export default defineComponent({
         }
       }
 
-      if (
+      return !(
         !this.feePayerWallet ||
         !this.wallets.length ||
         !this.senderWallet ||
         !this.selectedToken ||
         (!this.tokenAmount.trim().length && !this.wallets[0][amountText])
-      ) {
-        return false;
-      }
-
-      return true;
+      );
     },
     processTransaction() {
       this.openConfirmTransaction = false;

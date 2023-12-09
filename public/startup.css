@@ -235,7 +235,7 @@ main::before {
 #webgl {
   position: fixed;
   z-index: 100;
-  top: 0%;
+  top: 0;
   left: 0;
   display: block;
   width: 100vw;
@@ -248,9 +248,11 @@ main::before {
     display: block;
     text-align: center;
   }
+
   .main-tagline {
     margin: 0;
   }
+
   .demos {
     position: relative;
     width: 100%;

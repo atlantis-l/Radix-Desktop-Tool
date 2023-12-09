@@ -378,22 +378,22 @@
 
 <script lang="ts">
 import {
-  Wallet,
-  TokenType,
-  ResourceInfo,
-  TransferInfo,
   CustomOption,
   getCurrentEpoch,
-  TransactionStatus,
-  ResourcesOfAccount,
   RadixNetworkChecker,
   RadixWalletGenerator,
+  ResourceInfo,
+  ResourcesOfAccount,
+  TokenType,
+  TransactionStatus,
+  TransferInfo,
+  Wallet,
 } from "@atlantis-l/radix-tool";
 import {
-  sleep,
   CreateIcon,
   formatNumber,
   selectXrdAddress,
+  sleep,
 } from "../../common";
 import { message } from "ant-design-vue";
 import store from "../../stores/store";
@@ -656,16 +656,12 @@ export default defineComponent({
       this.feePayerAddress && this.getXrdBalance(this.feePayerAddress);
     },
     validateInputData() {
-      if (
+      return !(
         !this.selectedToken ||
         !this.feePayerWallet ||
         !this.wallets.length ||
         !this.receiverAddress.trim().length
-      ) {
-        return false;
-      }
-
-      return true;
+      );
     },
     processTransaction() {
       this.openConfirmTransaction = false;

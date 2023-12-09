@@ -44,7 +44,7 @@ export default defineStore("store", {
     },
     async setLanguage(symbol: string) {
       await RadixTool.data.set("language", symbol);
-      RadixTool.translate(symbol);
+      await RadixTool.translate(symbol);
       this.language = symbol;
     },
     setShowNetwork(isShow: boolean) {

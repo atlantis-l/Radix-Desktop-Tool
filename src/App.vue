@@ -393,8 +393,8 @@ textarea::-webkit-scrollbar {
   position: absolute;
   content: attr(text);
   mask: linear-gradient(to left, transparent, white);
-  -webkit-mask: linear-gradient(to left, transparent, white);
 }
+
 /* ************************* Global ************************* */
 
 /* ************************* App.vue ************************* */
@@ -454,7 +454,7 @@ body {
   padding: 0 24px 0 0 !important;
   background: #ffffff !important;
   border-bottom: 1px solid #d0d0d0 !important;
-  box-shadow: 0px 0px 15px #ceccce !important;
+  box-shadow: 0 0 15px #ceccce !important;
 }
 
 #trigger {
@@ -494,19 +494,19 @@ body {
     background-position: 50% 75%;
   }
   33% {
-    background-position: 0% 100%;
+    background-position: 0 100%;
   }
   44% {
     background-position: 25% 50%;
   }
   55% {
-    background-position: 0% 0%;
+    background-position: 0 0;
   }
   66% {
     background-position: 50% 25%;
   }
   77% {
-    background-position: 100% 0%;
+    background-position: 100% 0;
   }
   88% {
     background-position: 50% 50%;
@@ -525,7 +525,7 @@ body {
   background-size: 1200px 1200px;
   background-clip: padding-box, border-box;
   border: 1px solid transparent !important;
-  box-shadow: 0px 0px 15px #ceccce !important;
+  box-shadow: 0 0 15px #ceccce !important;
   background-image: linear-gradient(to right, #ffffff, #ffffff),
     radial-gradient(#052cc0, #1dddbf, #ff00e6, #1dddbf, #052cc0);
 }
@@ -565,5 +565,6 @@ body {
 .fade-enter-from {
   opacity: 0 !important;
 }
+
 /* ************************* App.vue ************************* */
 </style>

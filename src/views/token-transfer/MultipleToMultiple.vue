@@ -467,19 +467,19 @@
 
 <script lang="ts">
 import {
-  Status,
-  Wallet,
-  TokenType,
-  PublicKey,
-  PrivateKey,
-  TokenSender,
   CustomOption,
-  TransferInfo,
   getCurrentEpoch,
-  TransactionStatus,
-  ResourcesOfAccount,
+  PrivateKey,
+  PublicKey,
   RadixNetworkChecker,
   RadixWalletGenerator,
+  ResourcesOfAccount,
+  Status,
+  TokenSender,
+  TokenType,
+  TransactionStatus,
+  TransferInfo,
+  Wallet,
 } from "@atlantis-l/radix-tool";
 import { CreateIcon, formatNumber, selectXrdAddress } from "../../common";
 import { message } from "ant-design-vue";

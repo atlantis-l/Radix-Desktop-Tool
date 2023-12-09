@@ -1,12 +1,12 @@
 import {
-  Wallet,
-  PublicKey,
   PrivateKey,
-  TokenSender,
-  TransferInfo,
-  ResourcesOfAccount,
+  PublicKey,
   RadixNetworkChecker,
   RadixWalletGenerator,
+  ResourcesOfAccount,
+  TokenSender,
+  TransferInfo,
+  Wallet,
 } from "@atlantis-l/radix-tool";
 import { sleep } from "../common";
 
@@ -61,7 +61,6 @@ const sendCustom = async (data: Data) => {
   const feePayerPrivateKey = data.args[4] as string;
   const walletGenerator = new RadixWalletGenerator(networkId);
   const tempOptions = JSON.parse(data.args[3]) as TempOption[];
-
   const feePayerWallet =
     await walletGenerator.generateWalletByPrivateKey(feePayerPrivateKey);
 

@@ -22,8 +22,9 @@
               "
             >
               <template #icon>
-                <TagTwoTone two-tone-color="#1677ff" /> </template
-              >{{ transactionList[transactionIndex].intent_hash }}
+                <TagTwoTone two-tone-color="#1677ff" />
+              </template>
+              {{ transactionList[transactionIndex].intent_hash }}
             </a-tag>
           </a-col>
         </a-row>
@@ -466,8 +467,9 @@
               <a-col>
                 <a-tag>
                   <template #icon>
-                    <ClockCircleTwoTone two-tone-color="#531dab" /> </template
-                  >{{ tx.confirmed_at?.toLocaleString() }}
+                    <ClockCircleTwoTone two-tone-color="#531dab" />
+                  </template>
+                  {{ tx.confirmed_at?.toLocaleString() }}
                 </a-tag>
               </a-col>
 
@@ -479,8 +481,9 @@
 
                   <a-tag @click.stop="copy(tx.intent_hash as string)">
                     <template #icon>
-                      <TagTwoTone two-tone-color="#1677ff" /> </template
-                    >{{ tx.intent_hash?.slice(0, 4) }}...{{
+                      <TagTwoTone two-tone-color="#1677ff" />
+                    </template>
+                    {{ tx.intent_hash?.slice(0, 4) }}...{{
                       tx.intent_hash?.slice(tx.intent_hash.length - 6)
                     }}
                   </a-tag>
@@ -495,8 +498,9 @@
                   </template>
                   <a-tag @click.stop="copy(tx.message.content.value as string)">
                     <template #icon>
-                      <MessageTwoTone two-tone-color="#18b7ac" /> </template
-                    >{{ $t("View.HistoryCheck.template.content.message") }}
+                      <MessageTwoTone two-tone-color="#18b7ac" />
+                    </template>
+                    {{ $t("View.HistoryCheck.template.content.message") }}
                   </a-tag>
                 </a-tooltip>
               </a-col>
@@ -506,21 +510,24 @@
               <a-col>
                 <a-tag @click.stop="copy(tx.fee_paid as string)">
                   <template #icon>
-                    <FireTwoTone two-tone-color="#cf1322" /> </template
-                  >{{ `${formatNumber(tx.fee_paid as string)} `
+                    <FireTwoTone two-tone-color="#cf1322" />
+                  </template>
+                  {{ `${formatNumber(tx.fee_paid as string)} `
                   }}<span class="custom-span" text="XRD">XRD</span>
                 </a-tag>
               </a-col>
 
               <a-col>
                 <a-tooltip placement="left">
-                  <template #title>{{
-                    tx.transaction_status === `CommittedSuccess`
-                      ? $t(
-                          "View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success",
-                        )
-                      : tx.error_message
-                  }}</template>
+                  <template #title
+                    >{{
+                      tx.transaction_status === `CommittedSuccess`
+                        ? $t(
+                            "View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success",
+                          )
+                        : tx.error_message
+                    }}
+                  </template>
                   <CheckCircleTwoTone
                     two-tone-color="#18b7ac"
                     v-if="tx.transaction_status === `CommittedSuccess`"
@@ -539,13 +546,13 @@
 
 <script lang="ts">
 import {
-  TagTwoTone,
-  FireTwoTone,
-  MessageTwoTone,
-  ClockCircleTwoTone,
   CheckCircleTwoTone,
+  ClockCircleTwoTone,
   CloseCircleTwoTone,
   DollarCircleTwoTone,
+  FireTwoTone,
+  MessageTwoTone,
+  TagTwoTone,
 } from "@ant-design/icons-vue";
 import store from "../stores/store";
 import { defineComponent } from "vue";
@@ -555,7 +562,7 @@ import {
   CommittedTransactionInfo,
   TransactionFungibleFeeBalanceChangeType,
 } from "@radixdlt/babylon-gateway-api-sdk";
-import { selectNetwork, RadixNetworkChecker } from "@atlantis-l/radix-tool";
+import { RadixNetworkChecker, selectNetwork } from "@atlantis-l/radix-tool";
 
 export default defineComponent({
   components: {
@@ -923,7 +930,6 @@ export default defineComponent({
   position: absolute;
   content: attr(text);
   mask: linear-gradient(35deg, transparent, white);
-  -webkit-mask: linear-gradient(35deg, transparent, white);
 }
 
 .view-tag-cursor-pointer {

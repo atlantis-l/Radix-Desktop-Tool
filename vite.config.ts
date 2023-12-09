@@ -22,7 +22,7 @@ export default defineConfig(({ command }) => {
           entryFileNames: "[name].js",
           assetFileNames: "[name].[ext]",
         },
-        external: ["PingFangSC-Regular.woff2"],
+        external: ["PingFangSC-Regular.woff2", "SF-Mono-Regular.woff2"],
         onLog: () => {},
       },
       target: "ESNext",

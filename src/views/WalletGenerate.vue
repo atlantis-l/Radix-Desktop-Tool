@@ -76,7 +76,9 @@ export default defineComponent({
 
       this.fileData.fields.push(this.$t(`View.WalletGenerate.script.address`));
 
-      this.fileData.fields.push(this.$t(`View.WalletGenerate.script.privateKey`));
+      this.fileData.fields.push(
+        this.$t(`View.WalletGenerate.script.privateKey`),
+      );
 
       for (let i = 0; i < amount; i++) {
         await sleep(i, 9, 1);

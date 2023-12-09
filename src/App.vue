@@ -229,11 +229,13 @@ export default defineComponent({
 @font-face {
   font-family: "PingFangSC-Regular";
   src: url("PingFangSC-Regular.woff2") format("woff2");
+  font-display: block;
 }
 
 @font-face {
   font-family: "SF-Mono-Regular";
   src: url("SF-Mono-Regular.woff2") format("woff2");
+  font-display: block;
 }
 
 * {

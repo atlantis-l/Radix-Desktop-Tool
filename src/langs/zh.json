@@ -272,7 +272,11 @@
       }
     },
     "PackageDeploy": {
-      "message": "代码部署"
+      "template": {
+        "divider": {
+          "text": "部署文件"
+        }
+      }
     },
     "XRDFaucet": {
       "message": "XRD领取"

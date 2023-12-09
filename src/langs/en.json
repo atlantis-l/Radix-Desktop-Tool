@@ -272,7 +272,11 @@
       }
     },
     "PackageDeploy": {
-      "message": "Package Deploy"
+      "template": {
+        "divider": {
+          "text": "Deploy Files"
+        }
+      }
     },
     "XRDFaucet": {
       "message": "XRD Faucet"

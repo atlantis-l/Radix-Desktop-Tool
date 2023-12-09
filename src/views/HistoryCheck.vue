@@ -929,7 +929,7 @@ export default defineComponent({
   color: #ff00ae;
   position: absolute;
   content: attr(text);
-  mask: linear-gradient(35deg, transparent, white);
+  -webkit-mask-box-image: linear-gradient(35deg, transparent, white);
 }
 
 .view-tag-cursor-pointer {

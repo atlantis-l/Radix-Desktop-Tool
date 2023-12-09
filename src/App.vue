@@ -392,7 +392,8 @@ textarea::-webkit-scrollbar {
   color: #000000;
   position: absolute;
   content: attr(text);
-  mask: linear-gradient(to left, transparent, white);
+  mask: linear-gradient(125deg, transparent, white);
+  -webkit-mask-box-image: linear-gradient(125deg, transparent, white);
 }
 
 /* ************************* Global ************************* */

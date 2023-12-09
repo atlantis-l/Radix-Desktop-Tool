@@ -240,24 +240,22 @@
 import {
   Status,
   Wallet,
-  TokenType,
-  CustomOption,
-  TransferInfo,
+  PublicKey,
+  PrivateKey,
+  Instruction,
+  Instructions,
   getCurrentEpoch,
   TransactionStatus,
   ResourcesOfAccount,
+  RadixEngineToolkit,
   RadixNetworkChecker,
   RadixWalletGenerator,
   CustomManifestExecutor,
-  RadixEngineToolkit,
-  PublicKey,
-  PrivateKey,
 } from "@atlantis-l/radix-tool";
-import { sleep, CreateIcon, formatNumber, selectXrdAddress } from "../common";
+import { CreateIcon, formatNumber, selectXrdAddress } from "../common";
 import { message } from "ant-design-vue";
-import store from "../stores/store";
 import { defineComponent } from "vue";
-import Decimal from "decimal.js";
+import store from "../stores/store";
 import Papa from "papaparse";
 
 const MAX_DIFF_SENDER_AMOUNT = 16;
@@ -470,8 +468,10 @@ export default defineComponent({
       this.openFeePayerModal = true;
     },
     async previewTransaction() {
+      let parsedManifest: Instructions | undefined;
+
       try {
-        const manifestText = await RadixEngineToolkit.Instructions.convert(
+        parsedManifest = await RadixEngineToolkit.Instructions.convert(
           {
             kind: "String",
             value: this.manifestText,
@@ -482,7 +482,7 @@ export default defineComponent({
 
         this.manifestText = (
           await RadixEngineToolkit.Instructions.convert(
-            manifestText,
+            this.removeFeeLockCode(parsedManifest.value as Instruction[]),
             this.store.networkId,
             "String",
           )
@@ -498,29 +498,19 @@ export default defineComponent({
         return;
       }
 
-      const manifestTextSplitedList = this.manifestText.split(";");
-
       const set = new Set<string>();
 
-      manifestTextSplitedList.forEach((str) => {
-        if (str.includes('CALL_METHOD\n    Address("account')) {
+      if (parsedManifest) {
+        (parsedManifest.value as Instruction[]).forEach((instruction) => {
           if (
-            str.split("\n")[0] !== "" &&
-            !str.split("\n")[2].trim().startsWith('"try')
+            instruction.kind === "CallMethod" &&
+            (instruction.address.value as string).startsWith("account") &&
+            !instruction.methodName.startsWith("try")
           ) {
-            let address = str.split("\n")[1].trim();
-            address = address.slice(9, address.length - 2);
-            set.add(address);
-          } else if (
-            str.split("\n")[0] === "" &&
-            !str.split("\n")[3].trim().startsWith('"try')
-          ) {
-            let address = str.split("\n")[2].trim();
-            address = address.slice(9, address.length - 2);
-            set.add(address);
+            set.add(instruction.address.value as string);
           }
-        }
-      });
+        });
+      }
 
       set.delete(this.feePayerAddress as string);
 
@@ -548,8 +538,26 @@ export default defineComponent({
 
       const pubKeyList = [] as PublicKey[];
 
-      const addressField = this.$t(`View.WalletGenerate.script.address`);
-      const privateKeyField = this.$t(`View.WalletGenerate.script.privateKey`);
+      let addressField = this.$t(`View.WalletGenerate.script.address`);
+      let privateKeyField = this.$t(`View.WalletGenerate.script.privateKey`);
+
+      if (this.wallets.length) {
+        if (!this.wallets[0][addressField]) {
+          const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+
+          addressField = this.$t(
+            `View.WalletGenerate.script.address`,
+            locale,
+            [],
+          );
+
+          privateKeyField = this.$t(
+            `View.WalletGenerate.script.privateKey`,
+            locale,
+            [],
+          );
+        }
+      }
 
       this.privateKeyList = [];
 
@@ -715,7 +723,7 @@ export default defineComponent({
     },
     async uploadManifest({ file }: { file: File }) {
       try {
-        const manifestText = await RadixEngineToolkit.Instructions.convert(
+        const parsedManifest = await RadixEngineToolkit.Instructions.convert(
           {
             kind: "String",
             value: await file.text(),
@@ -726,7 +734,7 @@ export default defineComponent({
 
         this.manifestText = (
           await RadixEngineToolkit.Instructions.convert(
-            manifestText,
+            this.removeFeeLockCode(parsedManifest.value as Instruction[]),
             this.store.networkId,
             "String",
           )
@@ -740,6 +748,23 @@ export default defineComponent({
           key: "manifestParsedFailed",
         });
       }
+    },
+    removeFeeLockCode(parsedManifest: Instruction[]) {
+      const feeLockIndex = parsedManifest.findIndex((instruction) => {
+        return (
+          instruction.kind === "CallMethod" &&
+          instruction.methodName === "lock_fee"
+        );
+      });
+
+      if (feeLockIndex > -1) {
+        parsedManifest.splice(feeLockIndex, 1);
+      }
+
+      return {
+        kind: "Parsed",
+        value: parsedManifest,
+      } as Instructions;
     },
   },
   mounted() {

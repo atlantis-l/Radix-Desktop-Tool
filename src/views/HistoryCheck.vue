@@ -538,15 +538,6 @@
 </template>
 
 <script lang="ts">
-import store from "../stores/store";
-import { defineComponent } from "vue";
-import { formatNumber } from "../common";
-import { message } from "ant-design-vue";
-import { selectNetwork, RadixNetworkChecker } from "@atlantis-l/radix-tool";
-import {
-  CommittedTransactionInfo,
-  TransactionFungibleFeeBalanceChangeType,
-} from "@radixdlt/babylon-gateway-api-sdk";
 import {
   TagTwoTone,
   FireTwoTone,
@@ -556,6 +547,15 @@ import {
   CloseCircleTwoTone,
   DollarCircleTwoTone,
 } from "@ant-design/icons-vue";
+import store from "../stores/store";
+import { defineComponent } from "vue";
+import { formatNumber } from "../common";
+import { message } from "ant-design-vue";
+import {
+  CommittedTransactionInfo,
+  TransactionFungibleFeeBalanceChangeType,
+} from "@radixdlt/babylon-gateway-api-sdk";
+import { selectNetwork, RadixNetworkChecker } from "@atlantis-l/radix-tool";
 
 export default defineComponent({
   components: {
@@ -789,14 +789,14 @@ export default defineComponent({
                 });
               });
 
-              this.openModal = true;
-
               message.success({
                 content: `「 ${this.$t(
                   "View.HistoryCheck.script.gotTxInfo",
                 )} 」`,
                 key,
               });
+
+              this.openModal = true;
 
               headOnClick();
             })

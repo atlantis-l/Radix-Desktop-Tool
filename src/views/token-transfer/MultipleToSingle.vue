@@ -699,15 +699,33 @@ export default defineComponent({
       //@ts-ignore
       const customOptions = [];
 
+      let addressField = this.$t(`View.WalletGenerate.script.address`);
+
+      let privateKeyField = this.$t(`View.WalletGenerate.script.privateKey`);
+
+      if (this.wallets.length) {
+        if (!this.wallets[0][addressField]) {
+          const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+
+          addressField = this.$t(
+            `View.WalletGenerate.script.address`,
+            locale,
+            [],
+          );
+
+          privateKeyField = this.$t(
+            `View.WalletGenerate.script.privateKey`,
+            locale,
+            [],
+          );
+        }
+      }
+
       this.wallets
         .map((data) => {
-          const privateKey = data[
-            this.$t(`View.WalletGenerate.script.privateKey`)
-          ] as string;
+          const privateKey = data[privateKeyField] as string;
 
-          const address = data[
-            this.$t(`View.WalletGenerate.script.address`)
-          ] as string;
+          const address = data[addressField] as string;
 
           let amount: string | undefined;
 
@@ -983,9 +1001,21 @@ export default defineComponent({
         key,
       });
 
-      const addressList = this.wallets.map(
-        (data) => data[this.$t(`View.WalletGenerate.script.address`)],
-      );
+      let addressField = this.$t(`View.WalletGenerate.script.address`);
+
+      if (this.wallets.length) {
+        if (!this.wallets[0][addressField]) {
+          const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+
+          addressField = this.$t(
+            `View.WalletGenerate.script.address`,
+            locale,
+            [],
+          );
+        }
+      }
+
+      const addressList = this.wallets.map((data) => data[addressField]);
 
       this.store.worker.postMessage({
         action: "MultipleToSingle.getResourcesOfSenders",

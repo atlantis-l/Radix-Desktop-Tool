@@ -618,27 +618,34 @@ export default defineComponent({
       );
     },
     totalTokenAmount() {
+      let addressField = this.$t(`View.WalletGenerate.script.address`);
+
+      let amountText = this.$t(
+        `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+      );
+
+      if (this.wallets.length) {
+        if (!this.wallets[0][addressField]) {
+          const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+
+          amountText = this.$t(
+            `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+            locale,
+            [],
+          );
+        }
+      }
+
       if (this.tokenAmount.trim().length) {
         const singleAmount = parseFloat(this.tokenAmount);
         return !singleAmount
           ? "0"
           : new Decimal(singleAmount * this.wallets.length);
-      } else if (
-        this.wallets.length &&
-        this.wallets[0][
-          this.$t(`View.TokenTransfer.SingleToMultiple.template.content.amount`)
-        ]
-      ) {
+      } else if (this.wallets.length && this.wallets[0][amountText]) {
         let amount = new Decimal(0);
 
         this.wallets.forEach((data) => {
-          amount = amount.plus(
-            data[
-              this.$t(
-                `View.TokenTransfer.SingleToMultiple.template.content.amount`,
-              )
-            ],
-          );
+          amount = amount.plus(data[amountText]);
         });
 
         return amount;
@@ -719,17 +726,30 @@ export default defineComponent({
       this.feePayerAddress && this.getXrdBalance(this.feePayerAddress);
     },
     validateInputData() {
+      let addressField = this.$t(`View.WalletGenerate.script.address`);
+
+      let amountText = this.$t(
+        `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+      );
+
+      if (this.wallets.length) {
+        if (!this.wallets[0][addressField]) {
+          const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+
+          amountText = this.$t(
+            `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+            locale,
+            [],
+          );
+        }
+      }
+
       if (
         !this.feePayerWallet ||
         !this.wallets.length ||
         !this.senderWallet ||
         !this.selectedToken ||
-        (!this.tokenAmount.trim().length &&
-          !this.wallets[0][
-            this.$t(
-              `View.TokenTransfer.SingleToMultiple.template.content.amount`,
-            )
-          ])
+        (!this.tokenAmount.trim().length && !this.wallets[0][amountText])
       ) {
         return false;
       }
@@ -772,22 +792,42 @@ export default defineComponent({
       }
     },
     validateTransferInfo() {
+      let addressField = this.$t(`View.WalletGenerate.script.address`);
+
+      let amountText = this.$t(
+        `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+      );
+
+      if (this.wallets.length) {
+        if (!this.wallets[0][addressField]) {
+          const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+
+          addressField = this.$t(
+            `View.WalletGenerate.script.address`,
+            locale,
+            [],
+          );
+
+          amountText = this.$t(
+            `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+            locale,
+            [],
+          );
+        }
+      }
+
       //@ts-ignore
       this.customOptions = this.wallets.map((data) => {
         return {
           fromPrivateKey: this.senderWallet?.privateKeyHexString(),
-          toAddress: data[this.$t(`View.WalletGenerate.script.address`)],
+          toAddress: data[addressField],
           transferInfos: [
             {
               tokenType: TokenType.FUNGIBLE,
               tokenAddress: this.selectedToken,
               amount: this.tokenAmount.trim().length
                 ? this.tokenAmount.trim()
-                : data[
-                    this.$t(
-                      `View.TokenTransfer.SingleToMultiple.template.content.amount`,
-                    )
-                  ],
+                : data[amountText],
             } as TransferInfo,
           ],
         };

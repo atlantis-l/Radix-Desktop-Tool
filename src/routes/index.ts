@@ -56,6 +56,12 @@ const router = createRouter({
       component: View.PackageDeploy,
     },
     {
+      name: "TokenCreate",
+      path: "/TokenCreate",
+      icon: "FireTwoTone",
+      component: View.TokenCreate,
+    },
+    {
       name: "WalletGenerate",
       path: "/WalletGenerate",
       icon: "WalletTwoTone",
@@ -66,12 +72,6 @@ const router = createRouter({
       path: "/HistoryCheck",
       icon: "ClockCircleTwoTone",
       component: View.HistoryCheck,
-    },
-    {
-      name: "TokenCreate",
-      path: "/TokenCreate",
-      icon: "FireTwoTone",
-      component: View.TokenCreate,
     },
     {
       name: "XRDFaucet",

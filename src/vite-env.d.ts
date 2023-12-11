@@ -1,5 +1,4 @@
 /// <reference types="vite/client" />
-
 declare module "*.vue" {
   import type { DefineComponent } from "vue";
   const component: DefineComponent<{}, {}, any>;
@@ -21,4 +20,5 @@ declare interface RadixTool {
     set: (key: string, value: any) => Promise<void>;
   };
   translate: (symbol: "en" | "zh") => Promise<void>;
+  getFileBuffer: (path: string) => Promise<Buffer>;
 }

@@ -17,7 +17,8 @@
       "String",
       "Parsed",
       ";"
-    ]
+    ],
+    "src/views/PackageDeploy.vue": ["NFT ID", "XRD Balance", "Parsed"]
   },
   "i18n-ally.extract.autoDetect": true
 }

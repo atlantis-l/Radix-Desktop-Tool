@@ -251,5 +251,6 @@ contextBridge.exposeInMainWorld("RadixTool", {
     titleBar.updateTitle(symbol === "en" ? TITLE.en : TITLE.zh);
     titleBar.refreshMenu();
   },
+  getFileBuffer: (path: string) => ipcRenderer.invoke("getFileBuffer", path),
 });
 // ---------------------------- CUSTOM ---------------------------- //

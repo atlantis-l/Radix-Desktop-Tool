@@ -275,7 +275,37 @@
       "template": {
         "divider": {
           "text": "Deploy Files"
+        },
+        "content": {
+          "deployer": "Deployer",
+          "uploadRpd": "Click or drag to upload RPD File",
+          "uploadWasm": "Click or drag to upload WASM File",
+          "nftOwner": "Accounts with the following NFT",
+          "resourceOwner": "Accounts with the following resource",
+          "owner": "Who is the owner?"
+        },
+        "header": {
+          "lock": "Lock (Can't be changed)",
+          "select": {
+            "0": "Allow All",
+            "1": "Specify Resource",
+            "2": "Specify NFT",
+            "3": "No Owner",
+            "tooltip": {
+              "1": "The account that owns the resource",
+              "2": "The account that owns the NFT"
+            }
+          },
+          "switch": {
+            "text": "Whether to specify ownership (default ownership belongs to the deployer)"
+          }
+        },
+        "modal": {
+          "resourceAddress": "Resource Address"
         }
+      },
+      "script": {
+        "fileError": "File format error"
       }
     },
     "XRDFaucet": {

@@ -275,7 +275,37 @@
       "template": {
         "divider": {
           "text": "部署文件"
+        },
+        "content": {
+          "uploadWasm": "点击或拖入来上传WASM文件",
+          "uploadRpd": "点击或拖入来上传RPD文件",
+          "deployer": "部署者",
+          "resourceOwner": "拥有以下资源的账户",
+          "nftOwner": "拥有以下NFT的账户",
+          "owner": "谁是所有者?"
+        },
+        "header": {
+          "switch": {
+            "text": "是否指定所有权(默认所有权属于部署者)"
+          },
+          "select": {
+            "0": "允许全部",
+            "1": "指定资源",
+            "2": "指定NFT",
+            "3": "无所有者",
+            "tooltip": {
+              "1": "拥有该资源的账户",
+              "2": "拥有该NFT的账户"
+            }
+          },
+          "lock": "锁定(不可更改)"
+        },
+        "modal": {
+          "resourceAddress": "资源地址"
         }
+      },
+      "script": {
+        "fileError": "文件格式错误"
       }
     },
     "XRDFaucet": {

@@ -432,6 +432,10 @@ app.whenReady().then(() => {
     flag = _flag;
   });
 
+  ipcMain.handle("getFileBuffer", (_event, path) => {
+    return readFileSync(path);
+  });
+
   createWindow();
 });
 // ---------------------------- CUSTOM ---------------------------- //

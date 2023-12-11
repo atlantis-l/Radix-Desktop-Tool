@@ -282,7 +282,9 @@
           "uploadWasm": "Click or drag to upload WASM File",
           "nftOwner": "Accounts with the following NFT",
           "resourceOwner": "Accounts with the following resource",
-          "owner": "Who is the owner?"
+          "owner": "Who is the owner?",
+          "canBeChanged": "Can be changed",
+          "cannotBeChanged": "Cannot be changed"
         },
         "header": {
           "lock": "Lock (Can't be changed)",

@@ -282,7 +282,9 @@
           "deployer": "部署者",
           "resourceOwner": "拥有以下资源的账户",
           "nftOwner": "拥有以下NFT的账户",
-          "owner": "谁是所有者?"
+          "owner": "谁是所有者?",
+          "canBeChanged": "可更改",
+          "cannotBeChanged": "不可更改"
         },
         "header": {
           "switch": {

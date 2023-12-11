@@ -67,8 +67,8 @@
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
-            <span>
-              {{
+            <span
+              >{{
                 feePayerAddress
                   ? feePayerAddress
                   : $t(
@@ -125,8 +125,7 @@
             )
           "
           @click="estimateFee"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.estimateFee.button`,
             )
@@ -139,8 +138,8 @@
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
-            <span>
-              {{
+            <span
+              >{{
                 $t(
                   `View.TokenTransfer.MultipleToMultiple.template.header.feePayerXrdBalance.tooltip`,
                 )
@@ -174,8 +173,7 @@
                 `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
               )
             "
-          >
-            {{
+            >{{
               $t(
                 `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
               )
@@ -189,8 +187,7 @@
           <a-button
             class="view-max-width custom-btn"
             :text="$t('View.ManifestExecute.template.header.importManifest')"
-          >
-            {{ $t("View.ManifestExecute.template.header.importManifest") }}
+            >{{ $t("View.ManifestExecute.template.header.importManifest") }}
           </a-button>
         </a-upload>
       </a-col>
@@ -204,8 +201,7 @@
             )
           "
           @click="activateConfirmModal"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.sendTransaction.button`,
             )
@@ -215,8 +211,8 @@
     </a-row>
     <!------------------------ Header ------------------------>
 
-    <a-divider>
-      {{ $t("View.ManifestExecute.template.divider.text") }}
+    <a-divider
+      >{{ $t("View.ManifestExecute.template.divider.text") }}
     </a-divider>
 
     <!------------------------ Content ------------------------>

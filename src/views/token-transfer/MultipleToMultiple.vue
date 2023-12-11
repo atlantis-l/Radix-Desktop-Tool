@@ -199,8 +199,8 @@
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
-            <span>
-              {{
+            <span
+              >{{
                 feePayerAddress
                   ? feePayerAddress
                   : $t(
@@ -257,8 +257,7 @@
             )
           "
           @click="estimateFee"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.estimateFee.button`,
             )
@@ -270,8 +269,8 @@
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
-            <span>
-              {{
+            <span
+              >{{
                 $t(
                   `View.TokenTransfer.MultipleToMultiple.template.header.feePayerXrdBalance.tooltip`,
                 )
@@ -305,8 +304,7 @@
             )
           "
           @click="addTransfer"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.addTransfer.button`,
             )
@@ -322,8 +320,7 @@
             )
           "
           class="view-max-width custom-btn"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.clearAll.button`,
             )
@@ -339,8 +336,7 @@
             )
           "
           @click="activateConfirmModal"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.sendTransaction.button`,
             )
@@ -350,8 +346,8 @@
     </a-row>
     <!------------------------ Header ------------------------>
 
-    <a-divider>
-      {{ $t(`View.TokenTransfer.MultipleToMultiple.template.divider.text`) }}
+    <a-divider
+      >{{ $t(`View.TokenTransfer.MultipleToMultiple.template.divider.text`) }}
     </a-divider>
 
     <!------------------------ Content ------------------------>
@@ -367,15 +363,14 @@
               type="text"
               class="view-max-width custom-btn"
               :text="`#${index + 1}`"
-            >
-              {{ `#${index + 1}` }}
+              >{{ `#${index + 1}` }}
             </a-button>
           </a-col>
           <a-col flex="11">
             <a-tooltip>
               <template #title>
-                <span>
-                  {{
+                <span
+                  >{{
                     option.fromWallet
                       ? getFromWalletAddress(option)
                       : $t(
@@ -404,8 +399,8 @@
           <a-col flex="3">
             <a-tooltip placement="left">
               <template #title>
-                <span>
-                  {{
+                <span
+                  >{{
                     $t(
                       `View.TokenTransfer.MultipleToMultiple.template.content.selectToken.tooltip`,
                     )
@@ -416,8 +411,7 @@
                 text="➔"
                 class="view-max-width custom-btn"
                 @click="activateSelectTokenModal(index)"
-              >
-                {{ `➔` }}
+                >{{ `➔` }}
               </a-button>
             </a-tooltip>
           </a-col>
@@ -440,8 +434,8 @@
           <a-col flex="1" class="view-no-padding-right">
             <a-tooltip placement="left">
               <template #title>
-                <span>
-                  {{
+                <span
+                  >{{
                     $t(
                       `View.TokenTransfer.MultipleToMultiple.template.content.deleteBtn.tooltip`,
                     )
@@ -453,8 +447,7 @@
                 type="text"
                 @click="deleteTransfer(index)"
                 class="view-max-width custom-btn"
-              >
-                {{ `✕` }}
+                >{{ `✕` }}
               </a-button>
             </a-tooltip>
           </a-col>

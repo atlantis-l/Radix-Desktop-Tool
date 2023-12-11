@@ -324,15 +324,23 @@
               <a-tag color="purple"
                 >{{ $t("View.PackageDeploy.template.header.select.0") }}
               </a-tag>
-              <a-tag v-if="!lock" color="green">{{ $t('View.PackageDeploy.template.content.canBeChanged') }}</a-tag>
-              <a-tag v-else color="red">{{ $t('View.PackageDeploy.template.content.cannotBeChanged') }}</a-tag>
+              <a-tag v-if="!lock" color="green">{{
+                $t("View.PackageDeploy.template.content.canBeChanged")
+              }}</a-tag>
+              <a-tag v-else color="red">{{
+                $t("View.PackageDeploy.template.content.cannotBeChanged")
+              }}</a-tag>
             </template>
             <template #formatter v-else-if="selectedValue === 1">
               <a-tag color="purple"
                 >{{ $t("View.PackageDeploy.template.content.resourceOwner") }}
               </a-tag>
-              <a-tag v-if="!lock" color="green">{{ $t('View.PackageDeploy.template.content.canBeChanged') }}</a-tag>
-              <a-tag v-else color="red">{{ $t('View.PackageDeploy.template.content.cannotBeChanged') }}</a-tag>
+              <a-tag v-if="!lock" color="green">{{
+                $t("View.PackageDeploy.template.content.canBeChanged")
+              }}</a-tag>
+              <a-tag v-else color="red">{{
+                $t("View.PackageDeploy.template.content.cannotBeChanged")
+              }}</a-tag>
               <br />
               <a-tag v-if="resourceAddress.trim().length"
                 >{{ resourceAddress }}
@@ -342,8 +350,12 @@
               <a-tag color="purple"
                 >{{ $t("View.PackageDeploy.template.content.nftOwner") }}
               </a-tag>
-              <a-tag v-if="!lock" color="green">{{ $t('View.PackageDeploy.template.content.canBeChanged') }}</a-tag>
-              <a-tag v-else color="red">{{ $t('View.PackageDeploy.template.content.cannotBeChanged') }}</a-tag>
+              <a-tag v-if="!lock" color="green">{{
+                $t("View.PackageDeploy.template.content.canBeChanged")
+              }}</a-tag>
+              <a-tag v-else color="red">{{
+                $t("View.PackageDeploy.template.content.cannotBeChanged")
+              }}</a-tag>
               <br />
               <a-tag v-if="resourceAddress.trim().length"
                 >{{ resourceAddress }}

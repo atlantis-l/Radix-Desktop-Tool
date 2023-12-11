@@ -15,8 +15,7 @@
           @click="createWallet"
           class="view-max-width custom-btn"
           :text="$t(`View.WalletGenerate.template.create`)"
-        >
-          {{ $t(`View.WalletGenerate.template.create`) }}
+          >{{ $t(`View.WalletGenerate.template.create`) }}
         </a-button>
       </a-col>
     </a-row>

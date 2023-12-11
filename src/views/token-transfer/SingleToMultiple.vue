@@ -120,8 +120,8 @@
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
-            <span>
-              {{
+            <span
+              >{{
                 feePayerAddress
                   ? feePayerAddress
                   : $t(
@@ -178,8 +178,7 @@
             )
           "
           @click="estimateFee"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.estimateFee.button`,
             )
@@ -191,8 +190,8 @@
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip>
           <template #title>
-            <span>
-              {{
+            <span
+              >{{
                 $t(
                   `View.TokenTransfer.MultipleToMultiple.template.header.feePayerXrdBalance.tooltip`,
                 )
@@ -226,8 +225,7 @@
                 `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
               )
             "
-          >
-            {{
+            >{{
               $t(
                 `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
               )
@@ -237,8 +235,8 @@
       </a-col>
       <a-col span="3" style="text-align: center; padding-top: 4px">
         <a-tooltip>
-          <template #title>
-            {{
+          <template #title
+            >{{
               $t(`View.TokenTransfer.SingleToMultiple.template.header.simTx`)
             }}
           </template>
@@ -261,8 +259,7 @@
             )
           "
           @click="activateConfirmModal"
-        >
-          {{
+          >{{
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.header.sendTransaction.button`,
             )
@@ -272,8 +269,8 @@
     </a-row>
     <!------------------------ Header ------------------------>
 
-    <a-divider>
-      {{ $t(`View.TokenTransfer.SingleToMultiple.template.divider.text`) }}
+    <a-divider
+      >{{ $t(`View.TokenTransfer.SingleToMultiple.template.divider.text`) }}
     </a-divider>
 
     <!------------------------ Content ------------------------>
@@ -282,8 +279,8 @@
         <a-col span="8" class="view-no-padding-left">
           <a-tooltip>
             <template #title>
-              <span>
-                {{
+              <span
+                >{{
                   senderWallet
                     ? senderWallet.address
                     : $t(
@@ -311,8 +308,8 @@
         </a-col>
         <a-col span="8">
           <a-tooltip>
-            <template #title>
-              {{
+            <template #title
+              >{{
                 $t(
                   `View.TokenTransfer.SingleToMultiple.template.content.tokenTip`,
                 )
@@ -357,8 +354,8 @@
         </a-col>
         <a-col span="8" class="view-no-padding-right">
           <a-tooltip>
-            <template #title>
-              {{
+            <template #title
+              >{{
                 $t(
                   `View.TokenTransfer.SingleToMultiple.template.content.amountTip`,
                 )

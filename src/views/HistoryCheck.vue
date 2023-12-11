@@ -9,9 +9,7 @@
       <template #title>
         <a-row :gutter="gutter">
           <a-col>
-            <a-tag color="blue">
-              {{ `#${transactionIndex + 1}` }}
-            </a-tag>
+            <a-tag color="blue">{{ `#${transactionIndex + 1}` }} </a-tag>
           </a-col>
 
           <a-col>
@@ -22,9 +20,8 @@
               "
             >
               <template #icon>
-                <TagTwoTone two-tone-color="#1677ff" />
-              </template>
-              {{ transactionList[transactionIndex].intent_hash }}
+                <TagTwoTone two-tone-color="#1677ff" /> </template
+              >{{ transactionList[transactionIndex].intent_hash }}
             </a-tag>
           </a-col>
         </a-row>
@@ -55,8 +52,8 @@
                       v-if="change[`balance_change`]"
                     >
                       <a-col>
-                        <a-tag color="purple">
-                          {{
+                        <a-tag color="purple"
+                          >{{
                             addressAndSymbolMap?.get(change[`resource_address`])
                           }}
                         </a-tag>
@@ -64,15 +61,14 @@
 
                       <a-col>
                         <a-tooltip placement="right">
-                          <template #title>
-                            {{ change[`resource_address`] }}
+                          <template #title
+                            >{{ change[`resource_address`] }}
                           </template>
 
                           <a-tag
                             class="view-tag-cursor-pointer"
                             @click="copy(change[`resource_address`] as string)"
-                          >
-                            {{
+                            >{{
                               `${change[`resource_address`].slice(
                                 0,
                                 8,
@@ -87,8 +83,8 @@
                       <a-col flex="1" />
 
                       <a-col v-if="change.type">
-                        <a-tag color="blue">
-                          {{ $t("View.HistoryCheck.template.modal.txFee") }}
+                        <a-tag color="blue"
+                          >{{ $t("View.HistoryCheck.template.modal.txFee") }}
                         </a-tag>
                       </a-col>
 
@@ -99,8 +95,7 @@
                               ? `error`
                               : `green`
                           "
-                        >
-                          {{
+                          >{{
                             change["balance_change"].startsWith("-")
                               ? $t("View.HistoryCheck.template.modal.withdraw")
                               : $t("View.HistoryCheck.template.modal.deposit")
@@ -112,8 +107,7 @@
                         <a-tag
                           class="view-tag-cursor-pointer"
                           @click="copy(change[`balance_change`] as string)"
-                        >
-                          {{
+                          >{{
                             formatNumber(
                               (change["balance_change"].startsWith("-")
                                 ? change["balance_change"]
@@ -127,8 +121,8 @@
                     <div v-else>
                       <a-row class="no-margin-row" :gutter="gutter">
                         <a-col>
-                          <a-tag color="purple">
-                            {{
+                          <a-tag color="purple"
+                            >{{
                               addressAndSymbolMap?.get(
                                 change[`resource_address`],
                               )
@@ -138,8 +132,8 @@
 
                         <a-col>
                           <a-tooltip placement="right">
-                            <template #title>
-                              {{ change[`resource_address`] }}
+                            <template #title
+                              >{{ change[`resource_address`] }}
                             </template>
 
                             <a-tag
@@ -147,8 +141,7 @@
                               @click="
                                 copy(change[`resource_address`] as string)
                               "
-                            >
-                              {{
+                              >{{
                                 `${change[`resource_address`].slice(
                                   0,
                                   8,
@@ -168,8 +161,8 @@
                           style="margin-top: 20px !important"
                         >
                           <a-col>
-                            <a-tag color="green">
-                              {{
+                            <a-tag color="green"
+                              >{{
                                 $t("View.HistoryCheck.template.modal.deposit")
                               }}
                             </a-tag>
@@ -179,8 +172,7 @@
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
-                            >
-                              {{ nft }}
+                              >{{ nft }}
                             </a-tag>
                           </a-col>
                         </a-row>
@@ -193,8 +185,8 @@
                           style="margin-top: 20px !important"
                         >
                           <a-col>
-                            <a-tag color="error">
-                              {{
+                            <a-tag color="error"
+                              >{{
                                 $t("View.HistoryCheck.template.modal.withdraw")
                               }}
                             </a-tag>
@@ -204,8 +196,7 @@
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
-                            >
-                              {{ nft }}
+                              >{{ nft }}
                             </a-tag>
                           </a-col>
                         </a-row>
@@ -238,8 +229,8 @@
                       v-if="change[`balance_change`]"
                     >
                       <a-col>
-                        <a-tag color="purple">
-                          {{
+                        <a-tag color="purple"
+                          >{{
                             addressAndSymbolMap?.get(change[`resource_address`])
                           }}
                         </a-tag>
@@ -247,15 +238,14 @@
 
                       <a-col>
                         <a-tooltip placement="right">
-                          <template #title>
-                            {{ change[`resource_address`] }}
+                          <template #title
+                            >{{ change[`resource_address`] }}
                           </template>
 
                           <a-tag
                             class="view-tag-cursor-pointer"
                             @click="copy(change[`resource_address`] as string)"
-                          >
-                            {{
+                            >{{
                               `${change[`resource_address`].slice(
                                 0,
                                 8,
@@ -276,8 +266,7 @@
                               ? `error`
                               : `green`
                           "
-                        >
-                          {{
+                          >{{
                             change["balance_change"].startsWith("-")
                               ? $t("View.HistoryCheck.template.modal.withdraw")
                               : $t("View.HistoryCheck.template.modal.deposit")
@@ -289,8 +278,7 @@
                         <a-tag
                           class="view-tag-cursor-pointer"
                           @click="copy(change[`balance_change`] as string)"
-                        >
-                          {{
+                          >{{
                             formatNumber(
                               (change["balance_change"].startsWith("-")
                                 ? change["balance_change"]
@@ -304,8 +292,8 @@
                     <div v-else>
                       <a-row class="no-margin-row" :gutter="gutter">
                         <a-col>
-                          <a-tag color="purple">
-                            {{
+                          <a-tag color="purple"
+                            >{{
                               addressAndSymbolMap?.get(
                                 change[`resource_address`],
                               )
@@ -315,8 +303,8 @@
 
                         <a-col>
                           <a-tooltip placement="right">
-                            <template #title>
-                              {{ change[`resource_address`] }}
+                            <template #title
+                              >{{ change[`resource_address`] }}
                             </template>
 
                             <a-tag
@@ -324,8 +312,7 @@
                               @click="
                                 copy(change[`resource_address`] as string)
                               "
-                            >
-                              {{
+                              >{{
                                 `${change[`resource_address`].slice(
                                   0,
                                   8,
@@ -345,8 +332,8 @@
                           style="margin-top: 20px !important"
                         >
                           <a-col>
-                            <a-tag color="green">
-                              {{
+                            <a-tag color="green"
+                              >{{
                                 $t("View.HistoryCheck.template.modal.deposit")
                               }}
                             </a-tag>
@@ -356,8 +343,7 @@
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
-                            >
-                              {{ nft }}
+                              >{{ nft }}
                             </a-tag>
                           </a-col>
                         </a-row>
@@ -370,8 +356,8 @@
                           style="margin-top: 20px !important"
                         >
                           <a-col>
-                            <a-tag color="error">
-                              {{
+                            <a-tag color="error"
+                              >{{
                                 $t("View.HistoryCheck.template.modal.withdraw")
                               }}
                             </a-tag>
@@ -381,8 +367,7 @@
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
-                            >
-                              {{ nft }}
+                              >{{ nft }}
                             </a-tag>
                           </a-col>
                         </a-row>
@@ -414,17 +399,17 @@
 
       <a-col span="4">
         <a-select class="view-max-width" v-model:value="store.pageSize">
-          <a-select-option :value="10">
-            {{ `10 ${$t("View.HistoryCheck.template.header.perPage")}` }}
+          <a-select-option :value="10"
+            >{{ `10 ${$t("View.HistoryCheck.template.header.perPage")}` }}
           </a-select-option>
-          <a-select-option :value="20">
-            {{ `20 ${$t("View.HistoryCheck.template.header.perPage")}` }}
+          <a-select-option :value="20"
+            >{{ `20 ${$t("View.HistoryCheck.template.header.perPage")}` }}
           </a-select-option>
-          <a-select-option :value="50">
-            {{ `50 ${$t("View.HistoryCheck.template.header.perPage")}` }}
+          <a-select-option :value="50"
+            >{{ `50 ${$t("View.HistoryCheck.template.header.perPage")}` }}
           </a-select-option>
-          <a-select-option :value="100">
-            {{ `100 ${$t("View.HistoryCheck.template.header.perPage")}` }}
+          <a-select-option :value="100"
+            >{{ `100 ${$t("View.HistoryCheck.template.header.perPage")}` }}
           </a-select-option>
         </a-select>
       </a-col>
@@ -434,8 +419,7 @@
           @click="getPreviousPage"
           class="view-max-width custom-btn"
           :text="$t('View.HistoryCheck.template.header.previous')"
-        >
-          {{ $t("View.HistoryCheck.template.header.previous") }}
+          >{{ $t("View.HistoryCheck.template.header.previous") }}
         </a-button>
       </a-col>
       <a-col span="4" class="view-no-padding-right">
@@ -443,16 +427,13 @@
           @click="getNextPage"
           class="view-max-width custom-btn"
           :text="$t('View.HistoryCheck.template.header.next')"
-        >
-          {{ $t("View.HistoryCheck.template.header.next") }}
+          >{{ $t("View.HistoryCheck.template.header.next") }}
         </a-button>
       </a-col>
     </a-row>
     <!------------------------ Header ------------------------>
 
-    <a-divider>
-      {{ $t(`View.HistoryCheck.template.divider.text`) }}
-    </a-divider>
+    <a-divider>{{ $t(`View.HistoryCheck.template.divider.text`) }} </a-divider>
 
     <!------------------------ Content ------------------------>
     <a-layout-content class="view-layout-content">
@@ -467,23 +448,19 @@
               <a-col>
                 <a-tag>
                   <template #icon>
-                    <ClockCircleTwoTone two-tone-color="#531dab" />
-                  </template>
-                  {{ tx.confirmed_at?.toLocaleString() }}
+                    <ClockCircleTwoTone two-tone-color="#531dab" /> </template
+                  >{{ tx.confirmed_at?.toLocaleString() }}
                 </a-tag>
               </a-col>
 
               <a-col>
                 <a-tooltip placement="left">
-                  <template #title>
-                    {{ tx.intent_hash }}
-                  </template>
+                  <template #title>{{ tx.intent_hash }} </template>
 
                   <a-tag @click.stop="copy(tx.intent_hash as string)">
                     <template #icon>
-                      <TagTwoTone two-tone-color="#1677ff" />
-                    </template>
-                    {{ tx.intent_hash?.slice(0, 4) }}...{{
+                      <TagTwoTone two-tone-color="#1677ff" /> </template
+                    >{{ tx.intent_hash?.slice(0, 4) }}...{{
                       tx.intent_hash?.slice(tx.intent_hash.length - 6)
                     }}
                   </a-tag>
@@ -493,14 +470,11 @@
               <a-col v-if="tx.message">
                 <!-- @vue-skip -->
                 <a-tooltip placement="left">
-                  <template #title>
-                    {{ tx.message.content.value }}
-                  </template>
+                  <template #title>{{ tx.message.content.value }} </template>
                   <a-tag @click.stop="copy(tx.message.content.value as string)">
                     <template #icon>
-                      <MessageTwoTone two-tone-color="#18b7ac" />
-                    </template>
-                    {{ $t("View.HistoryCheck.template.content.message") }}
+                      <MessageTwoTone two-tone-color="#18b7ac" /> </template
+                    >{{ $t("View.HistoryCheck.template.content.message") }}
                   </a-tag>
                 </a-tooltip>
               </a-col>
@@ -510,9 +484,8 @@
               <a-col>
                 <a-tag @click.stop="copy(tx.fee_paid as string)">
                   <template #icon>
-                    <FireTwoTone two-tone-color="#cf1322" />
-                  </template>
-                  {{ `${formatNumber(tx.fee_paid as string)} `
+                    <FireTwoTone two-tone-color="#cf1322" /> </template
+                  >{{ `${formatNumber(tx.fee_paid as string)} `
                   }}<span class="custom-span" text="XRD">XRD</span>
                 </a-tag>
               </a-col>

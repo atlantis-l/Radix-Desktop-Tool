@@ -386,6 +386,7 @@
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="12" class="view-no-padding-left">
         <a-input
+          ref="address"
           allowClear
           :addonBefore="
             $t(`View.HistoryCheck.template.header.input.addonBefore`)
@@ -842,6 +843,12 @@ export default defineComponent({
           });
         });
     },
+  },
+  activated() {
+    setTimeout(() => {
+      //@ts-ignore
+      this.$refs.address.focus();
+    }, 100);
   },
 });
 </script>

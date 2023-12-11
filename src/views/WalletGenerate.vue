@@ -3,6 +3,7 @@
     <a-row :gutter="gutter">
       <a-col span="10" class="view-no-padding-left">
         <a-input
+          ref="amount"
           allowClear
           v-model:value="amount"
           @pressEnter="createWallet"
@@ -94,6 +95,12 @@ export default defineComponent({
         `${this.$t(`View.WalletGenerate.script.fileName`)}.csv`,
       );
     },
+  },
+  activated() {
+    setTimeout(() => {
+      //@ts-ignore
+      this.$refs.amount.focus();
+    }, 100);
   },
 });
 </script>

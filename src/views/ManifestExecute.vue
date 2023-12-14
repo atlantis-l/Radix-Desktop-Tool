@@ -136,7 +136,7 @@
 
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip>
+        <a-tooltip placement="bottom">
           <template #title>
             <span
               >{{
@@ -164,7 +164,7 @@
           />
         </a-tooltip>
       </a-col>
-      <a-col span="4">
+      <a-col flex="1">
         <a-upload name="file" :maxCount="1" :customRequest="uploadWallet">
           <a-button
             class="view-max-width custom-btn"
@@ -182,7 +182,7 @@
         </a-upload>
       </a-col>
 
-      <a-col span="5">
+      <a-col flex="1">
         <a-upload name="file" :maxCount="1" :customRequest="uploadManifest">
           <a-button
             class="view-max-width custom-btn"
@@ -212,7 +212,7 @@
     <!------------------------ Header ------------------------>
 
     <a-divider
-      >{{ $t("View.ManifestExecute.template.divider.text") }}
+      >「 {{ $t("View.ManifestExecute.template.divider.text") }} 」
     </a-divider>
 
     <!------------------------ Content ------------------------>
@@ -268,10 +268,10 @@ export default defineComponent({
       store: store(),
       focusInput: "",
       manifestText: "",
+      feeLockEstimate: "",
       isPreviewDone: false,
       feePayerXrdBalance: "",
       transactionMessage: "",
-      feeLockPlaceholder: "",
       openFeePayerModal: false,
       feePayerWalletPrivateKey: "",
       openConfirmTransaction: false,
@@ -291,13 +291,6 @@ export default defineComponent({
     },
     feePayerAddress() {
       this.isPreviewDone = false;
-    },
-    "store.language"() {
-      if (Number.isNaN(parseFloat(this.feeLockPlaceholder))) {
-        this.feeLockPlaceholder = this.$t(
-          `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-        );
-      }
     },
     focusInput(ref: string) {
       if (ref.length) {
@@ -332,6 +325,13 @@ export default defineComponent({
     },
     feePayerAddress() {
       return this.feePayerWallet ? this.feePayerWallet.address : undefined;
+    },
+    feeLockPlaceholder() {
+      return this.feeLockEstimate.length
+        ? formatNumber(this.feeLockEstimate)
+        : this.$t(
+            `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+          );
     },
   },
   methods: {
@@ -369,7 +369,7 @@ export default defineComponent({
       if (!result) return;
 
       this.isPreviewDone = true;
-      this.feeLockPlaceholder = formatNumber(result.fee);
+      this.feeLockEstimate = formatNumber(result.fee);
       this.feeLock = "";
     },
     refreshXrdBalance() {
@@ -763,11 +763,6 @@ export default defineComponent({
       } as Instructions;
     },
   },
-  mounted() {
-    this.feeLockPlaceholder = this.$t(
-      `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-    );
-  },
 });
 </script>
 
@@ -843,10 +838,6 @@ export default defineComponent({
 
 .view-layout-content::-webkit-scrollbar {
   display: none !important;
-}
-
-.view-nft-selector-label {
-  cursor: default !important;
 }
 
 .no-margin-row {

@@ -134,6 +134,7 @@
           />
         </a-tooltip>
       </a-col>
+
       <a-col span="9">
         <a-tooltip>
           <template #title>
@@ -156,6 +157,7 @@
           />
         </a-tooltip>
       </a-col>
+
       <a-col span="5" class="view-no-padding-right">
         <a-button
           class="view-max-width custom-btn"
@@ -176,7 +178,7 @@
 
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip>
+        <a-tooltip placement="bottom">
           <template #title>
             <span
               >{{
@@ -207,7 +209,7 @@
 
       <a-col span="6">
         <a-select
-          v-if="assignOwner"
+          :disabled="!assignOwner"
           class="view-max-width"
           :options="ownerOptions"
           @select="
@@ -235,16 +237,20 @@
       </a-col>
 
       <a-col span="1" style="padding-top: 5px; text-align: end">
-        <a-tooltip v-if="assignOwner && selectedValue !== 3">
+        <a-tooltip placement="bottom">
           <template #title>{{
             $t("View.PackageDeploy.template.header.lock")
           }}</template>
-          <a-checkbox v-model:checked="lock"></a-checkbox>
+
+          <a-checkbox
+            v-model:checked="lock"
+            :disabled="!assignOwner || selectedValue === 3"
+          ></a-checkbox>
         </a-tooltip>
       </a-col>
 
       <a-col span="2" style="text-align: center; padding-top: 4px">
-        <a-tooltip>
+        <a-tooltip placement="bottom">
           <template #title
             >{{ $t("View.PackageDeploy.template.header.switch.text") }}
           </template>
@@ -278,7 +284,9 @@
     </a-row>
     <!------------------------ Header ------------------------>
 
-    <a-divider>{{ $t("View.PackageDeploy.template.divider.text") }} </a-divider>
+    <a-divider
+      >「 {{ $t("View.PackageDeploy.template.divider.text") }} 」</a-divider
+    >
 
     <!------------------------ Content ------------------------>
     <a-layout-content class="view-layout-content">
@@ -291,7 +299,7 @@
             </p>
             <p class="ant-upload-text">
               <a-tag color="blue" style="font-size: 14px">{{
-                wasmFilename
+                wasmFileText
               }}</a-tag>
             </p>
           </a-upload-dragger>
@@ -305,7 +313,7 @@
             </p>
             <p class="ant-upload-text">
               <a-tag color="blue" style="font-size: 14px">{{
-                rpdFilename
+                rpdFileText
               }}</a-tag>
             </p>
           </a-upload-dragger>
@@ -394,11 +402,6 @@ import { message } from "ant-design-vue";
 import { defineComponent } from "vue";
 import store from "../stores/store";
 
-interface OwnerOption {
-  label: string;
-  value: number;
-}
-
 export default defineComponent({
   components: {
     CreateIcon,
@@ -416,15 +419,14 @@ export default defineComponent({
       selectedValue: 0,
       assignOwner: false,
       resourceAddress: "",
+      feeLockEstimate: "",
       isPreviewDone: false,
       feePayerXrdBalance: "",
       transactionMessage: "",
-      feeLockPlaceholder: "",
       openFeePayerModal: false,
       openResourceModal: false,
       feePayerWalletPrivateKey: "",
       openConfirmTransaction: false,
-      ownerOptions: [] as OwnerOption[],
       rpd: undefined as Uint8Array | undefined,
       wasm: undefined as Uint8Array | undefined,
       feePayerWallet: undefined as Wallet | undefined,
@@ -437,17 +439,21 @@ export default defineComponent({
     };
   },
   watch: {
-    nftId() {
+    rpd() {
       this.isPreviewDone = false;
-      if (this.nftId.includes(":")) {
-        this.nftId = this.nftId.split(":")[1];
-      }
+    },
+    wasm() {
+      this.isPreviewDone = false;
     },
     lock() {
       this.isPreviewDone = false;
     },
-    selectedValue() {
+    nftId() {
       this.isPreviewDone = false;
+
+      if (this.nftId.includes(":")) {
+        this.nftId = this.nftId.split(":")[1];
+      }
     },
     assignOwner() {
       this.isPreviewDone = false;
@@ -458,23 +464,56 @@ export default defineComponent({
         this.resourceAddress = this.resourceAddress.split(":")[0];
       }
     },
-    rpd() {
-      this.isPreviewDone = false;
-    },
-    wasm() {
-      this.isPreviewDone = false;
-    },
     feePayerAddress() {
       this.isPreviewDone = false;
     },
-    "store.language"() {
-      if (Number.isNaN(parseFloat(this.feeLockPlaceholder))) {
-        this.feeLockPlaceholder = this.$t(
-          `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-        );
+    focusInput(ref: string) {
+      if (ref.length) {
+        setTimeout(() => {
+          //@ts-ignore
+          this.$refs[ref].focus();
+          this.focusInput = "";
+        }, 100);
       }
+    },
+    selectedValue(value: number) {
+      this.isPreviewDone = false;
 
-      this.ownerOptions = [
+      if (value === 3) {
+        this.lock = true;
+      } else {
+        this.lock = false;
+      }
+    },
+    "store.networkId"(id: number) {
+      this.networkChecker.networkId = id;
+      this.walletGenerator.networkId = id;
+      this.packageDeployer.networkId = id;
+    },
+  },
+  computed: {
+    feePayerAddress() {
+      return this.feePayerWallet ? this.feePayerWallet.address : undefined;
+    },
+    feeLockPlaceholder() {
+      return this.feeLockEstimate.length
+        ? formatNumber(this.feeLockEstimate)
+        : this.$t(
+            `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+          );
+    },
+    rpdFileText() {
+      return this.rpdFilename.length
+        ? this.rpdFilename
+        : this.$t("View.PackageDeploy.template.content.uploadRpd");
+    },
+    wasmFileText() {
+      return this.wasmFilename.length
+        ? this.wasmFilename
+        : this.$t("View.PackageDeploy.template.content.uploadWasm");
+    },
+    ownerOptions() {
+      return [
         {
           label: this.$t("View.PackageDeploy.template.header.select.0"),
           value: 0,
@@ -492,33 +531,6 @@ export default defineComponent({
           value: 3,
         },
       ];
-
-      this.wasmFilename = this.$t(
-        "View.PackageDeploy.template.content.uploadWasm",
-      );
-
-      this.rpdFilename = this.$t(
-        "View.PackageDeploy.template.content.uploadRpd",
-      );
-    },
-    focusInput(ref: string) {
-      if (ref.length) {
-        setTimeout(() => {
-          //@ts-ignore
-          this.$refs[ref].focus();
-          this.focusInput = "";
-        }, 100);
-      }
-    },
-    "store.networkId"(id: number) {
-      this.networkChecker.networkId = id;
-      this.walletGenerator.networkId = id;
-      this.packageDeployer.networkId = id;
-    },
-  },
-  computed: {
-    feePayerAddress() {
-      return this.feePayerWallet ? this.feePayerWallet.address : undefined;
     },
   },
   methods: {
@@ -556,7 +568,7 @@ export default defineComponent({
       if (!result) return;
 
       this.isPreviewDone = true;
-      this.feeLockPlaceholder = formatNumber(result.fee);
+      this.feeLockEstimate = formatNumber(result.fee);
       this.feeLock = "";
     },
     refreshXrdBalance() {
@@ -855,36 +867,6 @@ export default defineComponent({
       this.rpd = await radixTool.getFileBuffer(data.file.path);
     },
   },
-  mounted() {
-    this.ownerOptions = [
-      {
-        label: this.$t("View.PackageDeploy.template.header.select.0"),
-        value: 0,
-      },
-      {
-        label: this.$t("View.PackageDeploy.template.header.select.1"),
-        value: 1,
-      },
-      {
-        label: this.$t("View.PackageDeploy.template.header.select.2"),
-        value: 2,
-      },
-      {
-        label: this.$t("View.PackageDeploy.template.header.select.3"),
-        value: 3,
-      },
-    ];
-
-    this.feeLockPlaceholder = this.$t(
-      `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-    );
-
-    this.wasmFilename = this.$t(
-      "View.PackageDeploy.template.content.uploadWasm",
-    );
-
-    this.rpdFilename = this.$t("View.PackageDeploy.template.content.uploadRpd");
-  },
 });
 </script>
 
@@ -964,10 +946,6 @@ export default defineComponent({
 
 .view-layout-content::-webkit-scrollbar {
   display: none !important;
-}
-
-.view-nft-selector-label {
-  cursor: default !important;
 }
 
 .no-margin-row {

@@ -248,7 +248,73 @@
       }
     },
     "TokenCreate": {
-      "message": "代币创建"
+      "message": "代币创建",
+      "template": {
+        "divider": {
+          "text": "代币供应"
+        },
+        "header": {
+          "tokenTypeSelect": {
+            "fungibleToken": "同质化代币(FT)",
+            "nonFungibleToken": "非同质化代币(NFT)"
+          },
+          "settingsMode": {
+            "simple": "简单",
+            "detailed": "详细"
+          }
+        },
+        "content": {
+          "divider": {
+            "metadata": "元数据",
+            "authRoles": "角色授权",
+            "nftFields": "NFT 字段"
+          },
+          "initialSupply": "初始供应量",
+          "initialSupplyPlaceholder": "初始铸造总量",
+          "divisiblePrecision": "可分割精度",
+          "divisiblePrecisionDecimal": "小数位数(0 ~ 18)",
+          "tokenName": "代币名称",
+          "tokenNamePlaceholder": "例: Radix (最多32个字符)",
+          "tokenSymbol": "代币符号",
+          "tokenSymbolPlaceholder": "例: XRD (最多5个字符)",
+          "iconUrl": "图标链接",
+          "iconUrlPlaceholder": "URL链接",
+          "infoUrl": "详情链接",
+          "infoUrlPlaceholder": "URL链接",
+          "tokenTags": "代币标签",
+          "tokenTagsPlaceholder": "以逗号分隔标签",
+          "tokenDescription": "代币描述",
+          "tokenDescriptionPlaceholder": "最多256个字符",
+          "ownerRole": "所有者",
+          "nftFieldsInput": {
+            "placeholder": "以逗号(英文)分隔字段"
+          },
+          "nftList": "NFT 列表",
+          "addNft": "添加"
+        }
+      },
+      "script": {
+        "minter": "铸造",
+        "denyAll": "全部拒绝",
+        "minterUpdater": "更新铸造者",
+        "burner": "燃烧",
+        "burnerUpdater": "更新燃烧者",
+        "freezer": "冻结",
+        "freezerUpdater": "更新冻结者",
+        "recaller": "回收",
+        "recallerUpdater": "更新回收者",
+        "withdrawer": "取款",
+        "withdrawerUpdater": "更新取款者",
+        "depositor": "存款",
+        "depositorUpdater": "更新存款者",
+        "metadataSetter": "元数据设置",
+        "metadataSetterUpdater": "更新元数据设置者",
+        "metadatalocker": "元数据锁定",
+        "metadatalockerUpdater": "更新元数据锁定者",
+        "nftDataSetter": "NFT数据设置",
+        "nftDataSetterUpdater": "更新NFT数据设置者",
+        "string": "字符串"
+      }
     },
     "ManifestExecute": {
       "message": "清单执行",
@@ -291,7 +357,7 @@
             "text": "是否指定所有权(默认所有权属于部署者)"
           },
           "select": {
-            "0": "允许全部",
+            "0": "全部允许",
             "1": "指定资源",
             "2": "指定NFT",
             "3": "无所有者",

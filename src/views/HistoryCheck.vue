@@ -434,7 +434,9 @@
     </a-row>
     <!------------------------ Header ------------------------>
 
-    <a-divider>{{ $t(`View.HistoryCheck.template.divider.text`) }} </a-divider>
+    <a-divider
+      >「 {{ $t(`View.HistoryCheck.template.divider.text`) }} 」</a-divider
+    >
 
     <!------------------------ Content ------------------------>
     <a-layout-content class="view-layout-content">
@@ -470,7 +472,7 @@
 
               <a-col v-if="tx.message">
                 <!-- @vue-skip -->
-                <a-tooltip placement="left">
+                <a-tooltip placement="right">
                   <template #title>{{ tx.message.content.value }} </template>
                   <a-tag @click.stop="copy(tx.message.content.value as string)">
                     <template #icon>

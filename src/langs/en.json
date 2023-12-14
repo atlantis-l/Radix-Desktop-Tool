@@ -111,8 +111,8 @@
         },
         "script": {
           "mounted": {
-            "ftLabel": "Fungible Token (FT)",
-            "nftLabel": "NonFungible Token (NFT)"
+            "ftLabel": "Fungible Token",
+            "nftLabel": "NonFungible Token"
           },
           "methods": {
             "setSender": {
@@ -167,7 +167,7 @@
             "amountTip": "Optional (If not filled in, the imported data will prevail)",
             "token": "Token",
             "tokenAddress": "Token Address",
-            "tokenTip": "Only fungible tokens (FT) can be sent",
+            "tokenTip": "Only fungible tokens can be sent",
             "totalTokenAmount": "Total amount of tokens sent",
             "walletAmount": "Number of wallets"
           },
@@ -248,7 +248,73 @@
       }
     },
     "TokenCreate": {
-      "message": "Token Create"
+      "message": "Token Create",
+      "template": {
+        "header": {
+          "tokenTypeSelect": {
+            "fungibleToken": "Fungible Token",
+            "nonFungibleToken": "NonFungible Token"
+          },
+          "settingsMode": {
+            "simple": "Simple",
+            "detailed": "Detailed"
+          }
+        },
+        "content": {
+          "divider": {
+            "metadata": "Metadata",
+            "authRoles": "Roles Auth",
+            "nftFields": "NFT Fields"
+          },
+          "divisiblePrecision": "Divisible Precision",
+          "divisiblePrecisionDecimal": "Decimal places (0 ~ 18)",
+          "iconUrl": "Icon Link",
+          "iconUrlPlaceholder": "URL",
+          "infoUrl": "Info Link",
+          "infoUrlPlaceholder": "URL",
+          "initialSupply": "Initial Supply",
+          "initialSupplyPlaceholder": "Total initial minting amount",
+          "tokenDescription": "Description",
+          "tokenName": "Name",
+          "tokenNamePlaceholder": "E.g. Radix (Max 32 characters)",
+          "tokenSymbol": "Symbol",
+          "tokenSymbolPlaceholder": "E.g. XRD (Max 5 characters)",
+          "tokenTags": "Tags",
+          "tokenTagsPlaceholder": "Separate tags with commas",
+          "tokenDescriptionPlaceholder": "Maximum 256 characters",
+          "ownerRole": "Owner",
+          "nftFieldsInput": {
+            "placeholder": "Separate fields with commas"
+          },
+          "nftList": "NFT List",
+          "addNft": "Add"
+        },
+        "divider": {
+          "text": "Token Supply"
+        }
+      },
+      "script": {
+        "denyAll": "Deny All",
+        "burner": "Burn",
+        "burnerUpdater": "Update Burner",
+        "depositor": "Deposit",
+        "depositorUpdater": "Update Depositor",
+        "freezer": "Freeze",
+        "freezerUpdater": "Update Freezer",
+        "metadataSetter": "Set Metadata",
+        "metadataSetterUpdater": "Update Metadata Setter",
+        "metadatalocker": "Lock Metadata",
+        "metadatalockerUpdater": "Update Metadata Locker",
+        "minter": "Mint",
+        "minterUpdater": "Update Minter",
+        "nftDataSetter": "Set NFT Data",
+        "nftDataSetterUpdater": "Update NFT Data Setter",
+        "recaller": "Recall",
+        "recallerUpdater": "Update Recaller",
+        "withdrawer": "Withdraw",
+        "withdrawerUpdater": "Update Withdrawer",
+        "string": "String"
+      }
     },
     "ManifestExecute": {
       "message": "Manifest Execute",
@@ -284,7 +350,7 @@
           "resourceOwner": "Accounts with the following resource",
           "owner": "Who is the owner?",
           "canBeChanged": "Can be changed",
-          "cannotBeChanged": "Cannot be changed"
+          "cannotBeChanged": "Can't be changed"
         },
         "header": {
           "lock": "Lock (Can't be changed)",

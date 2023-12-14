@@ -161,7 +161,7 @@
     </a-row>
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip>
+        <a-tooltip placement="bottom">
           <template #title>
             <span
               >{{
@@ -207,7 +207,7 @@
         </a-upload>
       </a-col>
       <a-col span="3" style="text-align: center; padding-top: 4px">
-        <a-tooltip>
+        <a-tooltip placement="bottom">
           <template #title
             >{{
               $t(`View.TokenTransfer.SingleToMultiple.template.header.simTx`)
@@ -241,9 +241,9 @@
       </a-col>
     </a-row>
     <!------------------------ Header ------------------------>
-
     <a-divider
-      >{{ $t(`View.TokenTransfer.SingleToMultiple.template.divider.text`) }}
+      >「
+      {{ $t(`View.TokenTransfer.SingleToMultiple.template.divider.text`) }} 」
     </a-divider>
 
     <!------------------------ Content ------------------------>
@@ -261,14 +261,17 @@
             <a-input-group compact style="display: flex">
               <a-select
                 :open="false"
+                :bordered="false"
                 :show-arrow="false"
                 class="view-nft-selector-label"
-                :defaultValue="
+                value="label"
+              >
+                <a-select-option value="label">{{
                   $t(
                     `View.TokenTransfer.SingleToMultiple.template.content.token`,
                   )
-                "
-              />
+                }}</a-select-option>
+              </a-select>
               <a-select
                 allowClear
                 style="flex: 1"
@@ -284,7 +287,7 @@
                 "
               >
                 <template #option="{ label, value }">
-                  <a-tooltip placement="left">
+                  <a-tooltip placement="right">
                     <template #title>
                       <span>{{ value }}</span>
                     </template>
@@ -424,9 +427,9 @@ export default defineComponent({
       tokenAmount: "",
       progressCount: 0,
       receiverAddress: "",
+      feeLockEstimate: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
-      feeLockPlaceholder: "",
       progressStatus: "normal",
       openFeePayerModal: false,
       feePayerWalletPrivateKey: "",
@@ -459,13 +462,6 @@ export default defineComponent({
     },
     feePayerWallet() {
       this.previewFeeList = [];
-    },
-    "store.language"() {
-      if (Number.isNaN(parseFloat(this.feeLockPlaceholder))) {
-        this.feeLockPlaceholder = this.$t(
-          `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-        );
-      }
     },
     focusInput(ref: string) {
       if (ref.length) {
@@ -598,6 +594,13 @@ export default defineComponent({
           `View.TokenTransfer.SingleToMultiple.template.content.amountPlaceholder`,
         );
       }
+    },
+    feeLockPlaceholder() {
+      return this.feeLockEstimate.length
+        ? formatNumber(this.feeLockEstimate)
+        : this.$t(
+            `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+          );
     },
     selectedTokenAmount() {
       let amount = new Decimal(0);
@@ -856,7 +859,7 @@ export default defineComponent({
               totalFee = totalFee.plus(fee);
             });
 
-            this.feeLockPlaceholder = formatNumber(totalFee.toString());
+            this.feeLockEstimate = formatNumber(totalFee.toString());
             this.feeLock = "";
           } else if (CustomMethod.SEND_TRANSACTION === this.customMethod) {
             this.sendTransaction();
@@ -1106,11 +1109,6 @@ export default defineComponent({
         },
       });
     },
-  },
-  mounted() {
-    this.feeLockPlaceholder = this.$t(
-      `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-    );
   },
   activated() {
     this.store.worker.onmessage = (msg: MessageEvent<Data>) => {

@@ -18,7 +18,8 @@
       "Parsed",
       ";"
     ],
-    "src/views/PackageDeploy.vue": ["NFT ID", "XRD Balance", "Parsed"]
+    "src/views/PackageDeploy.vue": ["NFT ID", "XRD Balance", "Parsed"],
+    "src/views/TokenCreate.vue": ["XRD Balance", "NFT ID"]
   },
   "i18n-ally.extract.autoDetect": true
 }

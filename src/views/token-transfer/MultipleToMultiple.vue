@@ -130,7 +130,7 @@
           >
             <!-------------------- Fungible Token Input -------------------->
             <a-col flex="1" v-if="transferInfo.tokenType === 0">
-              <a-tooltip>
+              <a-tooltip placement="right">
                 <template #title>
                   <span>{{ transferInfo.tokenAddress }}</span>
                 </template>
@@ -149,14 +149,19 @@
             <!----------------- NonFungible Token Selector ----------------->
             <a-col flex="1" v-else-if="transferInfo.tokenType === 1">
               <a-input-group compact style="display: flex">
-                <!-- @vue-ignore -->
+                <!-- @vue-skip -->
                 <a-select
+                  value="label"
+                  :bordered="false"
                   :open="false"
                   :show-arrow="false"
                   class="view-nft-selector-label"
-                  :defaultValue="transferInfo.name"
-                />
-                <a-tooltip>
+                >
+                  <a-select-option value="label">{{
+                    transferInfo.name
+                  }}</a-select-option>
+                </a-select>
+                <a-tooltip placement="right">
                   <template #title>
                     <span>{{ transferInfo.tokenAddress }}</span>
                   </template>
@@ -267,7 +272,7 @@
     </a-row>
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip>
+        <a-tooltip placement="bottom">
           <template #title>
             <span
               >{{
@@ -295,7 +300,7 @@
           />
         </a-tooltip>
       </a-col>
-      <a-col span="4">
+      <a-col flex="1">
         <a-button
           class="view-max-width custom-btn"
           :text="
@@ -311,7 +316,7 @@
           }}
         </a-button>
       </a-col>
-      <a-col span="5">
+      <a-col flex="1">
         <a-button
           @click="clearAllTransfers"
           :text="
@@ -347,7 +352,8 @@
     <!------------------------ Header ------------------------>
 
     <a-divider
-      >{{ $t(`View.TokenTransfer.MultipleToMultiple.template.divider.text`) }}
+      >「
+      {{ $t(`View.TokenTransfer.MultipleToMultiple.template.divider.text`) }} 」
     </a-divider>
 
     <!------------------------ Content ------------------------>
@@ -367,7 +373,7 @@
             </a-button>
           </a-col>
           <a-col flex="11">
-            <a-tooltip>
+            <a-tooltip placement="left">
               <template #title>
                 <span
                   >{{
@@ -505,9 +511,9 @@ export default defineComponent({
       focusInput: "",
       store: store(),
       senderIndex: 0,
+      feeLockEstimate: "",
       isPreviewDone: false,
       senderPrivateKey: "",
-      feeLockPlaceholder: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
       openSenderModal: false,
@@ -535,12 +541,6 @@ export default defineComponent({
       this.tokenOptions[0].address = this.label.ftLabel;
       this.tokenOptions[1].label = this.label.nftLabel;
       this.tokenOptions[1].address = this.label.nftLabel;
-
-      if (Number.isNaN(parseFloat(this.feeLockPlaceholder))) {
-        this.feeLockPlaceholder = this.$t(
-          `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-        );
-      }
     },
     focusInput(ref: string) {
       if (ref.length) {
@@ -629,6 +629,13 @@ export default defineComponent({
     },
     feePayerAddress() {
       return this.feePayerWallet ? this.feePayerWallet.address : undefined;
+    },
+    feeLockPlaceholder() {
+      return this.feeLockEstimate.length
+        ? formatNumber(this.feeLockEstimate)
+        : this.$t(
+            `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
+          );
     },
   },
   methods: {
@@ -755,7 +762,7 @@ export default defineComponent({
       if (!result) return;
 
       this.isPreviewDone = true;
-      this.feeLockPlaceholder = formatNumber(result.fee);
+      this.feeLockEstimate = formatNumber(result.fee);
       this.feeLock = "";
     },
     clearAllTransfers() {
@@ -1162,9 +1169,6 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.feeLockPlaceholder = this.$t(
-      `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
-    );
     //初始化转账列表
     this.addTransfer();
     //初始化代币选项

@@ -200,12 +200,12 @@ domReady().then(() => {
       appendLoading();
       setTimeout(() => {
         document.body.style.opacity = "1";
-      }, 800);
+      }, 2000);
     } else {
       setTimeout(() => {
         if (app) app.style.opacity = "1";
         document.body.style.opacity = "1";
-      }, 400);
+      }, 1000);
     }
   });
 });

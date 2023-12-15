@@ -9,6 +9,8 @@ import {
   setupTitlebar,
 } from "custom-electron-titlebar/main";
 
+app.commandLine.appendSwitch("js-flags", "--expose-gc");
+
 // setup the titlebar main process
 setupTitlebar();
 

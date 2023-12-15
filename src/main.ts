@@ -6,6 +6,9 @@ import Antd from "ant-design-vue";
 import { createPinia } from "pinia";
 import { createI18n } from "vue-i18n";
 import "ant-design-vue/dist/reset.css";
+import GCWorker from "./workers/gcWorker?worker&inline";
+
+const _ = new GCWorker();
 
 const pinia = createPinia();
 

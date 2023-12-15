@@ -551,7 +551,7 @@ body {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.2s ease-in-out !important;
+  transition: all 0.4s;
 }
 
 .fade-leave-to,

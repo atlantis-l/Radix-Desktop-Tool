@@ -216,7 +216,7 @@
           />
         </a-tooltip>
       </a-col>
-      <a-col span="6">
+      <a-col flex="1">
         <a-upload name="file" :maxCount="1" :customRequest="uploadCallback">
           <a-button
             class="view-max-width custom-btn"
@@ -233,7 +233,7 @@
           </a-button>
         </a-upload>
       </a-col>
-      <a-col span="3" style="text-align: center; padding-top: 4px">
+      <a-col flex="1" style="text-align: center; padding-top: 4px">
         <a-tooltip placement="bottom">
           <template #title
             >{{

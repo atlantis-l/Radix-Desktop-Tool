@@ -30,6 +30,9 @@
     },
     "XRDFaucet": {
       "title": "XRD Faucet"
+    },
+    "LocalSettings": {
+      "title": "Local Settings"
     }
   },
   "View": {
@@ -377,7 +380,36 @@
       }
     },
     "XRDFaucet": {
-      "message": "XRD Faucet"
+      "message": "XRD Faucet",
+      "template": {
+        "alert": {
+          "message": "The XRD received is stokenet token, which can only be used for testing"
+        },
+        "address": "Receiving Address",
+        "stokenetAddress": "Stokenet Address",
+        "requestTimes": "Number of requests",
+        "getXRD": "Get XRD",
+        "tooltip": {
+          "requestTimes": "Get 10,000 XRD per request, change the number of requests to get the desired amount"
+        },
+        "xrdBalance": "XRD Balance",
+        "requestCount": "Request Count",
+        "requestXrdAmount": "Required XRD Amount"
+      },
+      "script": {
+        "loading": "Obtaining XRD",
+        "success": "XRD has been obtained"
+      }
+    },
+    "LocalSettings": {
+      "template": {
+        "button": {
+          "restore": "Restore"
+        },
+        "gateway": "Gateway",
+        "language": "Language (语言)",
+        "currentLanguage": "Current Language"
+      }
     }
   },
   "1-info-resourceaddress-templabel-info-ids-join": "1:{0}:{1}:{2}",

@@ -30,6 +30,9 @@
     },
     "XRDFaucet": {
       "title": "XRD领取"
+    },
+    "LocalSettings": {
+      "title": "本地设置"
     }
   },
   "View": {
@@ -377,7 +380,36 @@
       }
     },
     "XRDFaucet": {
-      "message": "XRD领取"
+      "message": "XRD领取",
+      "template": {
+        "alert": {
+          "message": "收到的XRD为测试网代币, 仅用于测试"
+        },
+        "address": "接收地址",
+        "stokenetAddress": "测试网地址",
+        "requestTimes": "请求次数",
+        "getXRD": "获取XRD",
+        "tooltip": {
+          "requestTimes": "每次请求获取10,000 XRD, 改变请求次数来获取想要的数量"
+        },
+        "xrdBalance": "XRD 余额",
+        "requestCount": "请求计数",
+        "requestXrdAmount": "请求 XRD 数量"
+      },
+      "script": {
+        "loading": "正在获取XRD",
+        "success": "XRD已获取"
+      }
+    },
+    "LocalSettings": {
+      "template": {
+        "gateway": "网关",
+        "button": {
+          "restore": "重 置"
+        },
+        "language": "语言 (Language)",
+        "currentLanguage": "当前语言"
+      }
     }
   },
   "current-language-english": "Current Language:「 English 」",

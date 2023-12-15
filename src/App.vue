@@ -118,18 +118,6 @@
           <!------------------------ Content ------------------------>
         </a-layout>
       </a-layout>
-
-      <!------------------------ Translate Button ------------------------>
-      <a-float-button
-        type="primary"
-        class="a-float-button"
-        :onClick="selectLanguage"
-      >
-        <template #icon>
-          <CreateIcon icon="TranslationOutlined" />
-        </template>
-      </a-float-button>
-      <!------------------------ Translate Button ------------------------>
     </a-app>
   </a-config-provider>
 </template>
@@ -138,7 +126,7 @@
 import store from "./stores/store";
 import { defineComponent } from "vue";
 import { CreateIcon } from "./common";
-import { message } from "ant-design-vue";
+import { setNetwork, NetworkId } from "@atlantis-l/radix-tool";
 
 export default defineComponent({
   components: { CreateIcon },
@@ -175,6 +163,10 @@ export default defineComponent({
         : "MenuFoldOutlined";
     },
   },
+  beforeMount() {
+    setNetwork(NetworkId.Mainnet, false, this.store.mainnetUrl);
+    setNetwork(NetworkId.Stokenet, false, this.store.stokenetUrl);
+  },
   mounted() {
     //子菜单延时展开
     setTimeout(() => {
@@ -207,17 +199,6 @@ export default defineComponent({
       let openKeys = this.$route.path.split("/");
       //@ts-ignore
       this.openKeys = openKeys.slice(1, openKeys.length - 1);
-    },
-    //语言选择
-    selectLanguage() {
-      const language = this.store.language === "en" ? "zh" : "en";
-      this.store.setLanguage(language);
-      this.$i18n.locale = language;
-      message.success(
-        language === "en"
-          ? this.$t("current-language-english")
-          : this.$t("dang-qian-yu-yan-zhong-wen"),
-      );
     },
   },
 });
@@ -290,6 +271,22 @@ textarea::-webkit-scrollbar {
 
 .ant-card-head:hover {
   color: #531dab;
+}
+
+.view-card .ant-card {
+  border-color: #d9d9d9 !important;
+}
+
+.view-card .ant-card-head {
+  cursor: auto !important;
+  text-align: start !important;
+  user-select: none !important;
+  background-color: #fff !important;
+  transition: all 0.3s ease-in-out;
+}
+
+.view-card .ant-card-head:hover {
+  color: #000;
 }
 
 .ant-statistic {
@@ -402,11 +399,6 @@ textarea::-webkit-scrollbar {
 #logo {
   text-align: center !important;
   margin: 15px 0 11px 0 !important;
-}
-
-.a-float-button {
-  right: 30px !important;
-  bottom: 30px !important;
 }
 
 .ant-float-btn-body {

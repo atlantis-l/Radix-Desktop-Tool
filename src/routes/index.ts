@@ -79,6 +79,12 @@ const router = createRouter({
       icon: "ExperimentTwoTone",
       component: View.XRDFaucet,
     },
+    {
+      name: "LocalSettings",
+      path: "/LocalSettings",
+      icon: "SettingTwoTone",
+      component: View.LocalSettings,
+    },
   ],
 });
 

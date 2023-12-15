@@ -374,6 +374,8 @@ interface Config {
   pageSize: number;
   language: string;
   networkId: number;
+  mainnetUrl: string;
+  stokenetUrl: string;
   currentPath: string;
   showNetwork: boolean;
   selectedKeys: string[];
@@ -389,6 +391,8 @@ const DEFAULT_CONFIG: Config = {
   networkId: MAINNET_ID,
   currentPath: "/StartToUse",
   selectedKeys: ["StartToUse"],
+  mainnetUrl: "https://mainnet.radixdlt.com/",
+  stokenetUrl: "https://stokenet.radixdlt.com/",
 };
 
 let config: Config;

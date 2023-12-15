@@ -103,7 +103,8 @@
       <a-modal
         centered
         :footer="null"
-        style="width: 400px"
+        class="modal-div"
+        style="width: 600px"
         v-model:open="openNftModal"
       >
         <template #title>
@@ -2172,6 +2173,10 @@ export default defineComponent({
 <style scoped>
 .ant-layout {
   background-color: #ffffff !important;
+}
+
+.modal-div::-webkit-scrollbar {
+  display: none !important;
 }
 
 .ant-statistic .ant-tag {

@@ -172,33 +172,33 @@ export default defineComponent({
     setNetwork(NetworkId.Stokenet, false, this.store.stokenetUrl);
   },
   mounted() {
-    //子菜单延时展开
+    //Submenu delay expansion
     setTimeout(() => {
-      //子菜单开闭
+      //Submenu open or close
       !this.store.menuFoldState && this.setOpenKeys();
     }, 200);
   },
   methods: {
-    //左侧菜单事件
+    //Left menu event
     menuClick(event: Event) {
-      //生成路由路径
+      //Generate routing path
       const path = `/${event.keyPath.join("/")}`;
-      //路由切换
+      //Route switching
       this.$router.push(path).then(() => {
-        //子菜单开闭
+        //Submenu open or close
         !this.store.menuFoldState && this.setOpenKeys();
       });
-      //存储全局路由路径
+      //Stores the global routing path
       this.store.setCurrentPath(path);
-      //存储全局菜单选中项
+      //Store global menu selections
       this.store.setSelectedKeys(event.keyPath);
     },
-    //菜单折叠
+    //Menu folding
     menufold() {
       this.store.setMenuFoldState(!this.store.menuFoldState);
       !this.store.menuFoldState && this.setOpenKeys();
     },
-    //子菜单开闭
+    //Submenu open or close
     setOpenKeys() {
       let openKeys = this.$route.path.split("/");
       //@ts-ignore

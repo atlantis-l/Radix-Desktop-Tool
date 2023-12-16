@@ -624,11 +624,8 @@ export default defineComponent({
       this.walletGenerator
         .generateWalletByPrivateKey(this.feePayerWalletPrivateKey)
         .then((wallet) => {
-          //扣费钱包
           this.feePayerWallet = wallet;
-          //关闭对话框
           this.openFeePayerModal = false;
-          //获取钱包XRD余额
           this.getXrdBalance(wallet.address);
         })
         .catch((_error) => {
@@ -1032,14 +1029,12 @@ export default defineComponent({
       this.networkChecker
         .checkResourcesOfAccounts([address])
         .then((resourcesOfAccounts) => {
-          //检索XRD代币信息
           const feePayerXrd = (
             resourcesOfAccounts.pop() as ResourcesOfAccount
           ).fungible.find((resource) => {
             const xrdAddress = selectXrdAddress(this.store.networkId);
             return resource.resourceAddress === xrdAddress;
           });
-          //扣费钱包的XRD余额
           this.feePayerXrdBalance = feePayerXrd
             ? formatNumber(feePayerXrd.amount as string)
             : "0";

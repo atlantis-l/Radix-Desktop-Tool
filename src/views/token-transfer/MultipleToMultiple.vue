@@ -643,7 +643,6 @@ export default defineComponent({
       this.walletGenerator
         .generateWalletByPrivateKey(this.senderPrivateKey)
         .then(async (wallet) => {
-          //转账列表索引
           const index = this.senderIndex;
 
           const fromWallet = this.customOptions[index].fromWallet;
@@ -656,7 +655,6 @@ export default defineComponent({
           }
 
           this.customOptions[index].fromWallet = wallet;
-          //关闭对话框
           this.openSenderModal = false;
 
           message.loading({
@@ -668,9 +666,7 @@ export default defineComponent({
           });
 
           try {
-            //不获取重复的地址
             if (!this.addressAndResourceMap.get(wallet.address)) {
-              //获取Sender代币信息
               const resourcesOfAccounts =
                 await this.networkChecker.checkResourcesOfAccounts([
                   wallet.address,
@@ -709,11 +705,8 @@ export default defineComponent({
       this.walletGenerator
         .generateWalletByPrivateKey(this.feePayerWalletPrivateKey)
         .then((wallet) => {
-          //扣费钱包
           this.feePayerWallet = wallet;
-          //关闭对话框
           this.openFeePayerModal = false;
-          //获取钱包XRD余额
           this.getXrdBalance(wallet.address);
         })
         .catch((_error) => {
@@ -744,7 +737,7 @@ export default defineComponent({
       }
 
       this.customOptions.push(customOption);
-      //将转账列表滚动到最后一个元素处
+
       this.scrollContentToBottom();
     },
     async estimateFee() {
@@ -882,7 +875,6 @@ export default defineComponent({
           }
         });
 
-        //清除没有内容的代币信息
         option.transferInfos = tempInfos;
 
         tempInfos.length &&
@@ -896,7 +888,6 @@ export default defineComponent({
     scrollContentToBottom() {
       setTimeout(() => {
         //@ts-ignore
-        //将转账列表滚动到最后一个元素处
         this.$refs.content.$el.scrollTo({
           left: 0,
           behavior: "smooth",
@@ -1044,14 +1035,12 @@ export default defineComponent({
       this.networkChecker
         .checkResourcesOfAccounts([address])
         .then((resourcesOfAccounts) => {
-          //检索XRD代币信息
           const feePayerXrd = (
             resourcesOfAccounts.pop() as ResourcesOfAccount
           ).fungible.find((resource) => {
             const xrdAddress = selectXrdAddress(this.store.networkId);
             return resource.resourceAddress === xrdAddress;
           });
-          //扣费钱包的XRD余额
           this.feePayerXrdBalance = feePayerXrd
             ? formatNumber(feePayerXrd.amount as string)
             : "0";
@@ -1169,9 +1158,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    //初始化转账列表
     this.addTransfer();
-    //初始化代币选项
     this.tokenOptions.push(
       {
         label: this.label.ftLabel,

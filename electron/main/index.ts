@@ -15,10 +15,10 @@ app.commandLine.appendSwitch("js-flags", "--expose-gc");
 setupTitlebar();
 
 // ---------------------------- DEFAULT ---------------------------- //
-//屏蔽 `内存溢出`提示
+//Mask 'out of memory' prompt
 EventEmitter.setMaxListeners(0);
 
-// -------------- 目录构建结构 -------------- //
+// -------------- Structure --------------- //
 // ├─┬ dist-electron                        //
 // │ ├─┬ main                               //
 // │ │ └── index.js    > Electron-Main      //
@@ -26,7 +26,7 @@ EventEmitter.setMaxListeners(0);
 // │   └── index.js    > Preload-Scripts    //
 // ├─┬ dist                                 //
 // │ └── index.html    > Electron-Renderer  //
-// -------------- 目录构建结构 -------------- //
+// -------------- Structure --------------- //
 
 const PLATFORM = process.platform;
 
@@ -401,18 +401,18 @@ let config: Config;
 let flag = false;
 
 app.whenReady().then(() => {
-  //初始化参数
+  //Parameter initialization
   if (existsSync(CONFIG_FILE_PATH)) {
-    //加载本地参数
+    //Load local data
     config = JSON.parse(readFileSync(CONFIG_FILE_PATH).toString("utf8"));
   } else {
-    //加载默认参数
+    //Load default parameters
     config = DEFAULT_CONFIG;
-    //语言参数设置
+    //Language setting
     if (app.getSystemLocale().toLowerCase().includes("zh")) {
       config.language = "zh";
     }
-    //参数写入本地
+    //Parameter write to local
     writeFileSync(CONFIG_FILE_PATH, JSON.stringify(config));
   }
 

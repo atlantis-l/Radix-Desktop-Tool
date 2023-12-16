@@ -4,22 +4,6 @@
   "i18n-ally.localesPaths": ["src/langs"],
 
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.sourceLanguage": "zh",
-  "i18n-ally.extract.ignoredByFiles": {
-    "src/views/HistoryCheck.vue": ["changeList[0]['entity_address']"],
-    "src/routes/index.ts": ["XRDFaucet"],
-    "src/views/token-transfer/MultipleToMultiple.vue": ["XRD Balance"],
-    "src/views/token-transfer/MultipleToSingle.vue": ["XRD Balance"],
-    "src/views/token-transfer/SingleToMultiple.vue": ["XRD Balance"],
-    "src/views/ManifestExecute.vue": [
-      "CALL_METHOD\\n    Address(\"account",
-      "XRD Balance",
-      "String",
-      "Parsed",
-      ";"
-    ],
-    "src/views/PackageDeploy.vue": ["NFT ID", "XRD Balance", "Parsed"],
-    "src/views/TokenCreate.vue": ["XRD Balance", "NFT ID"]
-  },
+  "i18n-ally.sourceLanguage": "en",
   "i18n-ally.extract.autoDetect": true
 }

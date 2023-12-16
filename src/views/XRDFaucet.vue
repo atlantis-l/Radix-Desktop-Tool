@@ -155,14 +155,14 @@ export default defineComponent({
       this.networkChecker
         .checkResourcesOfAccounts([this.address])
         .then((resourcesOfAccounts) => {
-          //检索XRD代币信息
+          //Retrieve XRD token information
           const xrd = (
             resourcesOfAccounts.pop() as ResourcesOfAccount
           ).fungible.find((resource) => {
             const xrdAddress = selectXrdAddress(2);
             return resource.resourceAddress === xrdAddress;
           });
-          //扣费钱包的XRD余额
+          //XRD balance of the deducted wallet
           this.xrdBalance = xrd ? (xrd.amount as string) : "0";
 
           message.success({

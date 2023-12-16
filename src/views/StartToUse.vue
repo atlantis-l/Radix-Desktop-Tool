@@ -51,9 +51,9 @@
         <h2>Donation</h2>
       </div>
 
-      <pre><code class="fenced-code-block language-shell"><span class="custom-span" text="Radix">Radix</span> : account_rdx1296zfsm5jza4h86mp48dfm2dqpluecyx880zazgxrp6shsf0shk3cy
+      <pre><code class="fenced-code-block language-shell"><span class="custom-span" text="Radix">Radix</span>: account_rdx1296zfsm5jza4h86mp48dfm2dqpluecyx880zazgxrp6shsf0shk3cy
 
-<span class="custom-span" text="Ethereum">Ethereum</span> : 0x6eafbeab09A6b0710063f7F1f076436A6b563ccf</code></pre>
+<span class="custom-span" text="Ethereum">Ethereum</span>: 0x6eafbeab09A6b0710063f7F1f076436A6b563ccf</code></pre>
     </article>
   </a-layout>
 </template>

@@ -51,6 +51,6 @@ Radix: account_rdx1296zfsm5jza4h86mp48dfm2dqpluecyx880zazgxrp6shsf0shk3cy
 Ethereum: 0x6eafbeab09A6b0710063f7F1f076436A6b563ccf
 ```
 
-## disclaimer
+## Disclaimer
 
 > This tool is only used for learning and communication, and the risk of using this tool is solely borne by the user, and the author of the tool does not assume any responsibility.

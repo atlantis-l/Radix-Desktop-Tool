@@ -11,50 +11,45 @@
         style="user-select: none"
       />
 
-      <h2
-        align="center"
-        class="custom-span"
-        text="「 Radix 工具 」"
-        v-if="store.language === 'zh'"
-      >
-        「 Radix 工具 」
-      </h2>
+      <div v-if="store.language === 'zh'">
+        <h2 align="center" class="custom-span" text="「 Radix 工具 」">
+          「 Radix 工具 」
+        </h2>
 
-      <h2 align="center" class="custom-span" text="「 Radix Tool 」" v-else>
-        「 Radix Tool 」
-      </h2>
+        <h3 align="center">
+          一个可以与
+          <span
+            class="here"
+            @click="openExternalLink('https://www.radixdlt.com/')"
+            >Radix</span
+          >
+          网络交互的工具
+        </h3>
 
-      <h3 align="center" v-if="store.language === 'zh'">
-        一个可以与
-        <span
-          class="here"
-          @click="openExternalLink('https://www.radixdlt.com/')"
-          >Radix</span
-        >
-        网络交互的工具
-      </h3>
+        <pre><code class="fenced-code-block language-shell" >使用工具时所需了解的基本概念可以在<span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">这里</span>找到</code></pre>
 
-      <h3 align="center" v-else>
-        A tool that can interact with
-        <span
-          class="here"
-          @click="openExternalLink('https://www.radixdlt.com/')"
-          >Radix</span
-        >
-        Network
-      </h3>
+        <h2>捐赠</h2>
+      </div>
 
-      <pre
-        v-if="store.language === 'zh'"
-      ><code class="fenced-code-block language-shell" >使用工具时所需了解的基本概念可以在 <span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">这里</span> 找到</code></pre>
+      <div v-else>
+        <h2 align="center" class="custom-span" text="「 Radix Tool 」">
+          「 Radix Tool 」
+        </h2>
 
-      <pre
-        v-else
-      ><code class="fenced-code-block language-shell" >The basic concepts need to know when using the tool can be found <span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">here</span></code></pre>
+        <h3 align="center">
+          A tool that can interact with
+          <span
+            class="here"
+            @click="openExternalLink('https://www.radixdlt.com/')"
+            >Radix</span
+          >
+          Network
+        </h3>
 
-      <h2 v-if="store.language === 'zh'">捐赠</h2>
+        <pre><code class="fenced-code-block language-shell" >The basic concepts need to know when using the tool can be found <span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">here</span></code></pre>
 
-      <h2 v-else>Donation</h2>
+        <h2>Donation</h2>
+      </div>
 
       <pre><code class="fenced-code-block language-shell"><span class="custom-span" text="Radix">Radix</span> : account_rdx1296zfsm5jza4h86mp48dfm2dqpluecyx880zazgxrp6shsf0shk3cy
 

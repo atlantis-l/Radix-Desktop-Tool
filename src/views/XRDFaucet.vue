@@ -135,6 +135,13 @@ export default defineComponent({
       }, 5000);
     },
     getXrdBalance() {
+      if (
+        !this.address.trim().length ||
+        !this.address.trim().startsWith("account")
+      ) {
+        return;
+      }
+
       const key = "XRD Balance";
 
       message.loading({

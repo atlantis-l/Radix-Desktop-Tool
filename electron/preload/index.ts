@@ -252,5 +252,7 @@ contextBridge.exposeInMainWorld("RadixTool", {
     titleBar.refreshMenu();
   },
   getFileBuffer: (path: string) => ipcRenderer.invoke("getFileBuffer", path),
+  openExternalLink: (url: string) =>
+    ipcRenderer.invoke("openExternalLink", url),
 });
 // ---------------------------- CUSTOM ---------------------------- //

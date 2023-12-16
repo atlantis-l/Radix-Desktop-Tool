@@ -3,7 +3,7 @@ import { EventEmitter } from "node:stream";
 import { homedir, release } from "node:os";
 import contextMenu from "electron-context-menu";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { app, BrowserWindow, ipcMain, Menu, MenuItem } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, MenuItem, shell } from "electron";
 import {
   attachTitlebarToWindow,
   setupTitlebar,
@@ -440,6 +440,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle("getFileBuffer", (_event, path) => {
     return readFileSync(path);
+  });
+
+  ipcMain.handle("openExternalLink", (_event, url) => {
+    shell.openExternal(url);
   });
 
   createWindow();

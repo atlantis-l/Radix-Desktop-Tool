@@ -21,4 +21,5 @@ declare interface RadixTool {
   };
   translate: (symbol: "en" | "zh") => Promise<void>;
   getFileBuffer: (path: string) => Promise<Buffer>;
+  openExternalLink: (url: string) => Promise<void>;
 }

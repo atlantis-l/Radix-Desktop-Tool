@@ -9,7 +9,11 @@
           :collapsed="store.menuFoldState"
         >
           <div id="logo">
-            <img src="/electron.png" height="80" draggable="false" />
+            <img
+              draggable="false"
+              src="/electron.png"
+              :height="store.menuFoldState ? 48 : 80"
+            />
           </div>
 
           <!------------------------ Menu ------------------------>
@@ -399,6 +403,10 @@ textarea::-webkit-scrollbar {
 #logo {
   text-align: center !important;
   margin: 10px 0 6px 0 !important;
+}
+
+#logo img {
+  transition: all 0.2s ease-in-out !important;
 }
 
 body {

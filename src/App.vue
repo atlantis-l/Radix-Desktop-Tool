@@ -9,7 +9,7 @@
           :collapsed="store.menuFoldState"
         >
           <div id="logo">
-            <img src="/electron.png" height="56" />
+            <img src="/electron.png" height="80" draggable="false" />
           </div>
 
           <!------------------------ Menu ------------------------>
@@ -398,17 +398,7 @@ textarea::-webkit-scrollbar {
 /* ************************* App.vue ************************* */
 #logo {
   text-align: center !important;
-  margin: 15px 0 11px 0 !important;
-}
-
-.ant-float-btn-body {
-  transition: box-shadow 0.4s !important;
-  box-shadow: 0 0 7px #40549d !important;
-  background-image: linear-gradient(35deg, #1dddbf, #052cc0) !important;
-}
-
-.ant-float-btn-body:hover {
-  box-shadow: 7px 7px 17px #40549d !important;
+  margin: 10px 0 6px 0 !important;
 }
 
 body {

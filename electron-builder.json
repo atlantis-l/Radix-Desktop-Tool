@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "indi.atlantis-l.app.radix-desktop-tool",
   "asar": true,
   "productName": "Radix Tool",

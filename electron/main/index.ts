@@ -319,6 +319,7 @@ async function createWindow() {
   win = new BrowserWindow({
     width: 1100,
     height: 700,
+    frame: false,
     resizable: false,
     titleBarStyle: "hidden",
     backgroundColor: "#000",
@@ -328,6 +329,7 @@ async function createWindow() {
       spellcheck: false,
       nodeIntegrationInWorker: true,
     },
+    icon: join(process.env.PUBLIC, "electron.png"),
   });
 
   attachTitlebarToWindow(win);

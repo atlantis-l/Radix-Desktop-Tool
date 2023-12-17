@@ -28,6 +28,8 @@ npm run dev
 npm run build-win
 # MacOS
 npm run build-mac
+# Linux
+npm run build-linux
 # 生成的可执行文件存放在release目录
 ```
 

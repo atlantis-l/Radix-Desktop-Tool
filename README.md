@@ -28,6 +28,8 @@ npm run dev
 npm run build-win
 # MacOS
 npm run build-mac
+# Linux
+npm run build-linux
 # The resulting executable is stored in the release directory
 ```
 

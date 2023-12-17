@@ -10,6 +10,14 @@
     "target": ["dmg"],
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
   },
+  "dmg": {
+    "iconSize": 100,
+    "iconTextSize": 16,
+    "window": {
+      "width": 530,
+      "height": 390
+    }
+  },
   "win": {
     "target": ["portable"],
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"

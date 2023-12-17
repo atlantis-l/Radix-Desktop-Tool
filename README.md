@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-## Generate executable files (EXE file, DMG file)
+## Generate executable files
 
 ```shell
 # Windows

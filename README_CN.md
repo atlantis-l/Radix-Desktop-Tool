@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-## 生成可执行文件(EXE 文件、DMG 文件)
+## 生成可执行文件
 
 ```shell
 # Windows

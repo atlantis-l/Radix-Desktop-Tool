@@ -22,7 +22,7 @@
     "build-mac": "prettier . --write && vue-tsc --noEmit && export VITE_CJS_IGNORE_WARNING=true && export CSC_IDENTITY_AUTO_DISCOVERY=false && vite build && electron-builder --mac --x64 --arm64",
     "build-win": "prettier . --write && vue-tsc --noEmit && export VITE_CJS_IGNORE_WARNING=true && export CSC_IDENTITY_AUTO_DISCOVERY=false && vite build && electron-builder --win --x64 --arm64",
     "build-linux": "prettier . --write && vue-tsc --noEmit && export VITE_CJS_IGNORE_WARNING=true && export CSC_IDENTITY_AUTO_DISCOVERY=false && vite build && electron-builder --linux --x64 --arm64",
-    "build-m": "electron-builder --mac --x64 --arm64",
+    "build-m": "export CSC_IDENTITY_AUTO_DISCOVERY=false && electron-builder --mac --x64 --arm64",
     "build-w": "electron-builder --win --x64 --arm64",
     "build-l": "electron-builder --linux --x64 --arm64"
   },

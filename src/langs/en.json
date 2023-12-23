@@ -28,6 +28,9 @@
     "PackageDeploy": {
       "title": "Package Deploy"
     },
+    "AddressQRCode": {
+      "title": "Address QRCode"
+    },
     "XRDFaucet": {
       "title": "XRD Faucet"
     },
@@ -409,6 +412,14 @@
         "gateway": "Gateway",
         "language": "Language (语言)",
         "currentLanguage": "Current Language"
+      }
+    },
+    "AddressQRCode": {
+      "template": {
+        "input": {
+          "addonbefore": "Address",
+          "placeholder": "Enter Address"
+        }
       }
     }
   },

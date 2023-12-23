@@ -28,6 +28,9 @@
     "PackageDeploy": {
       "title": "代码部署"
     },
+    "AddressQRCode": {
+      "title": "地址转码"
+    },
     "XRDFaucet": {
       "title": "XRD领取"
     },
@@ -409,6 +412,14 @@
         },
         "language": "语言 (Language)",
         "currentLanguage": "当前语言"
+      }
+    },
+    "AddressQRCode": {
+      "template": {
+        "input": {
+          "addonbefore": "地址",
+          "placeholder": "输入地址"
+        }
       }
     }
   },

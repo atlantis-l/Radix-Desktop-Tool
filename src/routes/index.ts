@@ -68,6 +68,12 @@ const router = createRouter({
       component: View.WalletGenerate,
     },
     {
+      name: "AddressQRCode",
+      path: "/AddressQRCode",
+      icon: "AppstoreTwoTone",
+      component: View.AddressQRCode,
+    },
+    {
       name: "HistoryCheck",
       path: "/HistoryCheck",
       icon: "ClockCircleTwoTone",

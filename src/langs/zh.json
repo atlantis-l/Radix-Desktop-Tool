@@ -222,7 +222,8 @@
           "title": "资产变化",
           "txFee": "交易费用",
           "withdraw": "取出",
-          "deposit": "存入"
+          "deposit": "存入",
+          "newEntities": "创建的实体"
         },
         "content": {
           "message": "消息"

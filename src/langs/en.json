@@ -225,7 +225,8 @@
           "deposit": "Deposit",
           "title": "Asset Changes",
           "txFee": "Transaction Fee",
-          "withdraw": "Withdraw"
+          "withdraw": "Withdraw",
+          "newEntities": "Created Entities"
         }
       },
       "script": {

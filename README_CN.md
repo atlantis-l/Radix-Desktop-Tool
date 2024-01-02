@@ -45,6 +45,12 @@ npm run build-linux
 
 ![5](public/screenshots/zh/5.png)
 
+![6](public/screenshots/zh/6.png)
+
+![7](public/screenshots/zh/7.png)
+
+![8](public/screenshots/zh/8.png)
+
 ## 捐赠
 
 ```shell

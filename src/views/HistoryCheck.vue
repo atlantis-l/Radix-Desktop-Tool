@@ -32,6 +32,47 @@
         class="modal-div"
         ref="content"
       >
+        <a-row v-if="newEntities">
+          <a-card
+            class="view-max-width"
+            :title="$t('View.HistoryCheck.template.modal.newEntities')"
+          >
+            <template v-for="(entityAddress, index) in newEntities">
+              <a-card
+                :style="{
+                  marginTop: index ? `20px !important` : `0`,
+                }"
+                class="view-max-width"
+                hoverable
+              >
+                <a-row>
+                  <a-col>
+                    <a-tag color="blue">{{
+                      entityAddress
+                        .split("_")[0]
+                        .split("")
+                        .map((char: string, index: number) => {
+                          return index ? char : char.toUpperCase();
+                        })
+                        .join("")
+                    }}</a-tag>
+                  </a-col>
+                </a-row>
+
+                <a-row class="no-margin-row">
+                  <a-col>
+                    <a-tag
+                      class="view-tag-cursor-pointer"
+                      @click="copy(entityAddress as string)"
+                      >{{ entityAddress }}</a-tag
+                    >
+                  </a-col>
+                </a-row>
+              </a-card>
+            </template>
+          </a-card>
+        </a-row>
+
         <template v-for="changeList in balanceChanges">
           <a-row v-if="changeList[0].type">
             <a-card
@@ -41,7 +82,7 @@
               <template v-for="(change, index) in changeList">
                 <a-row
                   :style="{
-                    'margin-top': index ? `20px !important` : `0`,
+                    marginTop: index ? `20px !important` : `0`,
                   }"
                   class="no-margin-row"
                 >
@@ -587,6 +628,23 @@ export default defineComponent({
     NETWORK_API() {
       return selectNetwork(this.store.networkId);
     },
+    newEntities() {
+      if (
+        this.transactionList[this.transactionIndex].receipt?.state_updates //@ts-ignore
+          ?.new_global_entities &&
+        this.transactionList[this.transactionIndex].receipt?.state_updates //@ts-ignore
+          ?.new_global_entities.length
+      ) {
+        return this.transactionList[
+          this.transactionIndex //@ts-ignore
+        ].receipt?.state_updates?.new_global_entities.map(
+          //@ts-ignore
+          (entity) => entity.entity_address,
+        );
+      }
+
+      return undefined;
+    },
     balanceChanges() {
       let fungible_fee_balance_changes =
         this.transactionList[this.transactionIndex].balance_changes
@@ -815,6 +873,7 @@ export default defineComponent({
             affected_global_entities_filter: [this.address.trim()],
             opt_ins: {
               balance_changes: true,
+              receipt_state_changes: true,
             },
           },
         })

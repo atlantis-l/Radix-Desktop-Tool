@@ -13,6 +13,9 @@
       "singleToMultiple": "一转多",
       "multipleToSingle": "多转一"
     },
+    "EntityCheck": {
+      "title": "实体查询"
+    },
     "HistoryCheck": {
       "title": "历史查询"
     },
@@ -420,6 +423,20 @@
         "input": {
           "addonbefore": "地址",
           "placeholder": "输入地址"
+        }
+      }
+    },
+    "EntityCheck": {
+      "template": {
+        "divider": {
+          "text": "实体数据"
+        }
+      },
+      "script": {
+        "message": {
+          "loading": "正在获取数据",
+          "success": "数据获取完成",
+          "error": "数据获取失败"
         }
       }
     }

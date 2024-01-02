@@ -13,6 +13,9 @@
       "singleToMultiple": "Single To Multiple",
       "multipleToSingle": "Multiple To Single"
     },
+    "EntityCheck": {
+      "title": "Entity Check"
+    },
     "HistoryCheck": {
       "title": "History Check"
     },
@@ -420,6 +423,20 @@
         "input": {
           "addonbefore": "Address",
           "placeholder": "Enter Address"
+        }
+      }
+    },
+    "EntityCheck": {
+      "template": {
+        "divider": {
+          "text": "Entity Data"
+        }
+      },
+      "script": {
+        "message": {
+          "loading": "Getting data",
+          "success": "Data acquisition completed",
+          "error": "Data acquisition failed"
         }
       }
     }

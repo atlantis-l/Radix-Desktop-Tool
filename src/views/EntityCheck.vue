@@ -28,7 +28,13 @@
         <a-row>
           <a-col span="24">
             <!-- @vue-ignore -->
-            <vue-json-pretty showIcon showLength showLineNumber :data="data" />
+            <vue-json-pretty
+              id="json"
+              showIcon
+              showLength
+              showLineNumber
+              :data="data"
+            />
           </a-col>
         </a-row>
       </template>

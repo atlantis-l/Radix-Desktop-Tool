@@ -235,6 +235,10 @@ textarea::-webkit-scrollbar {
   display: none !important;
 }
 
+#json * {
+  font-family: "SF-Mono-Regular" !important;
+}
+
 .cet-container {
   overflow: unset !important;
 }

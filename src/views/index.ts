@@ -1,6 +1,7 @@
 import XRDFaucet from "./XRDFaucet.vue";
 import StartToUse from "./StartToUse.vue";
 import TokenCreate from "./TokenCreate.vue";
+import EntityCheck from "./EntityCheck.vue";
 import HistoryCheck from "./HistoryCheck.vue";
 import LocalSettings from "./LocalSettings.vue";
 import PackageDeploy from "./PackageDeploy.vue";
@@ -12,6 +13,7 @@ export {
   XRDFaucet,
   StartToUse,
   TokenCreate,
+  EntityCheck,
   HistoryCheck,
   LocalSettings,
   PackageDeploy,

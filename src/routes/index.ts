@@ -74,6 +74,12 @@ const router = createRouter({
       component: View.AddressQRCode,
     },
     {
+      name: "EntityCheck",
+      path: "/EntityCheck",
+      icon: "BuildTwoTone",
+      component: View.EntityCheck,
+    },
+    {
       name: "HistoryCheck",
       path: "/HistoryCheck",
       icon: "ClockCircleTwoTone",

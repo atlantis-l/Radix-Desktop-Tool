@@ -4,6 +4,8 @@
 
 <h3 align="center">中文 | <a href="README.md">English</a> | <a href="https://github.com/atlantis-l/Radix-Desktop-Tool/releases">下载</a></h3>
 
+<h3 align="center"><a href="https://t.me/radix_desktop_tool">加入电报</a></h3>
+
 <h2 align="center">「 Radix 工具 」</h2>
 
 <h3 align="center">

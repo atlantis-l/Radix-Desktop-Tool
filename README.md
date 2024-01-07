@@ -4,6 +4,8 @@
 
 <h3 align="center">English | <a href="README_CN.md">中文</a> | <a href="https://github.com/atlantis-l/Radix-Desktop-Tool/releases">Download</a></h3>
 
+<h3 align="center"><a href="https://t.me/radix_desktop_tool">Join Telegram</a></h3>
+
 <h2 align="center">「 Radix Tool 」</h2>
 
 <h3 align="center">

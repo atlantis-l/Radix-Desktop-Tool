@@ -14,7 +14,7 @@
 
 > 使用工具时所需了解的基本概念可以在[这里](https://docs.radixdlt.com/)找到
 
-## 运行
+## 运行程序
 
 ```shell
 # 第一步
@@ -23,7 +23,7 @@ npm install
 npm run dev
 ```
 
-## 生成可执行文件
+## 构建应用
 
 ```shell
 # Windows
@@ -35,7 +35,7 @@ npm run build-linux
 # 生成的可执行文件存放在release目录
 ```
 
-## 界面展示
+## 应用展示
 
 ![1](public/screenshots/zh/1.png)
 

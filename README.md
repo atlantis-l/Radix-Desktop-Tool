@@ -23,7 +23,7 @@ npm install
 npm run dev
 ```
 
-## Generate executable files
+## Build App
 
 ```shell
 # Windows
@@ -35,7 +35,7 @@ npm run build-linux
 # The resulting executable is stored in the release directory
 ```
 
-## Screenshot display
+## App Display
 
 ![1](public/screenshots/en/1.png)
 

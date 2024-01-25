@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "@atlantis-l/radix-tool": "^0.8.3",
+    "@atlantis-l/radix-tool": "^0.8.4",
     "ant-design-vue": "^4.0.7",
     "custom-electron-titlebar": "^4.2.7",
     "electron-context-menu": "^3.6.1",

@@ -188,11 +188,13 @@
             "importWallets": {
               "button": "Import Wallet"
             },
-            "simTx": "Whether to perform transaction simulation when sending transaction"
+            "simTx": "Whether to perform transaction simulation when sending transaction",
+            "template": "Template"
           },
           "modal": {
             "transactionProgress": "Transaction Progress"
-          }
+          },
+          "optional": "optional"
         }
       },
       "MultipleToSingle": {
@@ -222,7 +224,8 @@
           "text": "Transaction List"
         },
         "content": {
-          "message": "Message"
+          "message": "Message",
+          "affectedEntities": "Affected Entities"
         },
         "modal": {
           "deposit": "Deposit",
@@ -252,9 +255,9 @@
         "privateKey": "Private Key"
       },
       "template": {
-        "amount": "Wallet Amount",
+        "amount": "Number of wallets generated",
         "create": "Generate",
-        "placeholder": "Integer"
+        "placeholder": "Enter the number of wallets"
       }
     },
     "TokenCreate": {
@@ -430,7 +433,8 @@
       "template": {
         "divider": {
           "text": "Entity Data"
-        }
+        },
+        "check": "Check"
       },
       "script": {
         "message": {

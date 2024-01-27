@@ -173,7 +173,8 @@
               "button": "导入钱包"
             },
             "dataNotValid": "信息输入不完整",
-            "simTx": "发送交易时是否进行交易模拟"
+            "simTx": "发送交易时是否进行交易模拟",
+            "template": "导入格式"
           },
           "divider": {
             "text": "转账信息"
@@ -187,7 +188,8 @@
             "tokenTip": "只能发送同质化代币(FT)",
             "amountPlaceholder": "代币数量",
             "amountTip": "选填(不填则以导入数据为准)"
-          }
+          },
+          "optional": "可选项"
         },
         "script": {
           "noPreviewFee": "未预估费用",
@@ -229,7 +231,8 @@
           "newEntities": "创建的实体"
         },
         "content": {
-          "message": "消息"
+          "message": "消息",
+          "affectedEntities": "影响实体"
         }
       },
       "script": {
@@ -247,8 +250,8 @@
     "WalletGenerate": {
       "template": {
         "create": "创 建",
-        "amount": "钱包数量",
-        "placeholder": "整数"
+        "amount": "已生成的钱包数量",
+        "placeholder": "输入钱包数量"
       },
       "script": {
         "address": "地址",
@@ -430,7 +433,8 @@
       "template": {
         "divider": {
           "text": "实体数据"
-        }
+        },
+        "check": "查 询"
       },
       "script": {
         "message": {

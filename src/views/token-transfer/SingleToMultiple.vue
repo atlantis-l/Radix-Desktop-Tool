@@ -42,16 +42,12 @@
           )
         "
       >
-        <a-input
+        <a-textarea
           allowClear
           ref="transactionMessage"
-          @pressEnter="processTransaction"
           v-model:value="transactionMessage"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.addonBefore`,
-            )
-          "
+          style="margin: 12px 0 8px 0"
+          :autoSize="{ minRows: 10, maxRows: 10 }"
           :placeholder="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.placeholder`,
@@ -112,6 +108,26 @@
           :percent="progressPercent"
         />
       </a-modal>
+      <a-modal centered :footer="null" v-model:open="openTemplateModal">
+        {{ $t(`View.WalletGenerate.script.address`) }}[,......]({{
+          $t("View.TokenTransfer.SingleToMultiple.template.optional")
+        }})<br />
+        account_xxxxxx[,......]({{
+          $t("View.TokenTransfer.SingleToMultiple.template.optional")
+        }})<br />
+        account_xxxxxx[,......]({{
+          $t("View.TokenTransfer.SingleToMultiple.template.optional")
+        }})<br />
+        account_xxxxxx[,......]({{
+          $t("View.TokenTransfer.SingleToMultiple.template.optional")
+        }})<br />
+        account_xxxxxx[,......]({{
+          $t("View.TokenTransfer.SingleToMultiple.template.optional")
+        }})<br />
+        account_xxxxxx[,......]({{
+          $t("View.TokenTransfer.SingleToMultiple.template.optional")
+        }})<br />[......]
+      </a-modal>
     </div>
     <!------------------------ Modal Group ------------------------>
 
@@ -121,6 +137,16 @@
         <a-tooltip>
           <template #title>
             <span
+              style="cursor: pointer"
+              @click="
+                copy(
+                  feePayerAddress
+                    ? feePayerAddress
+                    : $t(
+                        `View.TokenTransfer.MultipleToMultiple.template.header.feePayer.feePayerAddress`,
+                      ),
+                )
+              "
               >{{
                 feePayerAddress
                   ? feePayerAddress
@@ -217,21 +243,40 @@
         </a-tooltip>
       </a-col>
       <a-col flex="1">
-        <a-upload name="file" :maxCount="1" :customRequest="uploadCallback">
-          <a-button
-            class="view-max-width custom-btn"
-            :text="
-              $t(
-                `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
-              )
-            "
-            >{{
-              $t(
-                `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
-              )
-            }}
-          </a-button>
-        </a-upload>
+        <a-tooltip color="white" placement="bottom">
+          <template #title>
+            <a-button
+              @click="openTemplateModal = !openTemplateModal"
+              class="view-max-width custom-btn"
+              :text="
+                $t(
+                  'View.TokenTransfer.SingleToMultiple.template.header.template',
+                )
+              "
+              >{{
+                $t(
+                  "View.TokenTransfer.SingleToMultiple.template.header.template",
+                )
+              }}
+            </a-button>
+          </template>
+
+          <a-upload name="file" :maxCount="1" :customRequest="uploadCallback">
+            <a-button
+              class="view-max-width custom-btn"
+              :text="
+                $t(
+                  `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
+                )
+              "
+              >{{
+                $t(
+                  `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
+                )
+              }}
+            </a-button>
+          </a-upload>
+        </a-tooltip>
       </a-col>
       <a-col flex="1" style="text-align: center; padding-top: 4px">
         <a-tooltip placement="bottom">
@@ -281,6 +326,16 @@
           <a-tooltip>
             <template #title>
               <span
+                style="cursor: pointer"
+                @click="
+                  copy(
+                    senderWallet
+                      ? senderWallet.address
+                      : $t(
+                          `View.TokenTransfer.MultipleToMultiple.template.content.sender.address`,
+                        ),
+                  )
+                "
                 >{{
                   senderWallet
                     ? senderWallet.address
@@ -347,7 +402,9 @@
                 <template #option="{ label, value }">
                   <a-tooltip placement="left">
                     <template #title>
-                      <span>{{ value }}</span>
+                      <span style="cursor: pointer" @click="copy(value)">{{
+                        value
+                      }}</span>
                     </template>
                     <span>{{ label }}</span>
                   </a-tooltip>
@@ -473,6 +530,7 @@ export default defineComponent({
       transactionMessage: "",
       openSenderModal: false,
       progressStatus: "normal",
+      openTemplateModal: false,
       openFeePayerModal: false,
       feePayerWalletPrivateKey: "",
       openConfirmTransaction: false,
@@ -847,7 +905,9 @@ export default defineComponent({
 
       const txMessage = this.transactionMessage.trim();
 
-      const currentEpoch = await getCurrentEpoch(this.store.networkId);
+      let currentEpoch = await getCurrentEpoch(this.store.networkId);
+
+      let startTime = Date.now();
 
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
@@ -859,6 +919,13 @@ export default defineComponent({
         const options = this.customOptions.slice(start, end);
 
         await sleep(i, 10, 4000);
+
+        const nowTime = Date.now();
+
+        if (startTime + 1000 * 60 * 5 < nowTime) {
+          startTime = nowTime;
+          currentEpoch = await getCurrentEpoch(this.store.networkId);
+        }
 
         this.store.worker.postMessage({
           action: "SingleToMultiple.sendCustom",
@@ -1105,6 +1172,8 @@ export default defineComponent({
           )} 」`,
           key,
         });
+
+        this.selectedToken = undefined;
       } catch (_e) {
         message.error({
           content: `「 ${this.$t(
@@ -1113,6 +1182,14 @@ export default defineComponent({
           key,
         });
       }
+    },
+    copy(text: string) {
+      navigator.clipboard.writeText(text).then(() => {
+        message.success({
+          content: `「 ${this.$t("View.HistoryCheck.script.copied")} 」`,
+          key: "copy",
+        });
+      });
     },
   },
   activated() {

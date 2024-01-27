@@ -42,16 +42,12 @@
           )
         "
       >
-        <a-input
+        <a-textarea
           allowClear
           ref="transactionMessage"
-          @pressEnter="processTransaction"
           v-model:value="transactionMessage"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.addonBefore`,
-            )
-          "
+          style="margin: 12px 0 8px 0"
+          :autoSize="{ minRows: 10, maxRows: 10 }"
           :placeholder="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.placeholder`,
@@ -108,6 +104,16 @@
         <a-tooltip>
           <template #title>
             <span
+              style="cursor: pointer"
+              @click="
+                copy(
+                  feePayerAddress
+                    ? feePayerAddress
+                    : $t(
+                        `View.TokenTransfer.MultipleToMultiple.template.header.feePayer.feePayerAddress`,
+                      ),
+                )
+              "
               >{{
                 feePayerAddress
                   ? feePayerAddress
@@ -751,10 +757,6 @@ export default defineComponent({
     async processTransaction() {
       this.openConfirmTransaction = false;
 
-      const result = await this.previewTransaction();
-
-      if (!result) return;
-
       this.sendTransaction();
     },
     async checkTx(txId: string) {
@@ -860,6 +862,14 @@ export default defineComponent({
 
       //@ts-ignore
       this.rpd = await radixTool.getFileBuffer(data.file.path);
+    },
+    copy(text: string) {
+      navigator.clipboard.writeText(text).then(() => {
+        message.success({
+          content: `「 ${this.$t("View.HistoryCheck.script.copied")} 」`,
+          key: "copy",
+        });
+      });
     },
   },
 });

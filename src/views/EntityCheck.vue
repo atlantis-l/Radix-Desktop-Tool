@@ -1,19 +1,24 @@
 <template>
   <a-layout class="view-layout" style="overflow: scroll !important">
     <!------------------------ Header ------------------------>
-    <a-row class="no-margin-row">
-      <a-col span="24">
+    <a-row class="no-margin-row" :gutter="gutter">
+      <a-col span="20" class="view-no-padding-left">
         <a-input
           allowClear
           ref="address"
-          :addonBefore="
-            $t(`View.HistoryCheck.template.header.input.addonBefore`)
-          "
           :placeholder="
             $t(`View.HistoryCheck.template.header.input.placeholder`)
           "
           v-model:value="address"
         />
+      </a-col>
+      <a-col span="4" class="view-no-padding-right">
+        <a-button
+          class="view-max-width custom-btn"
+          :text="$t('View.EntityCheck.template.check')"
+          @click="check"
+          >{{ $t("View.EntityCheck.template.check") }}</a-button
+        >
       </a-col>
     </a-row>
     <!------------------------ Header ------------------------>
@@ -57,6 +62,7 @@ export default defineComponent({
   },
   data() {
     return {
+      gutter: 10,
       address: "",
       store: store(),
       data: undefined as object | undefined,
@@ -68,16 +74,7 @@ export default defineComponent({
       this.networkChecker.networkId = this.store.networkId;
     },
     address() {
-      if (this.address.length && this.address.includes("_")) {
-        message.loading({
-          duration: 0,
-          content: `「 ${this.$t(
-            "View.EntityCheck.script.message.loading",
-          )} 」`,
-          key: "checkEntity",
-        });
-        this.checkEntity();
-      }
+      this.check();
     },
   },
   methods: {
@@ -104,6 +101,24 @@ export default defineComponent({
           });
         });
     },
+    check() {
+      if (this.address.trim().length && this.address.includes("_")) {
+        message.loading({
+          duration: 0,
+          content: `「 ${this.$t(
+            "View.EntityCheck.script.message.loading",
+          )} 」`,
+          key: "checkEntity",
+        });
+        this.checkEntity();
+      }
+    },
+  },
+  activated() {
+    setTimeout(() => {
+      //@ts-ignore
+      this.$refs.address.focus();
+    }, 100);
   },
 });
 </script>

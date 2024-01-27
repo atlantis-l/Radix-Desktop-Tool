@@ -12,8 +12,18 @@
       />
 
       <div v-if="store.language === 'zh'">
-        <h2 align="center" class="custom-span" text="「 Radix 工具 」">
-          「 Radix 工具 」
+        <h2 align="center">
+          <span
+            class="custom-span"
+            text="「 Radix 工具 」"
+            style="cursor: pointer; user-select: none"
+            @click="
+              openExternalLink(
+                'https://github.com/atlantis-l/Radix-Desktop-Tool',
+              )
+            "
+            >「 Radix 工具 」</span
+          >
         </h2>
 
         <h3 align="center">
@@ -26,14 +36,27 @@
           网络交互的工具
         </h3>
 
-        <pre><code class="fenced-code-block language-shell" >使用工具时所需了解的基本概念可以在<span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">这里</span>找到</code></pre>
+        <pre><code class="fenced-code-block language-shell" >使用工具时所需了解的基本概念可以在<span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">这里</span>找到 「 <span
+            class="here"
+            @click="openExternalLink('https://t.me/radix_desktop_tool')"
+            >电报</span> 」</code></pre>
 
         <h2>捐赠</h2>
       </div>
 
       <div v-else>
-        <h2 align="center" class="custom-span" text="「 Radix Tool 」">
-          「 Radix Tool 」
+        <h2 align="center">
+          <span
+            class="custom-span"
+            text="「 Radix Tool 」"
+            style="cursor: pointer; user-select: none"
+            @click="
+              openExternalLink(
+                'https://github.com/atlantis-l/Radix-Desktop-Tool',
+              )
+            "
+            >「 Radix Tool 」</span
+          >
         </h2>
 
         <h3 align="center">
@@ -46,7 +69,10 @@
           Network
         </h3>
 
-        <pre><code class="fenced-code-block language-shell" >The basic concepts need to know when using the tool can be found <span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">here</span></code></pre>
+        <pre><code class="fenced-code-block language-shell" >The basic concepts need to know when using the tool can be found <span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">here</span> 「 <span
+            class="here"
+            @click="openExternalLink('https://t.me/radix_desktop_tool')"
+            >Telegram</span> 」</code></pre>
 
         <h2>Donation</h2>
       </div>

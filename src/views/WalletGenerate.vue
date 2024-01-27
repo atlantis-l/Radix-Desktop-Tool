@@ -1,13 +1,14 @@
 <template>
   <a-layout>
-    <a-row :gutter="gutter">
+    <div style="height: 60px" />
+
+    <a-row :gutter="gutter" justify="center">
       <a-col span="10" class="view-no-padding-left">
         <a-input
           ref="amount"
           allowClear
           v-model:value="amount"
           @pressEnter="createWallet"
-          :addonBefore="$t(`View.WalletGenerate.template.amount`)"
           :placeholder="$t(`View.WalletGenerate.template.placeholder`)"
         />
       </a-col>
@@ -20,12 +21,24 @@
         </a-button>
       </a-col>
     </a-row>
-    <a-row>
+
+    <div style="height: 80px" />
+
+    <a-row justify="center">
       <a-col>
-        <a-statistic
-          :value="fileData.data.length"
-          :title="$t(`View.WalletGenerate.template.amount`)"
-        />
+        <a-tag
+          style="font-size: 24px; padding: 10px; user-select: none"
+          color="blue"
+          >{{ $t(`View.WalletGenerate.template.amount`) }}</a-tag
+        >
+      </a-col>
+    </a-row>
+
+    <a-row justify="center">
+      <a-col>
+        <a-tag style="font-size: 24px; padding: 10px; user-select: none">{{
+          fileData.data.length
+        }}</a-tag>
       </a-col>
     </a-row>
   </a-layout>

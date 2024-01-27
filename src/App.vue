@@ -130,6 +130,7 @@
 import store from "./stores/store";
 import { defineComponent } from "vue";
 import { CreateIcon } from "./common";
+import { message } from "ant-design-vue";
 import { setNetwork, NetworkId } from "@atlantis-l/radix-tool";
 
 export default defineComponent({
@@ -139,6 +140,15 @@ export default defineComponent({
       store: store(),
       openKeys: undefined,
     };
+  },
+  watch: {
+    "store.networkId"(v) {
+      if (v === 1) {
+        message.success(`「 ${this.$t("Network.mainnet")} 」`);
+      } else if (v === 2) {
+        message.success(`「 ${this.$t("Network.stokenet")} 」`);
+      }
+    },
   },
   computed: {
     path() {

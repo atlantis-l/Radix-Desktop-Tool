@@ -42,16 +42,12 @@
           )
         "
       >
-        <a-input
+        <a-textarea
           allowClear
           ref="transactionMessage"
-          @pressEnter="sendTransaction"
           v-model:value="transactionMessage"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.addonBefore`,
-            )
-          "
+          style="margin: 12px 0 8px 0"
+          :autoSize="{ minRows: 10, maxRows: 10 }"
           :placeholder="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.placeholder`,
@@ -114,7 +110,9 @@
           <template #option="{ label, address }">
             <a-tooltip placement="left">
               <template #title>
-                <span>{{ address }}</span>
+                <span style="cursor: pointer" @click="copy(address)">{{
+                  address
+                }}</span>
               </template>
               <span>{{ label }}</span>
             </a-tooltip>
@@ -132,7 +130,11 @@
             <a-col flex="1" v-if="transferInfo.tokenType === 0">
               <a-tooltip placement="right">
                 <template #title>
-                  <span>{{ transferInfo.tokenAddress }}</span>
+                  <span
+                    style="cursor: pointer"
+                    @click="copy(transferInfo.tokenAddress)"
+                    >{{ transferInfo.tokenAddress }}</span
+                  >
                 </template>
                 <!-- @vue-ignore -->
                 <a-input
@@ -163,8 +165,13 @@
                 </a-select>
                 <a-tooltip placement="right">
                   <template #title>
-                    <span>{{ transferInfo.tokenAddress }}</span>
+                    <span
+                      style="cursor: pointer"
+                      @click="copy(transferInfo.tokenAddress)"
+                      >{{ transferInfo.tokenAddress }}</span
+                    >
                   </template>
+
                   <!-- @vue-ignore -->
                   <a-select
                     allowClear
@@ -182,7 +189,9 @@
                     <template #option="{ label }">
                       <a-tooltip placement="left">
                         <template #title>
-                          <span>{{ label }}</span>
+                          <span style="cursor: pointer" @click="copy(label)">{{
+                            label
+                          }}</span>
                         </template>
                         <span>{{ label }}</span>
                       </a-tooltip>
@@ -205,6 +214,16 @@
         <a-tooltip>
           <template #title>
             <span
+              style="cursor: pointer"
+              @click="
+                copy(
+                  feePayerAddress
+                    ? feePayerAddress
+                    : $t(
+                        `View.TokenTransfer.MultipleToMultiple.template.header.feePayer.feePayerAddress`,
+                      ),
+                )
+              "
               >{{
                 feePayerAddress
                   ? feePayerAddress
@@ -376,6 +395,16 @@
             <a-tooltip placement="left">
               <template #title>
                 <span
+                  style="cursor: pointer"
+                  @click="
+                    copy(
+                      option.fromWallet
+                        ? getFromWalletAddress(option)
+                        : $t(
+                            `View.TokenTransfer.MultipleToMultiple.template.content.sender.address`,
+                          ),
+                    )
+                  "
                   >{{
                     option.fromWallet
                       ? getFromWalletAddress(option)
@@ -794,10 +823,6 @@ export default defineComponent({
       this.isPreviewDone = false;
       this.openConfirmTransaction = false;
 
-      const previwResult = await this.previewTransaction();
-
-      if (!previwResult) return;
-
       const key = "sendTransaction";
 
       this.tokenSender.feeLock = this.feeLock;
@@ -1156,6 +1181,14 @@ export default defineComponent({
     getFromWalletAddress(option: CustomOption) {
       return option.fromWallet ? option.fromWallet.address : "";
     },
+    copy(text: string) {
+      navigator.clipboard.writeText(text).then(() => {
+        message.success({
+          content: `「 ${this.$t("View.HistoryCheck.script.copied")} 」`,
+          key: "copy",
+        });
+      });
+    },
   },
   mounted() {
     this.addTransfer();
@@ -1190,6 +1223,7 @@ export default defineComponent({
 
 .view-nft-selector {
   flex: 1 !important;
+  min-width: 50%;
 }
 
 .view-nft-selector-label {

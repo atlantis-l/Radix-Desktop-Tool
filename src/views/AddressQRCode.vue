@@ -1,10 +1,10 @@
 <template>
   <a-layout class="view-layout">
-    <a-row style="margin-bottom: 80px !important">
+    <a-row style="margin-bottom: 90px !important">
       <a-input
         allowClear
+        ref="address"
         v-model:value="address"
-        :addonBefore="$t('View.AddressQRCode.template.input.addonbefore')"
         :placeholder="$t('View.AddressQRCode.template.input.placeholder')"
       >
       </a-input>
@@ -51,6 +51,12 @@ export default defineComponent({
         width: 300,
       });
     },
+  },
+  activated() {
+    setTimeout(() => {
+      //@ts-ignore
+      this.$refs.address.focus();
+    }, 100);
   },
 });
 </script>

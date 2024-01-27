@@ -425,13 +425,10 @@
 
     <!------------------------ Header ------------------------>
     <a-row :gutter="gutter" class="no-margin-row">
-      <a-col span="12" class="view-no-padding-left">
+      <a-col span="8" class="view-no-padding-left">
         <a-input
           ref="address"
           allowClear
-          :addonBefore="
-            $t(`View.HistoryCheck.template.header.input.addonBefore`)
-          "
           :placeholder="
             $t(`View.HistoryCheck.template.header.input.placeholder`)
           "
@@ -440,6 +437,33 @@
       </a-col>
 
       <a-col span="4">
+        <a-button
+          class="view-max-width custom-btn"
+          :text="$t('View.EntityCheck.template.check')"
+          @click="check"
+          >{{ $t("View.EntityCheck.template.check") }}</a-button
+        >
+      </a-col>
+
+      <a-col span="4">
+        <a-button
+          @click="getPreviousPage"
+          class="view-max-width custom-btn"
+          :text="$t('View.HistoryCheck.template.header.previous')"
+          >{{ $t("View.HistoryCheck.template.header.previous") }}
+        </a-button>
+      </a-col>
+
+      <a-col span="4">
+        <a-button
+          @click="getNextPage"
+          class="view-max-width custom-btn"
+          :text="$t('View.HistoryCheck.template.header.next')"
+          >{{ $t("View.HistoryCheck.template.header.next") }}
+        </a-button>
+      </a-col>
+
+      <a-col span="4" class="view-no-padding-right">
         <a-select class="view-max-width" v-model:value="store.pageSize">
           <a-select-option :value="10"
             >{{ `10 ${$t("View.HistoryCheck.template.header.perPage")}` }}
@@ -454,23 +478,6 @@
             >{{ `100 ${$t("View.HistoryCheck.template.header.perPage")}` }}
           </a-select-option>
         </a-select>
-      </a-col>
-
-      <a-col span="4">
-        <a-button
-          @click="getPreviousPage"
-          class="view-max-width custom-btn"
-          :text="$t('View.HistoryCheck.template.header.previous')"
-          >{{ $t("View.HistoryCheck.template.header.previous") }}
-        </a-button>
-      </a-col>
-      <a-col span="4" class="view-no-padding-right">
-        <a-button
-          @click="getNextPage"
-          class="view-max-width custom-btn"
-          :text="$t('View.HistoryCheck.template.header.next')"
-          >{{ $t("View.HistoryCheck.template.header.next") }}
-        </a-button>
       </a-col>
     </a-row>
     <!------------------------ Header ------------------------>
@@ -511,15 +518,32 @@
                 </a-tooltip>
               </a-col>
 
+              <a-col>
+                <!-- @vue-skip -->
+                <a-tooltip placement="left">
+                  <template #title
+                    >{{
+                      $t("View.HistoryCheck.template.content.affectedEntities")
+                    }}
+                  </template>
+                  <a-tag>
+                    <template #icon>
+                      <BuildTwoTone two-tone-color="#eb2f96" /> </template
+                    >{{ affectedEntities(tx.balance_changes) }}
+                  </a-tag>
+                </a-tooltip>
+              </a-col>
+
+              <div style="width: 5px"></div>
+
               <a-col v-if="tx.message">
                 <!-- @vue-skip -->
                 <a-tooltip placement="right">
                   <template #title>{{ tx.message.content.value }} </template>
-                  <a-tag @click.stop="copy(tx.message.content.value as string)">
-                    <template #icon>
-                      <MessageTwoTone two-tone-color="#18b7ac" /> </template
-                    >{{ $t("View.HistoryCheck.template.content.message") }}
-                  </a-tag>
+                  <MessageTwoTone
+                    two-tone-color="#18b7ac"
+                    @click.stop="copy(tx.message.content.value as string)"
+                  />
                 </a-tooltip>
               </a-col>
 
@@ -570,6 +594,7 @@ import {
   FireTwoTone,
   MessageTwoTone,
   TagTwoTone,
+  BuildTwoTone,
 } from "@ant-design/icons-vue";
 import store from "../stores/store";
 import { defineComponent } from "vue";
@@ -577,6 +602,7 @@ import { formatNumber } from "../common";
 import { message } from "ant-design-vue";
 import {
   CommittedTransactionInfo,
+  TransactionBalanceChanges,
   TransactionFungibleFeeBalanceChangeType,
 } from "@radixdlt/babylon-gateway-api-sdk";
 import { RadixNetworkChecker, selectNetwork } from "@atlantis-l/radix-tool";
@@ -585,6 +611,7 @@ export default defineComponent({
   components: {
     TagTwoTone,
     FireTwoTone,
+    BuildTwoTone,
     MessageTwoTone,
     ClockCircleTwoTone,
     CheckCircleTwoTone,
@@ -609,12 +636,7 @@ export default defineComponent({
   },
   watch: {
     address() {
-      if (this.address.trim().length) {
-        this.getTransactionList();
-      } else {
-        this.currentCursor = undefined;
-        this.cursorList = [];
-      }
+      this.check();
     },
     "store.pageSize"(size: number) {
       this.store.setPageSize(size);
@@ -903,6 +925,35 @@ export default defineComponent({
             key,
           });
         });
+    },
+    affectedEntities(changes: TransactionBalanceChanges | null) {
+      if (!changes) return;
+
+      let entitySet = new Set<String>();
+
+      changes.fungible_balance_changes.forEach((change) => {
+        entitySet.add(change.entity_address);
+      });
+
+      changes.non_fungible_balance_changes.forEach((change) => {
+        entitySet.add(change.entity_address);
+      });
+
+      changes.fungible_fee_balance_changes.forEach((change) => {
+        if (change.entity_address.startsWith("consensusmanager")) return;
+
+        entitySet.add(change.entity_address);
+      });
+
+      return entitySet.size;
+    },
+    check() {
+      if (this.address.trim().length && this.address.includes("_")) {
+        this.getTransactionList();
+      } else {
+        this.currentCursor = undefined;
+        this.cursorList = [];
+      }
     },
   },
   activated() {

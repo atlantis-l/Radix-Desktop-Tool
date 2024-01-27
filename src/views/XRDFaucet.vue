@@ -15,8 +15,8 @@
       <a-col span="16" class="view-no-padding-left">
         <a-input
           allowClear
+          ref="address"
           v-model:value="address"
-          :addonBefore="$t('View.XRDFaucet.template.address')"
           :placeholder="$t('View.XRDFaucet.template.stokenetAddress')"
         />
       </a-col>
@@ -118,9 +118,18 @@ export default defineComponent({
         key: "getXRD",
       });
 
-      const currentEpoch = await getCurrentEpoch(NetworkId.Stokenet);
+      let currentEpoch = await getCurrentEpoch(NetworkId.Stokenet);
+
+      let startTime = Date.now();
 
       for (let i = 0; i < this.requestTimes; i++) {
+        const nowTime = Date.now();
+
+        if (startTime + 1000 * 60 * 5 < nowTime) {
+          startTime = nowTime;
+          currentEpoch = await getCurrentEpoch(NetworkId.Stokenet);
+        }
+
         await XRDFaucet.getXRD(this.address, currentEpoch);
         this.count++;
       }
@@ -173,6 +182,12 @@ export default defineComponent({
           });
         });
     },
+  },
+  activated() {
+    setTimeout(() => {
+      //@ts-ignore
+      this.$refs.address.focus();
+    }, 100);
   },
 });
 </script>

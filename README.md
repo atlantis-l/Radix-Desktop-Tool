@@ -53,6 +53,8 @@ npm run build-linux
 
 ![8](public/screenshots/en/8.png)
 
+![9](public/screenshots/en/9.png)
+
 ## Donation
 
 ```shell

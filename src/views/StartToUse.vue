@@ -5,7 +5,6 @@
         width="106"
         title="icon"
         draggable="false"
-        alt="electron.png"
         data-align="center"
         src="/electron.png"
         style="user-select: none"
@@ -80,6 +79,15 @@
       <pre><code class="fenced-code-block language-shell"><span class="custom-span" text="Radix">Radix</span>: account_rdx1296zfsm5jza4h86mp48dfm2dqpluecyx880zazgxrp6shsf0shk3cy
 
 <span class="custom-span" text="Ethereum">Ethereum</span>: 0x6eafbeab09A6b0710063f7F1f076436A6b563ccf</code></pre>
+
+      <h3 align="center" style="margin-top: -4px">
+        <img
+          width="155"
+          draggable="false"
+          src="/RunsOnRadix.webp"
+          style="user-select: none"
+        />
+      </h3>
     </article>
   </a-layout>
 </template>

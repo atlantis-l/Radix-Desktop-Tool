@@ -1,12 +1,20 @@
 <div align="center">
-    <img src="public/electron.png" alt="icon" width="106">
+    <img style="user-select:none" draggable="false" src="public/electron.png" width="106">
 </div>
 
-<h3 align="center">English | <a href="README_CN.md">中文</a> | <a href="https://github.com/atlantis-l/Radix-Desktop-Tool/releases">Download</a></h3>
-
-<h3 align="center"><a href="https://t.me/radix_desktop_tool">Join Telegram</a></h3>
+<div align="center">
+    <img style="user-select:none" draggable="false" src="public/RunsOnRadix.webp" width="155">
+</div>
 
 <h2 align="center">「 Radix Tool 」</h2>
+
+<h3 align="center">
+    English | 
+    <a href="README_CN.md">中文</a> | 
+    <a href="https://github.com/atlantis-l/Radix-Desktop-Tool/releases">
+        Download
+    </a> | <a href="https://t.me/radix_desktop_tool">Telegram</a>
+</h3>
 
 <h3 align="center">
     A tool that can interact with <a href="https://www.radixdlt.com/">Radix</a> Network

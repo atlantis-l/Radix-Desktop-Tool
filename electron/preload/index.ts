@@ -50,6 +50,8 @@ function useLoading() {
   const oSection = document.createElement("section");
   const reglScript = document.createElement("script");
   const startupScript = document.createElement("script");
+  const div = document.createElement("div");
+  div.classList.add("div");
 
   oLink.type = "text/css";
   oLink.rel = "stylesheet";
@@ -160,6 +162,7 @@ function useLoading() {
       const container = document.getElementsByClassName("cet-container")[0];
       container.removeChild(oCanvas);
       container.removeChild(oSection);
+      container.removeChild(div);
       safeDOM.remove(document.head, oLink);
       container.removeChild(reglScript);
       container.removeChild(oScript);
@@ -167,6 +170,7 @@ function useLoading() {
       if (app) app.style.opacity = "1";
     });
 
+    div.style.opacity = "0";
     oCanvas.style.opacity = "0";
     oSection.style.opacity = "0";
   };
@@ -177,6 +181,7 @@ function useLoading() {
 
       safeDOM.append(document.body, oSection, true);
       safeDOM.append(document.body, oCanvas, true);
+      safeDOM.append(document.body, div, true);
 
       safeDOM.append(document.body, reglScript, false);
       safeDOM.append(document.body, oScript, false);

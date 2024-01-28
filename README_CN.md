@@ -1,12 +1,20 @@
 <div align="center">
-    <img src="public/electron.png" alt="icon" width="106">
+    <img style="user-select:none" draggable="false" src="public/electron.png" width="106">
 </div>
 
-<h3 align="center">中文 | <a href="README.md">English</a> | <a href="https://github.com/atlantis-l/Radix-Desktop-Tool/releases">下载</a></h3>
-
-<h3 align="center"><a href="https://t.me/radix_desktop_tool">加入电报</a></h3>
+<div align="center">
+    <img style="user-select:none" draggable="false" src="public/RunsOnRadix.webp" width="155">
+</div>
 
 <h2 align="center">「 Radix 工具 」</h2>
+
+<h3 align="center">
+    中文 | 
+    <a href="README.md">English</a> | 
+    <a href="https://github.com/atlantis-l/Radix-Desktop-Tool/releases">
+        下载
+    </a> | <a href="https://t.me/radix_desktop_tool">电报</a>
+</h3>
 
 <h3 align="center">
     一个可以与 <a href="https://www.radixdlt.com/">Radix</a> 网络交互的工具

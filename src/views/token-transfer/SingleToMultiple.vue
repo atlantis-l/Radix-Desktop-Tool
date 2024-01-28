@@ -109,22 +109,24 @@
         />
       </a-modal>
       <a-modal centered :footer="null" v-model:open="openTemplateModal">
-        {{ $t(`View.WalletGenerate.script.address`) }}[,......]({{
+        {{ $t(`View.WalletGenerate.script.address`) }}[,{{
+          $t(`View.TokenTransfer.SingleToMultiple.template.content.amount`)
+        }}][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,......]({{
+        account_xxxxxx[,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,......]({{
+        account_xxxxxx[,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,......]({{
+        account_xxxxxx[,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,......]({{
+        account_xxxxxx[,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,......]({{
+        account_xxxxxx[,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />[......]
       </a-modal>

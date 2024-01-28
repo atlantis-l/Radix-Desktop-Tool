@@ -79,24 +79,22 @@ main::before {
 .startup-main::before {
   z-index: 101;
   content: "";
-  bottom: 3em;
+  bottom: 5em;
   height: 1.5em;
-  width: 1px;
-  background: #fff;
+  width: 2px;
+  background: transparent;
 }
 
-.startup-main::after {
-  content: "√ Radix";
+.div {
+  background: url(./RunsOnRadix.webp) no-repeat;
+  background-size: 155px;
+  height: 85.5px;
+  width: 155px;
+  left: 472.5px;
   position: fixed;
   bottom: 0;
-  width: 6em;
-  text-align: center;
   z-index: 101;
-  margin: 0 0 1.5em -3em;
-  font-size: 0.75em;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-indent: 2px;
+  transition: all 0.4s ease-in-out;
 }
 
 .content__top {

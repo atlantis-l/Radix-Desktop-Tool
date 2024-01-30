@@ -80,6 +80,12 @@ const router = createRouter({
       component: View.HistoryCheck,
     },
     {
+      name: "HexConvert",
+      path: "/HexConvert",
+      icon: "ControlTwoTone",
+      component: View.HexConvert,
+    },
+    {
       name: "AddressQRCode",
       path: "/AddressQRCode",
       icon: "AppstoreTwoTone",

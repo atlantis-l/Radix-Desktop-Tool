@@ -31,6 +31,9 @@
     "PackageDeploy": {
       "title": "代码部署"
     },
+    "HexConvert": {
+      "title": "格式转换"
+    },
     "AddressQRCode": {
       "title": "地址转码"
     },
@@ -442,6 +445,19 @@
           "success": "数据获取完成",
           "error": "数据获取失败"
         }
+      }
+    },
+    "HexConvert": {
+      "template": {
+        "input": {
+          "placeholder": "输入地址或十六进制字符串"
+        },
+        "result": {
+          "placeholder": "这里显示转换后的结果"
+        },
+        "tip": "Radix网络中的地址与十六进制格式互转",
+        "errorMainnetAddress": "错误的主网地址",
+        "errorStokenetAddress": "错误的测试网地址"
       }
     }
   },

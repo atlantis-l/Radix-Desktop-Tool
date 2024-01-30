@@ -31,6 +31,9 @@
     "PackageDeploy": {
       "title": "Package Deploy"
     },
+    "HexConvert": {
+      "title": "Format Convert"
+    },
     "AddressQRCode": {
       "title": "Address QRCode"
     },
@@ -442,6 +445,19 @@
           "success": "Data acquisition completed",
           "error": "Data acquisition failed"
         }
+      }
+    },
+    "HexConvert": {
+      "template": {
+        "input": {
+          "placeholder": "Enter address or hex string"
+        },
+        "result": {
+          "placeholder": "Show converted result here"
+        },
+        "tip": "The address and hexadecimal format in Radix Network converted to each other",
+        "errorMainnetAddress": "Wrong mainnet address",
+        "errorStokenetAddress": "Wrong stokenet address"
       }
     }
   },

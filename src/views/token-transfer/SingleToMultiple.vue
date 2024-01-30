@@ -16,7 +16,7 @@
         <a-input
           showCount
           allowClear
-          @pressEnter="setFeePayer"
+          @keyup.enter="setFeePayer"
           ref="feePayerWalletPrivateKey"
           v-model:value="feePayerWalletPrivateKey"
           :addonBefore="
@@ -46,6 +46,7 @@
           allowClear
           ref="transactionMessage"
           v-model:value="transactionMessage"
+          @keyup.ctrl.enter="processTransaction"
           style="margin: 12px 0 8px 0"
           :autoSize="{ minRows: 10, maxRows: 10 }"
           :placeholder="
@@ -68,7 +69,7 @@
           showCount
           allowClear
           ref="senderPrivateKey"
-          @pressEnter="setSender"
+          @keyup.enter="setSender"
           v-model:value="senderPrivateKey"
           :addonBefore="
             $t(
@@ -1003,7 +1004,9 @@ export default defineComponent({
         )} 」`,
       });
 
-      const currentEpoch = await getCurrentEpoch(this.store.networkId);
+      let currentEpoch = await getCurrentEpoch(this.store.networkId);
+
+      let startTime = Date.now();
 
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
@@ -1015,6 +1018,13 @@ export default defineComponent({
         const options = this.customOptions.slice(start, end);
 
         await sleep(i, 50, 1000);
+
+        const nowTime = Date.now();
+
+        if (startTime + 1000 * 60 * 5 < nowTime) {
+          startTime = nowTime;
+          currentEpoch = await getCurrentEpoch(this.store.networkId);
+        }
 
         this.store.worker.postMessage({
           action: "SingleToMultiple.sendCustomPreview",

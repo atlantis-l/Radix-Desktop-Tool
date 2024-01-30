@@ -158,6 +158,18 @@ function setMenu() {
       }),
     );
 
+    menu.append(
+      new MenuItem({
+        label: "窗口",
+        submenu: [
+          {
+            label: "最小化",
+            role: "minimize",
+          },
+        ],
+      }),
+    );
+
     contextMenu({
       labels: {
         copy: "复制",
@@ -262,6 +274,18 @@ function setMenu() {
           {
             label: "Dev Tools",
             role: "toggleDevTools",
+          },
+        ],
+      }),
+    );
+
+    menu.append(
+      new MenuItem({
+        label: "Window",
+        submenu: [
+          {
+            label: "Minimize",
+            role: "minimize",
           },
         ],
       }),

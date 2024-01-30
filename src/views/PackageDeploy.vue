@@ -46,6 +46,7 @@
           allowClear
           ref="transactionMessage"
           v-model:value="transactionMessage"
+          @keyup.ctrl.enter="processTransaction"
           style="margin: 12px 0 8px 0"
           :autoSize="{ minRows: 10, maxRows: 10 }"
           :placeholder="
@@ -71,7 +72,7 @@
               ref="resourceAddress"
               class="view-max-width"
               v-model:value="resourceAddress"
-              @pressEnter="openResourceModal = false"
+              @keyup.enter="openResourceModal = false"
               :addonBefore="
                 $t('View.HistoryCheck.template.header.input.addonBefore')
               "

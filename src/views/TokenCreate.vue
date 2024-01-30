@@ -16,7 +16,7 @@
         <a-input
           showCount
           allowClear
-          @pressEnter="setFeePayer"
+          @keyup.enter="setFeePayer"
           ref="feePayerWalletPrivateKey"
           v-model:value="feePayerWalletPrivateKey"
           :addonBefore="
@@ -46,6 +46,7 @@
           allowClear
           ref="transactionMessage"
           v-model:value="transactionMessage"
+          @keyup.ctrl.enter="processTransaction"
           style="margin: 12px 0 8px 0"
           :autoSize="{ minRows: 10, maxRows: 10 }"
           :placeholder="
@@ -72,7 +73,7 @@
               ref="resourceAddress"
               class="view-max-width"
               v-model:value="resourceAddress"
-              @pressEnter="openResourceModal = false"
+              @keyup.enter="openResourceModal = false"
               :addonBefore="
                 $t('View.HistoryCheck.template.header.input.addonBefore')
               "
@@ -91,7 +92,7 @@
               placeholder="NFT ID"
               v-model:value="nftId"
               class="view-max-width"
-              @pressEnter="openResourceModal = false"
+              @keyup.enter="openResourceModal = false"
             ></a-input>
           </a-col>
         </a-row>
@@ -482,7 +483,7 @@
       </a-row>
 
       <!-- @vue-skip -->
-      <div v-show="settingsMode">
+      <div v-if="settingsMode">
         <a-divider
           >「
           {{ $t("View.TokenCreate.template.content.divider.authRoles") }}

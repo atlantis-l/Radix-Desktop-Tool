@@ -16,6 +16,7 @@
         <a-input
           allowClear
           ref="address"
+          @keyup.enter="getXRD"
           v-model:value="address"
           :placeholder="$t('View.XRDFaucet.template.stokenetAddress')"
         />
@@ -27,7 +28,7 @@
           </template>
 
           <a-input-number
-            @pressEnter="getXRD"
+            @keyup.enter="getXRD"
             class="view-max-width"
             v-model:value="requestTimes"
           />

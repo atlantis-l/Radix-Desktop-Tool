@@ -1,17 +1,22 @@
 <template>
   <a-layout>
-    <div style="height: 60px" />
+    <div style="height: 90px" />
 
-    <a-row :gutter="gutter" justify="center">
-      <a-col span="10" class="view-no-padding-left">
+    <a-row justify="center">
+      <a-col span="8">
         <a-input
           ref="amount"
           allowClear
           v-model:value="amount"
-          @pressEnter="createWallet"
+          @keyup.enter="createWallet"
           :placeholder="$t(`View.WalletGenerate.template.placeholder`)"
         />
       </a-col>
+    </a-row>
+
+    <div style="height: 10px" />
+
+    <a-row justify="center">
       <a-col span="3">
         <a-button
           @click="createWallet"
@@ -22,7 +27,7 @@
       </a-col>
     </a-row>
 
-    <div style="height: 80px" />
+    <div style="height: 50px" />
 
     <a-row justify="center">
       <a-col>

@@ -9,6 +9,7 @@
           :placeholder="
             $t(`View.HistoryCheck.template.header.input.placeholder`)
           "
+          @keyup.enter="check"
           v-model:value="address"
         />
       </a-col>
@@ -32,13 +33,14 @@
       <template v-if="data">
         <a-row>
           <a-col span="24">
-            <!-- @vue-ignore -->
+            <!-- @vue-skip -->
             <vue-json-pretty
               id="json"
               showIcon
               showLength
               showLineNumber
               :data="data"
+              v-if="show"
             />
           </a-col>
         </a-row>
@@ -63,6 +65,7 @@ export default defineComponent({
   data() {
     return {
       gutter: 10,
+      show: true,
       address: "",
       store: store(),
       data: undefined as object | undefined,
@@ -116,9 +119,13 @@ export default defineComponent({
   },
   activated() {
     setTimeout(() => {
+      this.show = true;
       //@ts-ignore
       this.$refs.address.focus();
     }, 100);
+  },
+  beforeRouteLeave() {
+    this.show = false;
   },
 });
 </script>

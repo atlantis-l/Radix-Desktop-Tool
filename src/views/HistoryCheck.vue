@@ -96,6 +96,12 @@
                         <a-tag color="purple"
                           >{{
                             addressAndSymbolMap?.get(change[`resource_address`])
+                              ? addressAndSymbolMap?.get(
+                                  change[`resource_address`],
+                                )
+                              : $t(
+                                  `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                                )
                           }}
                         </a-tag>
                       </a-col>
@@ -167,6 +173,12 @@
                               addressAndSymbolMap?.get(
                                 change[`resource_address`],
                               )
+                                ? addressAndSymbolMap?.get(
+                                    change[`resource_address`],
+                                  )
+                                : $t(
+                                    `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                                  )
                             }}
                           </a-tag>
                         </a-col>
@@ -273,6 +285,12 @@
                         <a-tag color="purple"
                           >{{
                             addressAndSymbolMap?.get(change[`resource_address`])
+                              ? addressAndSymbolMap?.get(
+                                  change[`resource_address`],
+                                )
+                              : $t(
+                                  `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                                )
                           }}
                         </a-tag>
                       </a-col>
@@ -338,6 +356,12 @@
                               addressAndSymbolMap?.get(
                                 change[`resource_address`],
                               )
+                                ? addressAndSymbolMap?.get(
+                                    change[`resource_address`],
+                                  )
+                                : $t(
+                                    `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                                  )
                             }}
                           </a-tag>
                         </a-col>
@@ -432,6 +456,7 @@
           :placeholder="
             $t(`View.HistoryCheck.template.header.input.placeholder`)
           "
+          @keyup.enter="check"
           v-model:value="address"
         />
       </a-col>
@@ -627,7 +652,7 @@ export default defineComponent({
       openModal: false,
       transactionIndex: 0,
       cursorList: [] as string[],
-      addressAndSymbolMap: new Map<string, string>(),
+      addressAndSymbolMap: new Map<string, string | null>(),
       currentCursor: undefined as string | undefined,
       transactionList: [] as CommittedTransactionInfo[],
       networkChecker: new RadixNetworkChecker(store().networkId),
@@ -816,7 +841,10 @@ export default defineComponent({
 
         this.addressAndBalanceChangesMap.forEach((changes) => {
           changes.forEach((change) => {
-            if (!this.addressAndSymbolMap.get(change.resource_address)) {
+            if (
+              this.addressAndSymbolMap.get(change.resource_address) ===
+              undefined
+            ) {
               hasAllSymbols = false;
             }
           });
@@ -840,14 +868,14 @@ export default defineComponent({
                 rs.fungible.forEach((info) => {
                   this.addressAndSymbolMap?.set(
                     info.resourceAddress,
-                    info.symbol ? info.symbol : info.name,
+                    info.symbol ? info.symbol : info.name ? info.name : null,
                   );
                 });
 
                 rs.nonFungible.forEach((info) => {
                   this.addressAndSymbolMap?.set(
                     info.resourceAddress,
-                    info.symbol ? info.symbol : info.name,
+                    info.symbol ? info.symbol : info.name ? info.name : null,
                   );
                 });
               });

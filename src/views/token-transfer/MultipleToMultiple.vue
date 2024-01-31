@@ -141,7 +141,13 @@
                 <a-input
                   allowClear
                   class="view-max-width"
-                  :addonBefore="transferInfo.name"
+                  :addonBefore="
+                    transferInfo.name
+                      ? transferInfo.name
+                      : $t(
+                          `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                        )
+                  "
                   v-model:value="transferInfo.amount"
                   :placeholder="transferInfo.placeholder"
                 ></a-input>
@@ -162,6 +168,10 @@
                 >
                   <a-select-option value="label">{{
                     transferInfo.name
+                      ? transferInfo.name
+                      : $t(
+                          `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                        )
                   }}</a-select-option>
                 </a-select>
                 <a-tooltip placement="right">
@@ -1115,25 +1125,29 @@ export default defineComponent({
 
               let tempLabel = info.name;
               if (info.symbol) tempLabel = info.symbol;
-              if (!tempLabel)
-                tempLabel = this.$t(
-                  `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
-                );
 
-              let label = `「 ${tempLabel} 」`;
+              const name = tempLabel
+                ? tempLabel
+                : this.$t(
+                    `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                  );
+
+              let label = `「 ${name} 」`;
+
               label += `「 ${this.$t(
                 `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.balance`,
               )}: ${formatNumber(info.amount as string)} 」`;
+
               label += `「 ${this.$t(
                 `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.address`,
               )}: ${info.resourceAddress} 」`;
 
-              const value = `0:${info.resourceAddress}:${tempLabel}:${info.amount}`;
+              const value = `0:${info.resourceAddress}:${tempLabel ? tempLabel : ""}:${info.amount}`;
 
               this.tokenOptions[0].options.push({
-                label: label,
-                value: value,
-                name: tempLabel,
+                name,
+                label,
+                value,
                 address: info.resourceAddress,
               });
             },
@@ -1145,12 +1159,14 @@ export default defineComponent({
 
               let tempLabel = info.name;
               if (info.symbol) tempLabel = info.symbol;
-              if (!tempLabel)
-                tempLabel = this.$t(
-                  `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
-                );
 
-              let label = `「 ${tempLabel} 」`;
+              const name = tempLabel
+                ? tempLabel
+                : this.$t(
+                    `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                  );
+
+              let label = `「 ${name} 」`;
 
               label += `「 ${this.$t(
                 `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.amount`,
@@ -1160,15 +1176,12 @@ export default defineComponent({
                 `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.address`,
               )}: ${info.resourceAddress} 」`;
 
-              const value = this.$t(
-                "1-info-resourceaddress-templabel-info-ids-join",
-                [info.resourceAddress, tempLabel, info.ids?.join(",")],
-              );
+              const value = `1:${info.resourceAddress}:${tempLabel ? tempLabel : ""}:${info.ids?.join(",")}`;
 
               this.tokenOptions[1].options.push({
-                label: label,
-                value: value,
-                name: tempLabel,
+                name,
+                label,
+                value,
                 address: info.resourceAddress,
               });
             },

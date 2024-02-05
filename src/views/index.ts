@@ -1,4 +1,5 @@
 import XRDFaucet from "./XRDFaucet.vue";
+import AssetCheck from "./AssetCheck.vue";
 import HexConvert from "./HexConvert.vue";
 import StartToUse from "./StartToUse.vue";
 import TokenCreate from "./TokenCreate.vue";
@@ -12,6 +13,7 @@ import ManifestExecute from "./ManifestExecute.vue";
 
 export {
   XRDFaucet,
+  AssetCheck,
   HexConvert,
   StartToUse,
   TokenCreate,

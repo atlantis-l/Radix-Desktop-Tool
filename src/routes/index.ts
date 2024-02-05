@@ -68,16 +68,22 @@ const router = createRouter({
       component: View.WalletGenerate,
     },
     {
-      name: "EntityCheck",
-      path: "/EntityCheck",
-      icon: "BuildTwoTone",
-      component: View.EntityCheck,
+      name: "AssetCheck",
+      path: "/AssetCheck",
+      icon: "DollarTwoTone",
+      component: View.AssetCheck,
     },
     {
       name: "HistoryCheck",
       path: "/HistoryCheck",
       icon: "ClockCircleTwoTone",
       component: View.HistoryCheck,
+    },
+    {
+      name: "EntityCheck",
+      path: "/EntityCheck",
+      icon: "BuildTwoTone",
+      component: View.EntityCheck,
     },
     {
       name: "HexConvert",

@@ -57,6 +57,8 @@ npm run build-linux
 
 ![6](public/screenshots/zh/6.png)
 
+![11](public/screenshots/zh/11.png)
+
 ![7](public/screenshots/zh/7.png)
 
 ![10](public/screenshots/zh/10.png)

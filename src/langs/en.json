@@ -13,6 +13,9 @@
       "singleToMultiple": "Single To Multiple",
       "multipleToSingle": "Multiple To Single"
     },
+    "AssetCheck": {
+      "title": "Asset Check"
+    },
     "EntityCheck": {
       "title": "Entity Check"
     },
@@ -67,7 +70,7 @@
             "placeholder": "Use private key to generate Radix address"
           },
           "selectTokenModal": {
-            "title": "Select Token",
+            "title": "Select Tokens",
             "placeholder1": "Select Tokens",
             "placeholder2": "Select NFT IDs"
           },
@@ -158,7 +161,7 @@
               "success": "XRD balance has been refreshed"
             },
             "activateSelectTokenModal": {
-              "unnamedToken": "Unnamed Token",
+              "unnamedToken": "Unnamed",
               "balance": "Balance",
               "amount": "Amount",
               "address": "Address"
@@ -458,6 +461,40 @@
         "tip": "The address and hexadecimal format in Radix Network converted to each other",
         "errorMainnetAddress": "Wrong mainnet address",
         "errorStokenetAddress": "Wrong stokenet address"
+      }
+    },
+    "AssetCheck": {
+      "template": {
+        "fungible": "Fungible Token",
+        "non-fungible": "NonFungible Token",
+        "search": {
+          "placeholder": "Search by token address、symbol、name"
+        },
+        "symbol": "Symbol",
+        "name": "Name",
+        "description": "Info",
+        "tags": "Tags",
+        "link": "Link",
+        "divisibility": "Decimals",
+        "total_supply": "Supply",
+        "total_minted": "Minted",
+        "total_burned": "Burned",
+        "vaults": "Vaults",
+        "Info": "Infos",
+        "permission": "Permissions",
+        "burner": "Burn",
+        "minter": "Mint",
+        "freezer": "Freeze",
+        "recaller": "Recall",
+        "depositor": "Deposit",
+        "withdrawer": "Withdraw",
+        "metadata_locker": "Lock Metadata",
+        "metadata_setter": "Set Metadata",
+        "non_fungible_data_updater": "Update NFT",
+        "AllowAll": "Allow All",
+        "DenyAll": "Deny All",
+        "Restricted": "Restricted",
+        "Allow": "Allow"
       }
     }
   },

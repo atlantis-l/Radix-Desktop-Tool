@@ -67,7 +67,7 @@ main::before {
 .startup-main {
   min-height: 500vh;
   position: absolute;
-  transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .startup-main::before,
@@ -94,7 +94,7 @@ main::before {
   position: fixed;
   bottom: 0;
   z-index: 101;
-  transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .content__top {
@@ -208,13 +208,13 @@ main::before {
   display: inline-block;
   padding: 1em;
   vertical-align: top;
-  transition: color 0.3s ease-in-out;
+  transition: color 0.4s ease;
 }
 
 .media-item__img {
   max-width: 100%;
   opacity: 0.6;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.4s ease;
 }
 
 .media-item:hover .media-item__img,
@@ -238,7 +238,7 @@ main::before {
   display: block;
   width: 100vw;
   height: 100vh;
-  transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 @media screen and (max-width: 40em) {

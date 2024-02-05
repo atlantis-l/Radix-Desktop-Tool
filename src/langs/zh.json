@@ -13,6 +13,9 @@
       "singleToMultiple": "一转多",
       "multipleToSingle": "多转一"
     },
+    "AssetCheck": {
+      "title": "资产查询"
+    },
     "EntityCheck": {
       "title": "实体查询"
     },
@@ -158,7 +161,7 @@
               "success": "XRD余额已刷新"
             },
             "activateSelectTokenModal": {
-              "unnamedToken": "未命名代币",
+              "unnamedToken": "未命名",
               "balance": "余额",
               "amount": "数量",
               "address": "地址"
@@ -458,6 +461,40 @@
         "tip": "Radix网络中的地址与十六进制格式互转",
         "errorMainnetAddress": "错误的主网地址",
         "errorStokenetAddress": "错误的测试网地址"
+      }
+    },
+    "AssetCheck": {
+      "template": {
+        "fungible": "同质化代币(FT)",
+        "non-fungible": "非同质化代币(NFT)",
+        "search": {
+          "placeholder": "通过地址、符号、名称来搜素"
+        },
+        "symbol": "符号",
+        "name": "名称",
+        "description": "描述",
+        "tags": "标签",
+        "link": "链接",
+        "divisibility": "小数",
+        "total_supply": "供应",
+        "total_minted": "铸造",
+        "total_burned": "燃烧",
+        "vaults": "金库",
+        "Info": "信息",
+        "permission": "权限",
+        "burner": "燃烧",
+        "minter": "铸造",
+        "freezer": "冻结",
+        "recaller": "回收",
+        "depositor": "存入",
+        "withdrawer": "取出",
+        "metadata_locker": "锁定元数据",
+        "metadata_setter": "设置元数据",
+        "non_fungible_data_updater": "更新NFT",
+        "AllowAll": "全部允许",
+        "DenyAll": "全部拒绝",
+        "Restricted": "部分允许",
+        "Allow": "允许"
       }
     }
   },

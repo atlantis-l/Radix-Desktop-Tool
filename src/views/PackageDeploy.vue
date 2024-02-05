@@ -4,8 +4,8 @@
     <div id="modal-group">
       <a-modal
         centered
+        destroyOnClose
         @ok="setFeePayer"
-        :forceRender="true"
         v-model:open="openFeePayerModal"
         :title="
           $t(
@@ -33,7 +33,7 @@
       </a-modal>
       <a-modal
         centered
-        :forceRender="true"
+        destroyOnClose
         @ok="processTransaction"
         v-model:open="openConfirmTransaction"
         :title="
@@ -56,7 +56,12 @@
           "
         />
       </a-modal>
-      <a-modal centered :footer="null" v-model:open="openResourceModal">
+      <a-modal
+        centered
+        destroyOnClose
+        :footer="null"
+        v-model:open="openResourceModal"
+      >
         <template #title v-if="selectedValue === 1"
           >{{ $t("View.PackageDeploy.template.header.select.1") }}
         </template>
@@ -102,7 +107,7 @@
     <!------------------------ Header ------------------------>
     <a-row :gutter="gutter">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip>
+        <a-tooltip destroyTooltipOnHide>
           <template #title>
             <span
               style="cursor: pointer"
@@ -143,7 +148,7 @@
       </a-col>
 
       <a-col span="9">
-        <a-tooltip>
+        <a-tooltip destroyTooltipOnHide>
           <template #title>
             <span>{{
               $t(
@@ -185,7 +190,7 @@
 
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip placement="bottom">
+        <a-tooltip destroyTooltipOnHide placement="bottom">
           <template #title>
             <span
               >{{
@@ -230,7 +235,7 @@
           v-model:value="selectedValue"
         >
           <template #option="{ value, label }">
-            <a-tooltip placement="left">
+            <a-tooltip destroyTooltipOnHide placement="left">
               <template #title v-if="value === 1"
                 >{{ $t("View.PackageDeploy.template.header.select.tooltip.1") }}
               </template>
@@ -244,7 +249,7 @@
       </a-col>
 
       <a-col span="1" style="padding-top: 5px; text-align: end">
-        <a-tooltip placement="bottom">
+        <a-tooltip destroyTooltipOnHide placement="bottom">
           <template #title>{{
             $t("View.PackageDeploy.template.header.lock")
           }}</template>
@@ -257,7 +262,7 @@
       </a-col>
 
       <a-col span="2" style="text-align: center; padding-top: 4px">
-        <a-tooltip placement="bottom">
+        <a-tooltip destroyTooltipOnHide placement="bottom">
           <template #title
             >{{ $t("View.PackageDeploy.template.header.switch.text") }}
           </template>

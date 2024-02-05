@@ -3,6 +3,7 @@
     <a-modal
       centered
       :footer="null"
+      destroyOnClose
       style="width: 800px"
       v-model:open="openVaultModal"
     >
@@ -149,11 +150,12 @@
                                   : resourceMap.get(item.resource_address)
                                       .icon_url
                               "
+                              onerror="this.src='img_onerror.png'"
                             />
                           </template>
                         </a-avatar>
 
-                        <a-tooltip placement="topLeft">
+                        <a-tooltip destroyTooltipOnHide placement="topLeft">
                           <template #title
                             >{{
                               resourceMap.get(item.resource_address).name
@@ -181,7 +183,7 @@
                       </template>
 
                       <template #extra>
-                        <a-tooltip placement="left">
+                        <a-tooltip destroyTooltipOnHide placement="left">
                           <template #title>
                             <span
                               style="cursor: pointer"
@@ -217,7 +219,7 @@
                         >
                           <a-row class="no-margin-row">
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -237,7 +239,7 @@
                             <a-col flex="1" />
 
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -286,7 +288,7 @@
                             <a-col flex="1" />
                             <!-- @vue-skip -->
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     @click="copy(info.value)"
@@ -412,11 +414,12 @@
                                   : resourceMap.get(item.resource_address)
                                       .icon_url
                               "
+                              onerror="this.src='img_onerror.png'"
                             />
                           </template>
                         </a-avatar>
 
-                        <a-tooltip placement="topLeft">
+                        <a-tooltip destroyTooltipOnHide placement="topLeft">
                           <template #title
                             >{{
                               resourceMap.get(item.resource_address).name
@@ -444,7 +447,7 @@
                       </template>
 
                       <template #extra>
-                        <a-tooltip placement="left">
+                        <a-tooltip destroyTooltipOnHide placement="left">
                           <template #title>
                             <span
                               style="cursor: pointer"
@@ -480,7 +483,7 @@
                         >
                           <a-row class="no-margin-row">
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -500,7 +503,7 @@
                             <a-col flex="1" />
 
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -549,7 +552,7 @@
                             <a-col flex="1" />
                             <!-- @vue-skip -->
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     @click="copy(info.value)"
@@ -678,11 +681,12 @@
                               :src="
                                 resourceMap.get(item.resource_address).icon_url
                               "
+                              onerror="this.src='img_onerror.png'"
                             />
                           </template>
                         </a-avatar>
 
-                        <a-tooltip placement="topLeft">
+                        <a-tooltip destroyTooltipOnHide placement="topLeft">
                           <template #title
                             >{{
                               resourceMap.get(item.resource_address).name
@@ -710,7 +714,7 @@
                       </template>
 
                       <template #extra>
-                        <a-tooltip placement="left">
+                        <a-tooltip destroyTooltipOnHide placement="left">
                           <template #title>
                             <span
                               style="cursor: pointer"
@@ -748,7 +752,7 @@
                         >
                           <a-row class="no-margin-row">
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -768,7 +772,7 @@
                             <a-col flex="1" />
 
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -817,7 +821,7 @@
                             <a-col flex="1" />
                             <!-- @vue-skip -->
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     @click="copy(info.value)"
@@ -940,11 +944,12 @@
                               :src="
                                 resourceMap.get(item.resource_address).icon_url
                               "
+                              onerror="this.src='img_onerror.png'"
                             />
                           </template>
                         </a-avatar>
 
-                        <a-tooltip placement="topLeft">
+                        <a-tooltip destroyTooltipOnHide placement="topLeft">
                           <template #title
                             >{{
                               resourceMap.get(item.resource_address).name
@@ -972,7 +977,7 @@
                       </template>
 
                       <template #extra>
-                        <a-tooltip placement="left">
+                        <a-tooltip destroyTooltipOnHide placement="left">
                           <template #title>
                             <span
                               style="cursor: pointer"
@@ -1010,7 +1015,7 @@
                         >
                           <a-row class="no-margin-row">
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -1030,7 +1035,7 @@
                             <a-col flex="1" />
 
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     style="cursor: pointer"
@@ -1079,7 +1084,7 @@
                             <a-col flex="1" />
                             <!-- @vue-skip -->
                             <a-col>
-                              <a-tooltip placement="left">
+                              <a-tooltip destroyTooltipOnHide placement="left">
                                 <template #title>
                                   <span
                                     @click="copy(info.value)"

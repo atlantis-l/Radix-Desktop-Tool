@@ -4,8 +4,8 @@
     <div id="modal-group">
       <a-modal
         centered
+        destroyOnClose
         @ok="setFeePayer"
-        :forceRender="true"
         v-model:open="openFeePayerModal"
         :title="
           $t(
@@ -33,7 +33,7 @@
       </a-modal>
       <a-modal
         centered
-        :forceRender="true"
+        destroyOnClose
         @ok="processTransaction"
         v-model:open="openConfirmTransaction"
         :title="
@@ -56,7 +56,12 @@
           "
         />
       </a-modal>
-      <a-modal centered :footer="null" v-model:open="openTemplateModal">
+      <a-modal
+        centered
+        destroyOnClose
+        :footer="null"
+        v-model:open="openTemplateModal"
+      >
         {{ $t(`View.WalletGenerate.script.address`) }},{{
           $t(`View.WalletGenerate.script.privateKey`)
         }}[,......]({{
@@ -84,7 +89,7 @@
     <!------------------------ Header ------------------------>
     <a-row :gutter="gutter">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip>
+        <a-tooltip destroyTooltipOnHide>
           <template #title>
             <span
               style="cursor: pointer"
@@ -124,7 +129,7 @@
         </a-tooltip>
       </a-col>
       <a-col span="9">
-        <a-tooltip>
+        <a-tooltip destroyTooltipOnHide>
           <template #title>
             <span>{{
               $t(
@@ -165,7 +170,7 @@
 
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip placement="bottom">
+        <a-tooltip destroyTooltipOnHide placement="bottom">
           <template #title>
             <span
               >{{
@@ -194,7 +199,7 @@
         </a-tooltip>
       </a-col>
       <a-col flex="1">
-        <a-tooltip color="white" placement="bottom">
+        <a-tooltip destroyTooltipOnHide color="white" placement="bottom">
           <template #title>
             <a-button
               @click="openTemplateModal = !openTemplateModal"

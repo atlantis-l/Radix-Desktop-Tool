@@ -4,8 +4,8 @@
     <div id="modal-group">
       <a-modal
         centered
+        destroyOnClose
         @ok="setFeePayer"
-        :forceRender="true"
         v-model:open="openFeePayerModal"
         :title="
           $t(
@@ -33,7 +33,7 @@
       </a-modal>
       <a-modal
         centered
-        :forceRender="true"
+        destroyOnClose
         @ok="sendTransaction"
         v-model:open="openConfirmTransaction"
         :title="
@@ -58,8 +58,8 @@
       </a-modal>
       <a-modal
         centered
+        destroyOnClose
         @ok="setSender"
-        :forceRender="true"
         v-model:open="openSenderModal"
         :title="`${$t(
           `View.TokenTransfer.MultipleToMultiple.template.senderModal.title`,
@@ -86,7 +86,7 @@
       <a-modal
         centered
         :footer="null"
-        :forceRender="true"
+        destroyOnClose
         v-model:open="openSelectTokenModal"
         :title="`「 #${senderIndex + 1} 」${$t(
           `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.title`,
@@ -109,7 +109,7 @@
           "
         >
           <template #option="{ label, address }">
-            <a-tooltip placement="left">
+            <a-tooltip destroyTooltipOnHide placement="left">
               <template #title>
                 <span style="cursor: pointer" @click="copy(address)">{{
                   address
@@ -129,13 +129,12 @@
                 ? 'no-margin-row'
                 : ''
             "
-            v-if="openSelectTokenModal"
             v-for="(transferInfo, i) in customOptions[senderIndex]
               .transferInfos"
           >
             <!-------------------- Fungible Token Input -------------------->
             <a-col flex="1" v-if="transferInfo.tokenType === 0">
-              <a-tooltip placement="right">
+              <a-tooltip destroyTooltipOnHide placement="right">
                 <template #title>
                   <span
                     style="cursor: pointer"
@@ -180,7 +179,7 @@
                         )
                   }}</a-select-option>
                 </a-select>
-                <a-tooltip placement="right">
+                <a-tooltip destroyTooltipOnHide placement="right">
                   <template #title>
                     <span
                       style="cursor: pointer"
@@ -204,7 +203,7 @@
                     "
                   >
                     <template #option="{ label }">
-                      <a-tooltip placement="left">
+                      <a-tooltip destroyTooltipOnHide placement="left">
                         <template #title>
                           <span style="cursor: pointer" @click="copy(label)">{{
                             label
@@ -228,7 +227,7 @@
     <!------------------------ Header ------------------------>
     <a-row :gutter="gutter">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip>
+        <a-tooltip destroyTooltipOnHide>
           <template #title>
             <span
               style="cursor: pointer"
@@ -268,7 +267,7 @@
         </a-tooltip>
       </a-col>
       <a-col span="9">
-        <a-tooltip>
+        <a-tooltip destroyTooltipOnHide>
           <template #title>
             <span>{{
               $t(
@@ -308,7 +307,7 @@
     </a-row>
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
-        <a-tooltip placement="bottom">
+        <a-tooltip destroyTooltipOnHide placement="bottom">
           <template #title>
             <span
               >{{
@@ -410,7 +409,7 @@
             </a-button>
           </a-col>
           <a-col flex="11">
-            <a-tooltip placement="left">
+            <a-tooltip destroyTooltipOnHide placement="left">
               <template #title>
                 <span
                   style="cursor: pointer"
@@ -450,7 +449,7 @@
             </a-tooltip>
           </a-col>
           <a-col flex="3">
-            <a-tooltip placement="left">
+            <a-tooltip destroyTooltipOnHide placement="left">
               <template #title>
                 <span
                   >{{
@@ -485,7 +484,7 @@
             />
           </a-col>
           <a-col flex="1" class="view-no-padding-right">
-            <a-tooltip placement="left">
+            <a-tooltip destroyTooltipOnHide placement="left">
               <template #title>
                 <span
                   >{{

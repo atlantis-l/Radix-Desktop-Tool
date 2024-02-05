@@ -22,7 +22,7 @@
         />
       </a-col>
       <a-col span="4">
-        <a-tooltip>
+        <a-tooltip destroyTooltipOnHide>
           <template #title>
             {{ $t("View.XRDFaucet.template.tooltip.requestTimes") }}
           </template>

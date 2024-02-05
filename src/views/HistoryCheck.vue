@@ -3,6 +3,7 @@
     <a-modal
       centered
       :footer="null"
+      destroyOnClose
       style="width: 800px"
       v-model:open="openModal"
     >
@@ -110,7 +111,7 @@
                       </a-col>
 
                       <a-col>
-                        <a-tooltip placement="right">
+                        <a-tooltip destroyTooltipOnHide placement="right">
                           <template #title
                             >{{ change[`resource_address`] }}
                           </template>
@@ -187,7 +188,7 @@
                         </a-col>
 
                         <a-col class="view-no-padding-right">
-                          <a-tooltip placement="right">
+                          <a-tooltip destroyTooltipOnHide placement="right">
                             <template #title
                               >{{ change[`resource_address`] }}
                             </template>
@@ -302,7 +303,7 @@
                       </a-col>
 
                       <a-col>
-                        <a-tooltip placement="right">
+                        <a-tooltip destroyTooltipOnHide placement="right">
                           <template #title
                             >{{ change[`resource_address`] }}
                           </template>
@@ -373,7 +374,7 @@
                         </a-col>
 
                         <a-col class="view-no-padding-right">
-                          <a-tooltip placement="right">
+                          <a-tooltip destroyTooltipOnHide placement="right">
                             <template #title
                               >{{ change[`resource_address`] }}
                             </template>
@@ -536,7 +537,7 @@
               </a-col>
 
               <a-col>
-                <a-tooltip placement="left">
+                <a-tooltip destroyTooltipOnHide placement="left">
                   <template #title>{{ tx.intent_hash }} </template>
 
                   <a-tag @click.stop="copy(tx.intent_hash as string)">
@@ -551,7 +552,7 @@
 
               <a-col>
                 <!-- @vue-skip -->
-                <a-tooltip placement="left">
+                <a-tooltip destroyTooltipOnHide placement="left">
                   <template #title
                     >{{
                       $t("View.HistoryCheck.template.content.affectedEntities")
@@ -569,7 +570,7 @@
 
               <a-col v-if="tx.message">
                 <!-- @vue-skip -->
-                <a-tooltip placement="right">
+                <a-tooltip destroyTooltipOnHide placement="right">
                   <template #title>{{ tx.message.content.value }} </template>
                   <MessageTwoTone
                     two-tone-color="#18b7ac"
@@ -590,7 +591,7 @@
               </a-col>
 
               <a-col class="view-no-padding-right">
-                <a-tooltip placement="left">
+                <a-tooltip destroyTooltipOnHide placement="left">
                   <template #title
                     >{{
                       tx.transaction_status === `CommittedSuccess`

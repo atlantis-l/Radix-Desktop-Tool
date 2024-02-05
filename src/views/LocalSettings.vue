@@ -23,7 +23,7 @@
                 $t('View.TokenCreate.template.content.iconUrlPlaceholder')
               "
               style="margin-bottom: 20px"
-              v-model:value="mainnetUrl"
+              v-model:value.trim="mainnetUrl"
             />
 
             <a-input
@@ -32,7 +32,7 @@
               :placeholder="
                 $t('View.TokenCreate.template.content.iconUrlPlaceholder')
               "
-              v-model:value="stokenetUrl"
+              v-model:value.trim="stokenetUrl"
             />
           </a-card>
         </div>
@@ -115,10 +115,10 @@ export default defineComponent({
     },
   },
   deactivated() {
-    if (!this.mainnetUrl.trim().length) {
+    if (!this.mainnetUrl.length) {
       this.mainnetUrl = this.store.mainnetDefaultUrl;
     }
-    if (!this.stokenetUrl.trim().length) {
+    if (!this.stokenetUrl.length) {
       this.stokenetUrl = this.store.stokenetDefaultUrl;
     }
   },
@@ -146,7 +146,7 @@ export default defineComponent({
   background-clip: padding-box, border-box;
   background-image: linear-gradient(to right, #ffffff, #ffffff),
     radial-gradient(#052cc0, #1dddbf, #ff00e6, #1dddbf, #052cc0);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .ant-card:hover {

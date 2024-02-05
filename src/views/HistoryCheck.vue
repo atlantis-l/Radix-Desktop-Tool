@@ -8,11 +8,11 @@
     >
       <template #title>
         <a-row :gutter="gutter">
-          <a-col>
+          <a-col class="view-no-padding-left">
             <a-tag color="blue">{{ `#${transactionIndex + 1}` }} </a-tag>
           </a-col>
 
-          <a-col>
+          <a-col class="view-no-padding-right">
             <a-tag
               style="cursor: pointer !important"
               @click="
@@ -28,7 +28,7 @@
       </template>
 
       <div
-        style="height: 500px; overflow: scroll"
+        style="max-height: 500px; overflow: scroll"
         class="modal-div"
         ref="content"
       >
@@ -73,8 +73,11 @@
           </a-card>
         </a-row>
 
-        <template v-for="changeList in balanceChanges">
-          <a-row v-if="changeList[0].type">
+        <span v-for="(changeList, i) in balanceChanges">
+          <a-row
+            v-if="changeList[0].type"
+            :class="balanceChanges.length - i === 1 ? 'no-margin-row' : ''"
+          >
             <a-card
               class="view-max-width"
               :title="changeList[0]['entity_address']"
@@ -92,7 +95,7 @@
                       :gutter="gutter"
                       v-if="change[`balance_change`]"
                     >
-                      <a-col>
+                      <a-col class="view-no-padding-left">
                         <a-tag color="purple"
                           >{{
                             addressAndSymbolMap?.get(change[`resource_address`])
@@ -150,7 +153,7 @@
                         </a-tag>
                       </a-col>
 
-                      <a-col>
+                      <a-col class="view-no-padding-right">
                         <a-tag
                           class="view-tag-cursor-pointer"
                           @click="copy(change[`balance_change`] as string)"
@@ -167,7 +170,7 @@
 
                     <div v-else>
                       <a-row class="no-margin-row" :gutter="gutter">
-                        <a-col>
+                        <a-col class="view-no-padding-left">
                           <a-tag color="purple"
                             >{{
                               addressAndSymbolMap?.get(
@@ -183,7 +186,7 @@
                           </a-tag>
                         </a-col>
 
-                        <a-col>
+                        <a-col class="view-no-padding-right">
                           <a-tooltip placement="right">
                             <template #title
                               >{{ change[`resource_address`] }}
@@ -213,7 +216,7 @@
                           class="no-margin-row"
                           style="margin-top: 20px !important"
                         >
-                          <a-col>
+                          <a-col class="view-no-padding-left">
                             <a-tag color="green"
                               >{{
                                 $t("View.HistoryCheck.template.modal.deposit")
@@ -221,7 +224,7 @@
                             </a-tag>
                           </a-col>
 
-                          <a-col>
+                          <a-col class="view-no-padding-right">
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
@@ -237,7 +240,7 @@
                           class="no-margin-row"
                           style="margin-top: 20px !important"
                         >
-                          <a-col>
+                          <a-col class="view-no-padding-left">
                             <a-tag color="error"
                               >{{
                                 $t("View.HistoryCheck.template.modal.withdraw")
@@ -245,7 +248,7 @@
                             </a-tag>
                           </a-col>
 
-                          <a-col>
+                          <a-col class="view-no-padding-right">
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
@@ -260,10 +263,13 @@
               </template>
             </a-card>
           </a-row>
-        </template>
+        </span>
 
-        <template v-for="changeList in balanceChanges">
-          <a-row v-if="!changeList[0].type">
+        <span v-for="(changeList, i) in balanceChanges">
+          <a-row
+            v-if="!changeList[0].type"
+            :class="balanceChanges.length - i === 1 ? 'no-margin-row' : ''"
+          >
             <a-card
               :title="changeList[0]['entity_address']"
               class="view-max-width"
@@ -281,7 +287,7 @@
                       :gutter="gutter"
                       v-if="change[`balance_change`]"
                     >
-                      <a-col>
+                      <a-col class="view-no-padding-left">
                         <a-tag color="purple"
                           >{{
                             addressAndSymbolMap?.get(change[`resource_address`])
@@ -333,7 +339,7 @@
                         </a-tag>
                       </a-col>
 
-                      <a-col>
+                      <a-col class="view-no-padding-right">
                         <a-tag
                           class="view-tag-cursor-pointer"
                           @click="copy(change[`balance_change`] as string)"
@@ -350,7 +356,7 @@
 
                     <div v-else>
                       <a-row class="no-margin-row" :gutter="gutter">
-                        <a-col>
+                        <a-col class="view-no-padding-left">
                           <a-tag color="purple"
                             >{{
                               addressAndSymbolMap?.get(
@@ -366,7 +372,7 @@
                           </a-tag>
                         </a-col>
 
-                        <a-col>
+                        <a-col class="view-no-padding-right">
                           <a-tooltip placement="right">
                             <template #title
                               >{{ change[`resource_address`] }}
@@ -396,7 +402,7 @@
                           class="no-margin-row"
                           style="margin-top: 20px !important"
                         >
-                          <a-col>
+                          <a-col class="view-no-padding-left">
                             <a-tag color="green"
                               >{{
                                 $t("View.HistoryCheck.template.modal.deposit")
@@ -404,7 +410,7 @@
                             </a-tag>
                           </a-col>
 
-                          <a-col>
+                          <a-col class="view-no-padding-right">
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
@@ -420,7 +426,7 @@
                           class="no-margin-row"
                           style="margin-top: 20px !important"
                         >
-                          <a-col>
+                          <a-col class="view-no-padding-left">
                             <a-tag color="error"
                               >{{
                                 $t("View.HistoryCheck.template.modal.withdraw")
@@ -428,7 +434,7 @@
                             </a-tag>
                           </a-col>
 
-                          <a-col>
+                          <a-col class="view-no-padding-right">
                             <a-tag
                               class="view-tag-cursor-pointer"
                               @click="copy(nft as string)"
@@ -443,7 +449,7 @@
               </template>
             </a-card>
           </a-row>
-        </template>
+        </span>
       </div>
     </a-modal>
 
@@ -457,7 +463,7 @@
             $t(`View.HistoryCheck.template.header.input.placeholder`)
           "
           @keyup.enter="check"
-          v-model:value="address"
+          v-model:value.trim="address"
         />
       </a-col>
 
@@ -514,10 +520,10 @@
     <!------------------------ Content ------------------------>
     <a-layout-content class="view-layout-content">
       <template v-for="(tx, i) in transactionList">
-        <a-row>
+        <a-row :class="transactionList.length - i === 1 ? 'no-margin-row' : ''">
           <a-card class="view-max-width" @click="activateModal(i)">
             <a-row :gutter="gutter" class="no-margin-row">
-              <a-col>
+              <a-col class="view-no-padding-left">
                 <a-tag color="blue">{{ `#${i + 1}` }}</a-tag>
               </a-col>
 
@@ -583,7 +589,7 @@
                 </a-tag>
               </a-col>
 
-              <a-col>
+              <a-col class="view-no-padding-right">
                 <a-tooltip placement="left">
                   <template #title
                     >{{
@@ -665,7 +671,7 @@ export default defineComponent({
     },
     "store.pageSize"(size: number) {
       this.store.setPageSize(size);
-      this.address.trim().length && this.getTransactionList();
+      this.address.length && this.getTransactionList();
     },
     "store.networkId"(id: number) {
       this.networkChecker.networkId = id;
@@ -761,7 +767,7 @@ export default defineComponent({
   },
   methods: {
     getNextPage() {
-      if (!this.address.trim().length) return;
+      if (!this.address.length) return;
 
       if (this.currentCursor) {
         const index = this.cursorList.indexOf(this.currentCursor);
@@ -786,7 +792,7 @@ export default defineComponent({
       }
     },
     getPreviousPage() {
-      if (!this.address.trim().length) return;
+      if (!this.address.length) return;
 
       if (this.currentCursor) {
         const index = this.cursorList.indexOf(this.currentCursor);
@@ -920,7 +926,7 @@ export default defineComponent({
           streamTransactionsRequest: {
             cursor: cursor,
             limit_per_page: this.store.pageSize,
-            affected_global_entities_filter: [this.address.trim()],
+            affected_global_entities_filter: [this.address],
             opt_ins: {
               balance_changes: true,
               receipt_state_changes: true,
@@ -976,7 +982,7 @@ export default defineComponent({
       return entitySet.size;
     },
     check() {
-      if (this.address.trim().length && this.address.includes("_")) {
+      if (this.address.length && this.address.includes("_")) {
         this.getTransactionList();
       } else {
         this.currentCursor = undefined;
@@ -1020,7 +1026,7 @@ export default defineComponent({
   background-clip: padding-box, border-box;
   background-image: linear-gradient(to right, #ffffff, #ffffff),
     radial-gradient(#052cc0, #1dddbf, #ff00e6, #1dddbf, #052cc0);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .ant-card:hover {

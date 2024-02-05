@@ -18,7 +18,7 @@
           allowClear
           @keyup.enter="setFeePayer"
           ref="feePayerWalletPrivateKey"
-          v-model:value="feePayerWalletPrivateKey"
+          v-model:value.trim="feePayerWalletPrivateKey"
           :addonBefore="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.addonBefore`,
@@ -45,7 +45,7 @@
         <a-textarea
           allowClear
           ref="transactionMessage"
-          v-model:value="transactionMessage"
+          v-model:value.trim="transactionMessage"
           @keyup.ctrl.enter="processTransaction"
           style="margin: 12px 0 8px 0"
           :autoSize="{ minRows: 10, maxRows: 10 }"
@@ -70,7 +70,7 @@
           allowClear
           ref="senderPrivateKey"
           @keyup.enter="setSender"
-          v-model:value="senderPrivateKey"
+          v-model:value.trim="senderPrivateKey"
           :addonBefore="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.senderModal.addonBefore`,
@@ -88,7 +88,7 @@
         :width="270"
         :footer="null"
         :forceRender="true"
-        :maskClosable="false"
+        :maskClosable="maskClosable"
         v-model:open="openTransactionProgress"
         style="text-align: center; user-select: none"
         :title="
@@ -187,7 +187,7 @@
           </template>
           <a-input
             allowClear
-            v-model:value="feeLock"
+            v-model:value.trim="feeLock"
             :addonBefore="
               $t(
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
@@ -427,7 +427,7 @@
             </template>
             <a-input
               allowClear
-              v-model:value="tokenAmount"
+              v-model:value.trim="tokenAmount"
               :title="amountPlaceholder"
               :placeholder="amountPlaceholder"
               :addonBefore="
@@ -528,6 +528,7 @@ export default defineComponent({
       tokenAmount: "",
       progressCount: 0,
       feeLockEstimate: "",
+      maskClosable: false,
       senderPrivateKey: "",
       feePayerXrdBalance: "",
       transactionMessage: "",
@@ -691,11 +692,14 @@ export default defineComponent({
         }
       }
 
-      if (this.tokenAmount.trim().length) {
-        const singleAmount = parseFloat(this.tokenAmount);
-        return !singleAmount
-          ? "0"
-          : new Decimal(singleAmount * this.wallets.length);
+      if (this.tokenAmount.length) {
+        try {
+          const singleAmount = new Decimal(this.tokenAmount);
+
+          return singleAmount.mul(this.wallets.length);
+        } catch (e) {
+          return "0";
+        }
       } else if (this.wallets.length && this.wallets[0][amountText]) {
         let amount = new Decimal(0);
 
@@ -807,7 +811,7 @@ export default defineComponent({
         !this.wallets.length ||
         !this.senderWallet ||
         !this.selectedToken ||
-        (!this.tokenAmount.trim().length && !this.wallets[0][amountText])
+        (!this.tokenAmount.length && !this.wallets[0][amountText])
       );
     },
     processTransaction() {
@@ -834,7 +838,7 @@ export default defineComponent({
             `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
           )} 」`,
         );
-      } else if (!this.feeLock.trim().length) {
+      } else if (!this.feeLock.length) {
         message.warn(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
@@ -879,8 +883,8 @@ export default defineComponent({
             {
               tokenType: TokenType.FUNGIBLE,
               tokenAddress: this.selectedToken,
-              amount: this.tokenAmount.trim().length
-                ? this.tokenAmount.trim()
+              amount: this.tokenAmount.length
+                ? this.tokenAmount
                 : data[amountText],
             } as TransferInfo,
           ],
@@ -889,6 +893,7 @@ export default defineComponent({
     },
     async sendTransaction() {
       this.progressCount = 0;
+      this.maskClosable = false;
       this.commitStatusList = [];
       this.progressStatus = "normal";
 
@@ -906,7 +911,7 @@ export default defineComponent({
         )} 」`,
       });
 
-      const txMessage = this.transactionMessage.trim();
+      const txMessage = this.transactionMessage;
 
       let currentEpoch = await getCurrentEpoch(this.store.networkId);
 
@@ -1085,6 +1090,7 @@ export default defineComponent({
         ) {
           this.progressCount++;
           this.progressStatus = "success";
+          this.maskClosable = true;
           message.success({
             key,
             content: `「 ${this.$t(
@@ -1102,6 +1108,7 @@ export default defineComponent({
         ) {
           this.progressCount++;
           this.progressStatus = "exception";
+          this.maskClosable = true;
           console.error(txResult.transaction.error_message);
           message.error({
             key,
@@ -1311,7 +1318,7 @@ export default defineComponent({
 .list-move,
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .list-enter-from,

@@ -18,7 +18,7 @@
           allowClear
           @keyup.enter="setFeePayer"
           ref="feePayerWalletPrivateKey"
-          v-model:value="feePayerWalletPrivateKey"
+          v-model:value.trim="feePayerWalletPrivateKey"
           :addonBefore="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.addonBefore`,
@@ -45,7 +45,7 @@
         <a-textarea
           allowClear
           ref="transactionMessage"
-          v-model:value="transactionMessage"
+          v-model:value.trim="transactionMessage"
           @keyup.ctrl.enter="sendTransaction"
           style="margin: 12px 0 8px 0"
           :autoSize="{ minRows: 10, maxRows: 10 }"
@@ -70,7 +70,7 @@
           allowClear
           ref="senderPrivateKey"
           @keyup.enter="setSender"
-          v-model:value="senderPrivateKey"
+          v-model:value.trim="senderPrivateKey"
           :addonBefore="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.senderModal.addonBefore`,
@@ -88,9 +88,9 @@
         :footer="null"
         :forceRender="true"
         v-model:open="openSelectTokenModal"
-        :title="`${$t(
+        :title="`「 #${senderIndex + 1} 」${$t(
           `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.title`,
-        )}「 #${senderIndex + 1} 」`"
+        )}`"
       >
         <!------------------------ Header ------------------------>
         <a-select
@@ -124,8 +124,14 @@
         <!------------------------ Content ------------------------>
         <a-layout-content class="view-50vh-max-height">
           <a-row
+            :class="
+              customOptions[senderIndex].transferInfos.length - i === 1
+                ? 'no-margin-row'
+                : ''
+            "
             v-if="openSelectTokenModal"
-            v-for="transferInfo in customOptions[senderIndex].transferInfos"
+            v-for="(transferInfo, i) in customOptions[senderIndex]
+              .transferInfos"
           >
             <!-------------------- Fungible Token Input -------------------->
             <a-col flex="1" v-if="transferInfo.tokenType === 0">
@@ -148,7 +154,7 @@
                           `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
                         )
                   "
-                  v-model:value="transferInfo.amount"
+                  v-model:value.trim="transferInfo.amount"
                   :placeholder="transferInfo.placeholder"
                 ></a-input>
               </a-tooltip>
@@ -272,7 +278,7 @@
           </template>
           <a-input
             allowClear
-            v-model:value="feeLock"
+            v-model:value.trim="feeLock"
             :addonBefore="
               $t(
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
@@ -390,6 +396,7 @@
     <a-layout-content ref="content" class="view-layout-content">
       <TransitionGroup name="list">
         <a-row
+          :class="customOptions.length - index === 1 ? 'no-margin-row' : ''"
           :gutter="gutter"
           :key="option"
           v-for="(option, index) in customOptions"
@@ -464,7 +471,7 @@
           <a-col flex="11">
             <a-input
               allowClear
-              v-model:value="option.toAddress"
+              v-model:value.trim="option.toAddress"
               :addonBefore="
                 $t(
                   `View.TokenTransfer.MultipleToMultiple.template.content.receiver.addonBefore`,
@@ -819,7 +826,7 @@ export default defineComponent({
             `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
           )} 」`,
         );
-      } else if (!this.feeLock.trim().length) {
+      } else if (!this.feeLock.length) {
         message.warn(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
@@ -846,7 +853,7 @@ export default defineComponent({
         key,
       });
 
-      const txMessage = this.transactionMessage.trim();
+      const txMessage = this.transactionMessage;
 
       const map = new Map<string, PrivateKey>();
 
@@ -904,7 +911,7 @@ export default defineComponent({
 
         option.transferInfos.forEach((info) => {
           if (info.tokenType === TokenType.FUNGIBLE) {
-            (info.amount as string).trim().length && tempInfos.push(info);
+            (info.amount as string).length && tempInfos.push(info);
           } else {
             (info.nonFungibleLocalIds as string[]).length &&
               tempInfos.push(info);
@@ -915,7 +922,7 @@ export default defineComponent({
 
         tempInfos.length &&
           option.fromWallet &&
-          option.toAddress.trim().length &&
+          option.toAddress.length &&
           tempOptions.push(option);
       });
 
@@ -1237,7 +1244,6 @@ export default defineComponent({
 
 .view-nft-selector {
   flex: 1 !important;
-  min-width: 50%;
 }
 
 .view-nft-selector-label {
@@ -1252,7 +1258,7 @@ export default defineComponent({
 .list-move,
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .list-enter-from,

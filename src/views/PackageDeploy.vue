@@ -18,7 +18,7 @@
           allowClear
           @pressEnter="setFeePayer"
           ref="feePayerWalletPrivateKey"
-          v-model:value="feePayerWalletPrivateKey"
+          v-model:value.trim="feePayerWalletPrivateKey"
           :addonBefore="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.addonBefore`,
@@ -45,7 +45,7 @@
         <a-textarea
           allowClear
           ref="transactionMessage"
-          v-model:value="transactionMessage"
+          v-model:value.trim="transactionMessage"
           @keyup.ctrl.enter="processTransaction"
           style="margin: 12px 0 8px 0"
           :autoSize="{ minRows: 10, maxRows: 10 }"
@@ -71,7 +71,7 @@
               allowClear
               ref="resourceAddress"
               class="view-max-width"
-              v-model:value="resourceAddress"
+              v-model:value.trim="resourceAddress"
               @keyup.enter="openResourceModal = false"
               :addonBefore="
                 $t('View.HistoryCheck.template.header.input.addonBefore')
@@ -89,7 +89,7 @@
               allowClear
               addonBefore="NFT ID"
               placeholder="NFT ID"
-              v-model:value="nftId"
+              v-model:value.trim="nftId"
               class="view-max-width"
               @pressEnter="openResourceModal = false"
             ></a-input>
@@ -153,7 +153,7 @@
           </template>
           <a-input
             allowClear
-            v-model:value="feeLock"
+            v-model:value.trim="feeLock"
             :addonBefore="
               $t(
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
@@ -357,7 +357,7 @@
                 $t("View.PackageDeploy.template.content.cannotBeChanged")
               }}</a-tag>
               <br />
-              <a-tag v-if="resourceAddress.trim().length"
+              <a-tag v-if="resourceAddress.length"
                 >{{ resourceAddress }}
               </a-tag>
             </template>
@@ -372,11 +372,11 @@
                 $t("View.PackageDeploy.template.content.cannotBeChanged")
               }}</a-tag>
               <br />
-              <a-tag v-if="resourceAddress.trim().length"
+              <a-tag v-if="resourceAddress.length"
                 >{{ resourceAddress }}
               </a-tag>
               <br />
-              <a-tag v-if="nftId.trim().length">{{ nftId }} </a-tag>
+              <a-tag v-if="nftId.length">{{ nftId }} </a-tag>
             </template>
             <template #formatter v-else-if="selectedValue === 3">
               <a-tag color="purple"
@@ -591,7 +591,7 @@ export default defineComponent({
             `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
           )} 」`,
         );
-      } else if (!this.feeLock.trim().length) {
+      } else if (!this.feeLock.length) {
         message.warn(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
@@ -616,7 +616,7 @@ export default defineComponent({
 
       this.packageDeployer.feeLock = this.feeLock;
 
-      const txMessage = this.transactionMessage.trim();
+      const txMessage = this.transactionMessage;
 
       let result: Result | undefined;
 
@@ -961,7 +961,7 @@ export default defineComponent({
 .list-move,
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .list-enter-from,

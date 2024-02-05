@@ -9,6 +9,13 @@ import {
   setupTitlebar,
 } from "custom-electron-titlebar/main";
 
+const VERSION = "v0.1.5";
+
+const VERSION_MENU = {
+  label: VERSION,
+  enabled: false,
+};
+
 app.commandLine.appendSwitch("js-flags", "--expose-gc");
 
 // setup the titlebar main process
@@ -91,6 +98,10 @@ function setMenu() {
       new MenuItem({
         label: "应用",
         submenu: [
+          VERSION_MENU,
+          {
+            type: "separator",
+          },
           {
             label: "退出",
             role: "quit",
@@ -212,6 +223,10 @@ function setMenu() {
       new MenuItem({
         label: "App",
         submenu: [
+          VERSION_MENU,
+          {
+            type: "separator",
+          },
           {
             label: "Quit",
             role: "quit",

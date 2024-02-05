@@ -18,7 +18,7 @@
           allowClear
           @keyup.enter="setFeePayer"
           ref="feePayerWalletPrivateKey"
-          v-model:value="feePayerWalletPrivateKey"
+          v-model:value.trim="feePayerWalletPrivateKey"
           :addonBefore="
             $t(
               `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.addonBefore`,
@@ -45,7 +45,7 @@
         <a-textarea
           allowClear
           ref="transactionMessage"
-          v-model:value="transactionMessage"
+          v-model:value.trim="transactionMessage"
           @keyup.ctrl.enter="processTransaction"
           style="margin: 12px 0 8px 0"
           :autoSize="{ minRows: 10, maxRows: 10 }"
@@ -72,7 +72,7 @@
               allowClear
               ref="resourceAddress"
               class="view-max-width"
-              v-model:value="resourceAddress"
+              v-model:value.trim="resourceAddress"
               @keyup.enter="openResourceModal = false"
               :addonBefore="
                 $t('View.HistoryCheck.template.header.input.addonBefore')
@@ -90,7 +90,7 @@
               allowClear
               addonBefore="NFT ID"
               placeholder="NFT ID"
-              v-model:value="nftId"
+              v-model:value.trim="nftId"
               class="view-max-width"
               @keyup.enter="openResourceModal = false"
             ></a-input>
@@ -105,26 +105,33 @@
         v-model:open="openNftModal"
       >
         <template #title>
-          <a-tag color="blue" style="font-size: 18px; margin-bottom: 12px">{{
-            `#${nftIndex}#`
-          }}</a-tag>
+          <a-tag
+            color="blue"
+            style="font-size: 18px; margin-bottom: 12px; user-select: none"
+            >{{ `#${nftIndex}#` }}</a-tag
+          >
         </template>
 
         <div
-          style="height: 400px; overflow: scroll"
+          style="max-height: 400px; overflow: scroll"
           class="modal-div"
           ref="content"
         >
           <!-- @vue-skip -->
           <a-row
+            :class="
+              Object.keys(nftList[nftIndex]).length - i === 1
+                ? 'no-margin-row'
+                : ''
+            "
             v-if="nftList.length"
-            v-for="key in Object.keys(nftList[nftIndex])"
+            v-for="(key, i) in Object.keys(nftList[nftIndex])"
           >
             <a-col flex="1">
               <a-input
                 allowClear
                 :addonBefore="key"
-                v-model:value="nftList[nftIndex][key]"
+                v-model:value.trim="nftList[nftIndex][key]"
                 :placeholder="
                   nftFields[nftFields?.findIndex((field) => field.name === key)]
                     .value
@@ -192,7 +199,7 @@
           </template>
           <a-input
             allowClear
-            v-model:value="feeLock"
+            v-model:value.trim="feeLock"
             :addonBefore="
               $t(
                 `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.addonBefore`,
@@ -317,7 +324,7 @@
               :placeholder="
                 $t('View.TokenCreate.template.content.initialSupplyPlaceholder')
               "
-              v-model:value="initialSupply"
+              v-model:value.trim="initialSupply"
             />
           </a-col>
           <a-col flex="1" class="view-no-padding-right">
@@ -331,7 +338,7 @@
                   'View.TokenCreate.template.content.divisiblePrecisionDecimal',
                 )
               "
-              v-model:value="divisiblePrecision"
+              v-model:value.trim="divisiblePrecision"
             />
           </a-col>
         </a-row>
@@ -362,7 +369,7 @@
             :placeholder="
               $t('View.TokenCreate.template.content.tokenNamePlaceholder')
             "
-            v-model:value="tokenName"
+            v-model:value.trim="tokenName"
           />
         </a-col>
 
@@ -374,7 +381,7 @@
             :placeholder="
               $t('View.TokenCreate.template.content.tokenSymbolPlaceholder')
             "
-            v-model:value="tokenSymbol"
+            v-model:value.trim="tokenSymbol"
           />
         </a-col>
 
@@ -406,7 +413,7 @@
             :placeholder="
               $t('View.TokenCreate.template.content.iconUrlPlaceholder')
             "
-            v-model:value="iconLink"
+            v-model:value.trim="iconLink"
           />
         </a-col>
 
@@ -417,7 +424,7 @@
             :placeholder="
               $t('View.TokenCreate.template.content.infoUrlPlaceholder')
             "
-            v-model:value="infoLink"
+            v-model:value.trim="infoLink"
           />
         </a-col>
 
@@ -452,7 +459,7 @@
             :placeholder="
               $t('View.TokenCreate.template.content.tokenTagsPlaceholder')
             "
-            v-model:value="tokenTags"
+            v-model:value.trim="tokenTags"
           />
         </a-col>
 
@@ -468,7 +475,7 @@
                 'View.TokenCreate.template.content.tokenDescriptionPlaceholder',
               )
             "
-            v-model:value="description"
+            v-model:value.trim="description"
           />
         </a-col>
 
@@ -991,7 +998,7 @@
               <a-input
                 showCount
                 allowClear
-                v-model:value="nftFieldsStr"
+                v-model:value.trim="nftFieldsStr"
                 :placeholder="
                   $t(
                     'View.TokenCreate.template.content.nftFieldsInput.placeholder',
@@ -1139,7 +1146,7 @@
                 $t("View.PackageDeploy.template.content.cannotBeChanged")
               }}</a-tag>
               <br />
-              <a-tag v-if="resourceAddress.trim().length"
+              <a-tag v-if="resourceAddress.length"
                 >{{ resourceAddress }}
               </a-tag>
             </template>
@@ -1154,11 +1161,11 @@
                 $t("View.PackageDeploy.template.content.cannotBeChanged")
               }}</a-tag>
               <br />
-              <a-tag v-if="resourceAddress.trim().length"
+              <a-tag v-if="resourceAddress.length"
                 >{{ resourceAddress }}
               </a-tag>
               <br />
-              <a-tag v-if="nftId.trim().length">{{ nftId }} </a-tag>
+              <a-tag v-if="nftId.length">{{ nftId }} </a-tag>
             </template>
             <template #formatter v-if="authValues.ownerRole === 3">
               <a-tag color="purple"
@@ -1322,7 +1329,7 @@ export default defineComponent({
   },
   computed: {
     fieldsView() {
-      const fields = this.nftFieldsStr.trim().split(",");
+      const fields = this.nftFieldsStr.split(",");
 
       this.nftFields = fields.map((field, index) => ({
         name: field,
@@ -1498,8 +1505,7 @@ export default defineComponent({
 
       if (
         this.tokenType === 0 &&
-        (!this.initialSupply.trim().length ||
-          !this.divisiblePrecision.trim().length)
+        (!this.initialSupply.length || !this.divisiblePrecision.length)
       ) {
         message.warn(
           `「 ${this.$t(
@@ -1534,7 +1540,7 @@ export default defineComponent({
       CALL_METHOD
           Address("${this.feePayerAddress}")
           "lock_fee"
-          Decimal("${this.feeLock.trim().length ? this.feeLock.trim() : "0"}")
+          Decimal("${this.feeLock.length ? this.feeLock : "0"}")
       ;
       ${
         this.tokenType
@@ -1632,8 +1638,8 @@ export default defineComponent({
           ${
             !this.tokenType
               ? `
-          ${this.divisiblePrecision.trim()}u8
-          Decimal("${this.initialSupply.trim()}")
+          ${this.divisiblePrecision}u8
+          Decimal("${this.initialSupply}")
             `
               : ""
           }
@@ -1704,19 +1710,19 @@ export default defineComponent({
                   "name" => Tuple(
                       Enum<1u8>(
                           Enum<0u8>(
-                              "${this.tokenName.trim()}"
+                              "${this.tokenName}"
                           )
                       ),
                       ${this.tokenNameCheck}
                   )
                   ${
-                    this.tokenSymbol.trim().length
+                    this.tokenSymbol.length
                       ? `
                   ,
                   "symbol" => Tuple(
                       Enum<1u8>(
                           Enum<0u8>(
-                              "${this.tokenSymbol.trim()}"
+                              "${this.tokenSymbol}"
                           )
                       ),
                       ${this.tokenSymbolCheck}
@@ -1725,13 +1731,13 @@ export default defineComponent({
                       : ""
                   }
                   ${
-                    this.iconLink.trim().length
+                    this.iconLink.length
                       ? `
                   ,
                   "icon_url" => Tuple(
                       Enum<1u8>(
                           Enum<13u8>(
-                              "${this.iconLink.trim()}"
+                              "${this.iconLink}"
                           )
                       ),
                       ${this.iconLinkCheck}
@@ -1740,13 +1746,13 @@ export default defineComponent({
                       : ""
                   }
                   ${
-                    this.description.trim().length
+                    this.description.length
                       ? `
                   ,
                   "description" => Tuple(
                       Enum<1u8>(
                           Enum<0u8>(
-                              "${this.description.trim()}"
+                              "${this.description}"
                           )
                       ),
                       ${this.descriptionCheck}
@@ -1755,7 +1761,7 @@ export default defineComponent({
                       : ""
                   }
                   ${
-                    this.tokenTags.trim().length
+                    this.tokenTags.length
                       ? `
                   ,
                   "tags" => Tuple(
@@ -1763,7 +1769,7 @@ export default defineComponent({
                           Enum<128u8>(
                               Array<String>(
                                   ${this.tokenTags
-                                    .trim()
+
                                     .split(",")
                                     .map((v) => `"${v}"`)
                                     .join(",\n")}
@@ -1776,13 +1782,13 @@ export default defineComponent({
                       : ""
                   }
                   ${
-                    this.infoLink.trim().length
+                    this.infoLink.length
                       ? `
                   ,
                   "info_url" => Tuple(
                       Enum<1u8>(
                           Enum<13u8>(
-                              "${this.infoLink.trim()}"
+                              "${this.infoLink}"
                           )
                       ),
                       ${this.infoLinkCheck}
@@ -1819,10 +1825,10 @@ export default defineComponent({
     generateOwnerRoleStr() {
       let ownerRoleStr: string | undefined;
 
-      let ownerResource = this.resourceAddress.trim();
+      let ownerResource = this.resourceAddress;
 
-      if (this.nftId.trim().length) {
-        ownerResource += `:${this.nftId.trim()}`;
+      if (this.nftId.length) {
+        ownerResource += `:${this.nftId}`;
       }
 
       const ownership = this.authValues.ownerRole;
@@ -1928,7 +1934,7 @@ export default defineComponent({
             `View.TokenTransfer.SingleToMultiple.script.noPreviewFee`,
           )} 」`,
         );
-      } else if (!this.feeLock.trim().length) {
+      } else if (!this.feeLock.length) {
         message.warn(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
@@ -1951,7 +1957,7 @@ export default defineComponent({
         )} 」`,
       });
 
-      const txMessage = this.transactionMessage.trim();
+      const txMessage = this.transactionMessage;
 
       const result = await this.manifestExecutor.execute(
         this.generateManifestStr(),
@@ -2234,7 +2240,7 @@ export default defineComponent({
   background-clip: padding-box, border-box;
   background-image: linear-gradient(to right, #ffffff, #ffffff),
     radial-gradient(#052cc0, #1dddbf, #ff00e6, #1dddbf, #052cc0);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .ant-card:hover {
@@ -2301,7 +2307,7 @@ export default defineComponent({
 .list-move,
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .list-enter-from,

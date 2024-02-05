@@ -1,5 +1,5 @@
 <template>
-  <a-layout>
+  <a-layout class="view-layout">
     <div style="height: 90px" />
 
     <a-row justify="center">
@@ -7,7 +7,7 @@
         <a-input
           ref="amount"
           allowClear
-          v-model:value="amount"
+          v-model:value.trim="amount"
           @keyup.enter="createWallet"
           :placeholder="$t(`View.WalletGenerate.template.placeholder`)"
         />
@@ -27,7 +27,7 @@
       </a-col>
     </a-row>
 
-    <div style="height: 50px" />
+    <div style="height: 30px" />
 
     <a-row justify="center">
       <a-col>
@@ -82,7 +82,7 @@ export default defineComponent({
   },
   methods: {
     async createWallet() {
-      const amount = parseInt(this.amount.trim());
+      const amount = parseInt(this.amount);
 
       if (!amount) {
         message.error(`「 ${this.$t(`View.WalletGenerate.script.error`)} 」`);

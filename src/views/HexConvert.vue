@@ -16,7 +16,7 @@
         <a-input
           allowClear
           ref="input"
-          v-model:value="input"
+          v-model:value.trim="input"
           :placeholder="$t('View.HexConvert.template.input.placeholder')"
         />
       </a-col>
@@ -53,7 +53,7 @@ export default defineComponent({
   },
   watch: {
     async input(v: string) {
-      if (v.trim().length) {
+      if (v.length) {
         if (v.includes("_")) {
           if (this.store.networkId === 1 && !v.includes("_rdx")) {
             message.error({

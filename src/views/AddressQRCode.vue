@@ -4,7 +4,7 @@
       <a-input
         allowClear
         ref="address"
-        v-model:value="address"
+        v-model:value.trim="address"
         :placeholder="$t('View.AddressQRCode.template.input.placeholder')"
       >
       </a-input>
@@ -69,7 +69,7 @@ export default defineComponent({
 #canvas {
   width: 300px !important;
   height: 300px !important;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
   border: 1px solid #d9d9d9;
   background-position: 70% 80%;
   border-radius: 8px !important;

@@ -187,6 +187,14 @@ export default defineComponent({
       //Submenu open or close
       !this.store.menuFoldState && this.setOpenKeys();
     }, 200);
+
+    const cetTitleBar = document.getElementsByClassName("cet-titlebar")[0];
+    //@ts-ignore
+    const top = parseInt(cetTitleBar.style.height.slice(0, -2)) / 2;
+
+    document.styleSheets[document.styleSheets.length - 1].insertRule(
+      `.ant-modal {top: ${top}px !important}`,
+    );
   },
   methods: {
     //Left menu event
@@ -284,7 +292,7 @@ textarea::-webkit-scrollbar {
   user-select: none !important;
   background-color: #d9d9d9 !important;
   border-color: #d9d9d9 !important;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
 }
 
 .ant-card-head:hover {
@@ -300,7 +308,16 @@ textarea::-webkit-scrollbar {
   text-align: start !important;
   user-select: none !important;
   background-color: #fff !important;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease;
+}
+
+.asset-check-card .ant-card-body {
+  max-height: 269px;
+  overflow: scroll;
+}
+
+.ant-card-body::-webkit-scrollbar {
+  display: none !important;
 }
 
 .view-card .ant-card-head:hover {
@@ -331,11 +348,16 @@ textarea::-webkit-scrollbar {
   color: #000000 !important;
 }
 
+.ant-select-selection-overflow-item {
+  max-width: none !important;
+}
+
 .ant-divider-inner-text {
   user-select: none !important;
 }
 
 .view-layout {
+  max-width: 100% !important;
   max-height: 100% !important;
 }
 
@@ -384,7 +406,7 @@ textarea::-webkit-scrollbar {
 
 .custom-btn {
   color: #ff0000;
-  transition: all 0.3s;
+  transition: all 0.4s;
   animation-duration: 30s;
   background-size: 320px 320px;
   background-position: 75% 60%;
@@ -420,7 +442,7 @@ textarea::-webkit-scrollbar {
 }
 
 #logo img {
-  transition: all 0.2s ease-in-out !important;
+  transition: all 0.2s ease !important;
 }
 
 body {
@@ -470,7 +492,7 @@ body {
 
 .ant-layout-header .trigger {
   font-size: 18px;
-  transition: transform 0.3s;
+  transition: transform 0.4s;
   cursor: pointer !important;
 }
 

@@ -17,7 +17,7 @@
           allowClear
           ref="address"
           @keyup.enter="getXRD"
-          v-model:value="address"
+          v-model:value.trim="address"
           :placeholder="$t('View.XRDFaucet.template.stokenetAddress')"
         />
       </a-col>
@@ -30,7 +30,7 @@
           <a-input-number
             @keyup.enter="getXRD"
             class="view-max-width"
-            v-model:value="requestTimes"
+            v-model:value.trim="requestTimes"
           />
         </a-tooltip>
       </a-col>
@@ -97,17 +97,14 @@ export default defineComponent({
   },
   watch: {
     address(value: string) {
-      if (value.trim().length && value.trim().startsWith("account")) {
+      if (value.length && value.startsWith("account")) {
         this.getXrdBalance();
       }
     },
   },
   methods: {
     async getXRD() {
-      if (
-        !this.address.trim().length ||
-        !this.address.trim().startsWith("account")
-      ) {
+      if (!this.address.length || !this.address.startsWith("account")) {
         return;
       }
 
@@ -145,10 +142,7 @@ export default defineComponent({
       }, 5000);
     },
     getXrdBalance() {
-      if (
-        !this.address.trim().length ||
-        !this.address.trim().startsWith("account")
-      ) {
+      if (!this.address.length || !this.address.startsWith("account")) {
         return;
       }
 

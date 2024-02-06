@@ -1567,6 +1567,26 @@ export default defineComponent({
                       const name = entry.role_key.name;
                       const resolution = entry.assignment.resolution;
                       const type = entry.assignment.explicit_rule?.type;
+
+                      if (
+                        name === "withdrawer_updater" ||
+                        name === "depositor_updater"
+                      ) {
+                        if (resolution === "Explicit") {
+                          if (type !== "DenyAll") {
+                            permissions.push(name);
+                          }
+                        } else if (hasOwner) {
+                          permissions.push(name);
+                        }
+                      }
+                    }
+
+                    for (let i = 0; i < entries.length; i++) {
+                      const entry = entries[i];
+                      const name = entry.role_key.name;
+                      const resolution = entry.assignment.resolution;
+                      const type = entry.assignment.explicit_rule?.type;
                       const updater = "_updater";
 
                       if (

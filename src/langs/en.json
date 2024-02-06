@@ -488,6 +488,8 @@
         "recaller": "Recall",
         "depositor": "Deposit",
         "withdrawer": "Withdraw",
+        "depositor_updater": "Update Depositor",
+        "withdrawer_updater": "Update Withdrawer",
         "metadata_locker": "Lock Metadata",
         "metadata_setter": "Set Metadata",
         "non_fungible_data_updater": "Update NFT",

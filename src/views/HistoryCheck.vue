@@ -4,6 +4,42 @@
       centered
       :footer="null"
       destroyOnClose
+      style="width: 900px"
+      v-model:open="openManifestModal"
+    >
+      <template #title>
+        <a-row :gutter="gutter">
+          <a-col class="view-no-padding-left">
+            <a-tag color="blue">{{ `#${transactionIndex + 1}` }} </a-tag>
+          </a-col>
+
+          <a-col class="view-no-padding-right">
+            <a-tag
+              style="cursor: pointer"
+              @click="
+                copy(transactionList[transactionIndex].intent_hash as string)
+              "
+            >
+              <template #icon>
+                <TagTwoTone two-tone-color="#1677ff" /> </template
+              >{{ transactionList[transactionIndex].intent_hash }}
+            </a-tag>
+          </a-col>
+        </a-row>
+      </template>
+
+      <a-textarea
+        autoSize
+        readonly
+        style="max-height: 500px; overflow: scroll"
+        :value="manifest"
+      ></a-textarea>
+    </a-modal>
+
+    <a-modal
+      centered
+      :footer="null"
+      destroyOnClose
       style="width: 800px"
       v-model:open="openModal"
     >
@@ -525,7 +561,14 @@
           <a-card class="view-max-width" @click="activateModal(i)">
             <a-row :gutter="gutter" class="no-margin-row">
               <a-col class="view-no-padding-left">
-                <a-tag color="blue">{{ `#${i + 1}` }}</a-tag>
+                <a-tooltip>
+                  <template #title>{{
+                    $t("View.ManifestExecute.template.divider.text")
+                  }}</template>
+                  <a-tag color="blue" @click.stop="activateManifestModal(i)">{{
+                    `#${i + 1}`
+                  }}</a-tag>
+                </a-tooltip>
               </a-col>
 
               <a-col>
@@ -637,7 +680,13 @@ import {
   TransactionBalanceChanges,
   TransactionFungibleFeeBalanceChangeType,
 } from "@radixdlt/babylon-gateway-api-sdk";
-import { RadixNetworkChecker, selectNetwork } from "@atlantis-l/radix-tool";
+import {
+  Convert,
+  selectNetwork,
+  convertManifestTo,
+  RadixEngineToolkit,
+  RadixNetworkChecker,
+} from "@atlantis-l/radix-tool";
 
 export default defineComponent({
   components: {
@@ -655,9 +704,11 @@ export default defineComponent({
       gutter: 10,
       address: "",
       formatNumber,
+      manifest: "",
       store: store(),
       openModal: false,
       transactionIndex: 0,
+      openManifestModal: false,
       cursorList: [] as string[],
       addressAndSymbolMap: new Map<string, string | null>(),
       currentCursor: undefined as string | undefined,
@@ -913,6 +964,29 @@ export default defineComponent({
         }
       }
     },
+    async activateManifestModal(index: number) {
+      const tx = this.transactionList[index];
+
+      const transactionHex = tx.raw_hex;
+
+      if (transactionHex) {
+        const transactionBytes = Convert.HexString.toUint8Array(transactionHex);
+
+        const notarizedTransaction =
+          await RadixEngineToolkit.NotarizedTransaction.decompile(
+            transactionBytes,
+          );
+
+        const manifest = notarizedTransaction.signedIntent.intent.manifest;
+
+        await convertManifestTo("String", manifest, this.store.networkId);
+
+        this.manifest = manifest.instructions.value as string;
+
+        this.transactionIndex = index;
+        this.openManifestModal = true;
+      }
+    },
     getTransactionList(cursor?: string) {
       const key = "getTransactionList";
 
@@ -929,6 +1003,7 @@ export default defineComponent({
             limit_per_page: this.store.pageSize,
             affected_global_entities_filter: [this.address],
             opt_ins: {
+              raw_hex: true,
               balance_changes: true,
               receipt_state_changes: true,
             },

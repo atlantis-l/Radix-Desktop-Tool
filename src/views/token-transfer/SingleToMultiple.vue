@@ -879,10 +879,12 @@ export default defineComponent({
         }
       }
 
+      const fromPrivateKey = this.senderWallet?.privateKeyHexString();
+
       //@ts-ignore
       this.customOptions = this.wallets.map((data) => {
         return {
-          fromPrivateKey: this.senderWallet?.privateKeyHexString(),
+          fromPrivateKey,
           toAddress: data[addressField],
           transferInfos: [
             {
@@ -922,6 +924,8 @@ export default defineComponent({
 
       let startTime = Date.now();
 
+      const feePayerPrivateKey = this.feePayerWallet?.privateKeyHexString();
+
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
 
@@ -947,7 +951,7 @@ export default defineComponent({
             currentEpoch,
             this.store.networkId,
             JSON.stringify(options),
-            this.feePayerWallet?.privateKeyHexString(),
+            feePayerPrivateKey,
             this.feePercentList[i].mul(this.feeLock).toNumber().toFixed(18),
           ],
         });
@@ -1018,6 +1022,8 @@ export default defineComponent({
 
       let startTime = Date.now();
 
+      const feePayerPrivateKey = this.feePayerWallet?.privateKeyHexString();
+
       for (let i = 0; ; i++) {
         const start = i * MAX_WALLET_PER_TX;
 
@@ -1043,7 +1049,7 @@ export default defineComponent({
             currentEpoch,
             this.store.networkId,
             JSON.stringify(options),
-            this.feePayerWallet?.privateKeyHexString(),
+            feePayerPrivateKey,
           ],
         });
 

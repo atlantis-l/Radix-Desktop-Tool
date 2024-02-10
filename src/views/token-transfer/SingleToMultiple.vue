@@ -286,23 +286,7 @@
           </a-upload>
         </a-tooltip>
       </a-col>
-      <a-col flex="1" style="text-align: center; padding-top: 4px">
-        <a-tooltip destroyTooltipOnHide placement="bottom">
-          <template #title
-            >{{
-              $t(`View.TokenTransfer.SingleToMultiple.template.header.simTx`)
-            }}
-          </template>
-          <a-switch v-model:checked="store.simTx">
-            <template #checkedChildren>
-              <CreateIcon icon="CheckOutlined" />
-            </template>
-            <template #unCheckedChildren>
-              <CreateIcon icon="LockOutlined" />
-            </template>
-          </a-switch>
-        </a-tooltip>
-      </a-col>
+      <a-col flex="1"> </a-col>
       <a-col span="5" class="view-no-padding-right">
         <a-button
           class="view-max-width custom-btn"
@@ -595,15 +579,6 @@ export default defineComponent({
         this.previewFeeList.sort((a, b) => a.order - b.order);
       }
     },
-    "store.simTx"(flag: boolean) {
-      this.store.setSimTx(flag);
-
-      let msg = flag
-        ? this.$t(`View.TokenTransfer.SingleToMultiple.script.enableSimTx`)
-        : this.$t(`View.TokenTransfer.SingleToMultiple.script.disableSimTx`);
-
-      message.success({ content: `「 ${msg} 」`, key: "simTx" });
-    },
     "store.networkId"(id: number) {
       this.networkChecker.networkId = id;
       this.walletGenerator.networkId = id;
@@ -822,12 +797,7 @@ export default defineComponent({
     processTransaction() {
       this.openConfirmTransaction = false;
 
-      if (this.store.simTx) {
-        this.customMethod = CustomMethod.SEND_TRANSACTION;
-        this.previewTransaction();
-      } else {
-        this.sendTransaction();
-      }
+      this.sendTransaction();
     },
     activateSenderModal() {
       if (this.senderWallet) {

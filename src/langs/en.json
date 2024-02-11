@@ -23,7 +23,7 @@
       "title": "History Check"
     },
     "WalletGenerate": {
-      "title": "Wallet Generate"
+      "title": "Account Generate"
     },
     "TokenCreate": {
       "title": "Token Create"
@@ -55,7 +55,7 @@
       "MultipleToMultiple": {
         "template": {
           "feePayerModal": {
-            "title": "Payer Wallet",
+            "title": "Payer Account",
             "addonBefore": "Private Key",
             "placeholder": "Use private key to generate Radix address"
           },
@@ -65,7 +65,7 @@
             "placeholder": "On-chain text message (optional)"
           },
           "senderModal": {
-            "title": "Sender Wallet",
+            "title": "Sender Account",
             "addonBefore": "Private Key",
             "placeholder": "Use private key to generate Radix address"
           },
@@ -78,7 +78,7 @@
             "feePayer": {
               "addonBefore": "Fee Payer",
               "feePayerAddress": "Fee Payer Address",
-              "placeholder": "Transaction Fee Payment Wallet"
+              "placeholder": "Fee Payer Account"
             },
             "feeLock": {
               "addonBefore": "Fee Lock",
@@ -97,7 +97,7 @@
             "feePayerXrdBalance": {
               "tooltip": "Click to refresh balance",
               "addonBefore": "Balance",
-              "placeholder": "Fee Payer XRD Balance"
+              "placeholder": "Fee Payer Balance"
             },
             "sendTransaction": {
               "button": "Send Transaction"
@@ -110,7 +110,7 @@
             "sender": {
               "address": "Sender address",
               "addonBefore": "Sender",
-              "placeholder": "Sender wallet"
+              "placeholder": "Sender Account"
             },
             "selectToken": {
               "tooltip": "Select Token"
@@ -184,7 +184,9 @@
             "tokenAddress": "Token Address",
             "tokenTip": "Only fungible tokens can be sent",
             "totalTokenAmount": "Total amount of tokens sent",
-            "walletAmount": "Number of wallets"
+            "walletAmount": "Number of accounts",
+            "customTransfer": "Custom NFT ID",
+            "randomTransfer": "Random NFT ID"
           },
           "divider": {
             "text": "Transfer Information"
@@ -192,10 +194,14 @@
           "header": {
             "dataNotValid": "Incomplete information input",
             "importWallets": {
-              "button": "Import Wallet"
+              "button": "Import CSV"
             },
             "simTx": "Whether to perform transaction simulation when sending transaction",
-            "template": "Template"
+            "template": "Template",
+            "tokenTypeSelect": {
+              "fungibleToken": "Fungible",
+              "nonFungibleToken": "NonFungible"
+            }
           },
           "modal": {
             "transactionProgress": "Transaction Progress"
@@ -209,7 +215,7 @@
             "amountTip": "Optional (If left blank, all will be sent)",
             "receiver": {
               "addonBefore": "Receiver",
-              "placeholder": "Receiver Wallet"
+              "placeholder": "Receiver Account"
             }
           }
         }
@@ -257,13 +263,13 @@
       "script": {
         "address": "Address",
         "error": "Input error",
-        "fileName": "Wallet",
+        "fileName": "Account",
         "privateKey": "Private Key"
       },
       "template": {
-        "amount": "Number of wallets generated",
+        "amount": "Number of accounts generated",
         "create": "Generate",
-        "placeholder": "Enter the number of wallets"
+        "placeholder": "Enter the number of accounts"
       }
     },
     "TokenCreate": {
@@ -271,8 +277,8 @@
       "template": {
         "header": {
           "tokenTypeSelect": {
-            "fungibleToken": "Fungible Token",
-            "nonFungibleToken": "NonFungible Token"
+            "fungibleToken": "Fungible",
+            "nonFungibleToken": "NonFungible"
           },
           "settingsMode": {
             "simple": "Simple",
@@ -353,7 +359,7 @@
       "script": {
         "feeLockCode": "CALL_METHOD\n    Address(\"{0}\")\n    \"lock_fee\"\n    Decimal(\"{1}\")\n;",
         "manifestParsedFailed": "Transaction Manifest parsing failed",
-        "needImportWalletFile": "Need to import wallet file"
+        "needImportWalletFile": "Need to import account file"
       }
     },
     "PackageDeploy": {

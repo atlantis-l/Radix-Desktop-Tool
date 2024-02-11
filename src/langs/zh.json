@@ -23,7 +23,7 @@
       "title": "历史查询"
     },
     "WalletGenerate": {
-      "title": "钱包创建"
+      "title": "账户创建"
     },
     "TokenCreate": {
       "title": "代币创建"
@@ -55,7 +55,7 @@
       "MultipleToMultiple": {
         "template": {
           "feePayerModal": {
-            "title": "付费方钱包",
+            "title": "付费方账户",
             "addonBefore": "私钥",
             "placeholder": "根据私钥生成Radix地址"
           },
@@ -65,7 +65,7 @@
             "placeholder": "链上文本消息(选填)"
           },
           "senderModal": {
-            "title": "发送方钱包",
+            "title": "发送方账户",
             "addonBefore": "私钥",
             "placeholder": "根据私钥生成Radix地址"
           },
@@ -78,7 +78,7 @@
             "feePayer": {
               "addonBefore": "付费方",
               "feePayerAddress": "费用支付方地址",
-              "placeholder": "交易费用支付钱包"
+              "placeholder": "交易费用支付账户"
             },
             "feeLock": {
               "addonBefore": "费用锁定",
@@ -110,7 +110,7 @@
             "sender": {
               "address": "发送方地址",
               "addonBefore": "发送方",
-              "placeholder": "发送方钱包"
+              "placeholder": "发送方账户"
             },
             "selectToken": {
               "tooltip": "选择代币"
@@ -176,11 +176,15 @@
           },
           "header": {
             "importWallets": {
-              "button": "导入钱包"
+              "button": "导入CSV"
             },
             "dataNotValid": "信息输入不完整",
             "simTx": "发送交易时是否进行交易模拟",
-            "template": "导入格式"
+            "template": "导入格式",
+            "tokenTypeSelect": {
+              "fungibleToken": "代币",
+              "nonFungibleToken": "NFT"
+            }
           },
           "divider": {
             "text": "转账信息"
@@ -188,12 +192,14 @@
           "content": {
             "token": "代币",
             "amount": "数量",
-            "walletAmount": "钱包数量",
+            "walletAmount": "账户数量",
             "tokenAddress": "代币地址",
             "totalTokenAmount": "代币发送总量",
             "tokenTip": "只能发送同质化代币(FT)",
             "amountPlaceholder": "代币数量",
-            "amountTip": "选填(不填则以导入数据为准)"
+            "amountTip": "选填(不填则以导入数据为准)",
+            "customTransfer": "自定义NFT ID",
+            "randomTransfer": "随机NFT ID"
           },
           "optional": "可选项"
         },
@@ -209,7 +215,7 @@
             "amountTip": "选填(不填则发送全部)",
             "receiver": {
               "addonBefore": "接收方",
-              "placeholder": "接收方钱包"
+              "placeholder": "接收方账户"
             }
           }
         }
@@ -256,12 +262,12 @@
     "WalletGenerate": {
       "template": {
         "create": "创 建",
-        "amount": "已生成的钱包数量",
-        "placeholder": "输入钱包数量"
+        "amount": "已生成的账户数量",
+        "placeholder": "输入账户数量"
       },
       "script": {
         "address": "地址",
-        "fileName": "钱包",
+        "fileName": "账户",
         "error": "输入错误",
         "privateKey": "私钥"
       }
@@ -274,8 +280,8 @@
         },
         "header": {
           "tokenTypeSelect": {
-            "fungibleToken": "同质化代币(FT)",
-            "nonFungibleToken": "非同质化代币(NFT)"
+            "fungibleToken": "代币",
+            "nonFungibleToken": "NFT"
           },
           "settingsMode": {
             "simple": "简单",
@@ -353,7 +359,7 @@
       "script": {
         "feeLockCode": "CALL_METHOD\n    Address(\"{0}\")\n    \"lock_fee\"\n    Decimal(\"{1}\")\n;",
         "manifestParsedFailed": "交易清单解析失败",
-        "needImportWalletFile": "需要导入钱包文件"
+        "needImportWalletFile": "需要导入账户文件"
       }
     },
     "PackageDeploy": {

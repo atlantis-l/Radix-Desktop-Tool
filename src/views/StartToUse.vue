@@ -26,13 +26,13 @@
         </h2>
 
         <h3 align="center">
-          一个可以与
+          提供与
           <span
             class="here"
             @click="openExternalLink('https://www.radixdlt.com/')"
-            >Radix</span
+            >Radix 网络</span
           >
-          网络交互的工具
+          高效的交互
         </h3>
 
         <pre><code class="fenced-code-block language-shell" >使用工具时所需了解的基本概念可以在<span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">这里</span>找到 「 <span
@@ -59,13 +59,12 @@
         </h2>
 
         <h3 align="center">
-          A tool that can interact with
+          Provides efficient interaction with
           <span
             class="here"
             @click="openExternalLink('https://www.radixdlt.com/')"
-            >Radix</span
+            >Radix Network</span
           >
-          Network
         </h3>
 
         <pre><code class="fenced-code-block language-shell" >The basic concepts need to know when using the tool can be found <span class="here" @click="openExternalLink('https://docs.radixdlt.com/')">here</span> 「 <span

@@ -9,7 +9,7 @@ import {
   setupTitlebar,
 } from "custom-electron-titlebar/main";
 
-const VERSION = "v0.1.5";
+const VERSION = "v0.1.6";
 
 const VERSION_MENU = {
   label: VERSION,

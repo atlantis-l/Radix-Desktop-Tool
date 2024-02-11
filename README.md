@@ -17,10 +17,16 @@
 </h3>
 
 <h3 align="center">
-    A tool that can interact with <a href="https://www.radixdlt.com/">Radix</a> Network
+    A desktop tool that provides efficient interaction with <a href="https://www.radixdlt.com/">Radix Network</a>
 </h3>
 
 > The basic concepts need to know when using the tool can be found [here](https://docs.radixdlt.com/)
+
+<ul>
+    <li>
+        <a href="https://radix.wiki/ecosystem/radix-desktop-tool">Radix Wiki</a>
+    </li>
+</ul>
 
 ## Usage
 

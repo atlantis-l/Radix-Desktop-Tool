@@ -17,10 +17,16 @@
 </h3>
 
 <h3 align="center">
-    一个可以与 <a href="https://www.radixdlt.com/">Radix</a> 网络交互的工具
+    一个提供与 <a href="https://www.radixdlt.com/">Radix 网络</a> 高效交互的桌面工具
 </h3>
 
 > 使用工具时所需了解的基本概念可以在[这里](https://docs.radixdlt.com/)找到
+
+<ul>
+    <li>
+        <a href="https://radix.wiki/ecosystem/radix-desktop-tool">Radix 维基</a>
+    </li>
+</ul>
 
 ## 运行程序
 

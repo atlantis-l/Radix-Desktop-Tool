@@ -117,22 +117,22 @@
       >
         {{ $t(`View.WalletGenerate.script.address`) }}[,{{
           $t(`View.TokenTransfer.SingleToMultiple.template.content.amount`)
-        }}][,......]({{
+        }}][,NFT ID][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,xxxxxx][,......]({{
+        account_xxxxxx[,xxxxxx][,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,xxxxxx][,......]({{
+        account_xxxxxx[,xxxxxx][,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,xxxxxx][,......]({{
+        account_xxxxxx[,xxxxxx][,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,xxxxxx][,......]({{
+        account_xxxxxx[,xxxxxx][,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />
-        account_xxxxxx[,xxxxxx][,......]({{
+        account_xxxxxx[,xxxxxx][,xxxxxx][,......]({{
           $t("View.TokenTransfer.SingleToMultiple.template.optional")
         }})<br />[......]
       </a-modal>
@@ -251,6 +251,20 @@
         </a-tooltip>
       </a-col>
       <a-col flex="1">
+        <a-select class="view-max-width" v-model:value="tokenType">
+          <a-select-option :value="0">{{
+            $t(
+              "View.TokenTransfer.SingleToMultiple.template.header.tokenTypeSelect.fungibleToken",
+            )
+          }}</a-select-option>
+          <a-select-option :value="1">{{
+            $t(
+              "View.TokenTransfer.SingleToMultiple.template.header.tokenTypeSelect.nonFungibleToken",
+            )
+          }}</a-select-option>
+        </a-select>
+      </a-col>
+      <a-col flex="1">
         <a-tooltip destroyTooltipOnHide color="white" placement="bottom">
           <template #title>
             <a-button
@@ -286,7 +300,6 @@
           </a-upload>
         </a-tooltip>
       </a-col>
-      <a-col flex="1"> </a-col>
       <a-col span="5" class="view-no-padding-right">
         <a-button
           class="view-max-width custom-btn"
@@ -355,58 +368,48 @@
           </a-tooltip>
         </a-col>
         <a-col span="8">
-          <a-tooltip destroyTooltipOnHide>
-            <template #title
-              >{{
+          <a-input-group compact style="display: flex">
+            <a-select
+              :open="false"
+              :bordered="false"
+              :show-arrow="false"
+              class="view-nft-selector-label"
+              value="label"
+            >
+              <a-select-option value="label">{{
+                $t(`View.TokenTransfer.SingleToMultiple.template.content.token`)
+              }}</a-select-option>
+            </a-select>
+
+            <a-select
+              allowClear
+              style="flex: 1"
+              :showSearch="true"
+              optionLabelProp="name"
+              :options="tokenOptions"
+              optionFilterProp="label"
+              v-model:value="selectedToken"
+              :placeholder="
                 $t(
-                  `View.TokenTransfer.SingleToMultiple.template.content.tokenTip`,
+                  `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.placeholder1`,
                 )
-              }}
-            </template>
-            <a-input-group compact style="display: flex">
-              <a-select
-                :open="false"
-                :bordered="false"
-                :show-arrow="false"
-                class="view-nft-selector-label"
-                value="label"
-              >
-                <a-select-option value="label">{{
-                  $t(
-                    `View.TokenTransfer.SingleToMultiple.template.content.token`,
-                  )
-                }}</a-select-option>
-              </a-select>
-              <a-select
-                allowClear
-                style="flex: 1"
-                :showSearch="true"
-                optionLabelProp="name"
-                :options="tokenOptions"
-                optionFilterProp="label"
-                v-model:value="selectedToken"
-                :placeholder="
-                  $t(
-                    `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.placeholder1`,
-                  )
-                "
-              >
-                <template #option="{ label, value }">
-                  <a-tooltip destroyTooltipOnHide placement="left">
-                    <template #title>
-                      <span style="cursor: pointer" @click="copy(value)">{{
-                        value
-                      }}</span>
-                    </template>
-                    <span>{{ label }}</span>
-                  </a-tooltip>
-                </template>
-              </a-select>
-            </a-input-group>
-          </a-tooltip>
+              "
+            >
+              <template #option="{ label, value }">
+                <a-tooltip destroyTooltipOnHide placement="left">
+                  <template #title>
+                    <span style="cursor: pointer" @click="copy(value)">{{
+                      value
+                    }}</span>
+                  </template>
+                  <span>{{ label }}</span>
+                </a-tooltip>
+              </template>
+            </a-select>
+          </a-input-group>
         </a-col>
         <a-col span="8" class="view-no-padding-right">
-          <a-tooltip destroyTooltipOnHide>
+          <a-tooltip destroyTooltipOnHide v-if="!tokenType">
             <template #title
               >{{
                 $t(
@@ -426,6 +429,19 @@
               "
             />
           </a-tooltip>
+
+          <a-select v-else class="view-max-width" v-model:value="transferWay">
+            <a-select-option :value="0">{{
+              $t(
+                "View.TokenTransfer.SingleToMultiple.template.content.customTransfer",
+              )
+            }}</a-select-option>
+            <a-select-option :value="1">{{
+              $t(
+                "View.TokenTransfer.SingleToMultiple.template.content.randomTransfer",
+              )
+            }}</a-select-option>
+          </a-select>
         </a-col>
       </a-row>
       <a-row>
@@ -501,7 +517,7 @@ enum CustomMethod {
   SEND_TRANSACTION,
 }
 
-const MAX_WALLET_PER_TX = 50;
+let MAX_WALLET_PER_TX = 50;
 
 export default defineComponent({
   components: {
@@ -512,6 +528,8 @@ export default defineComponent({
       gutter: 10,
       feeLock: "",
       wallets: [],
+      tokenType: 0,
+      transferWay: 0,
       store: store(),
       focusInput: "",
       tokenAmount: "",
@@ -542,6 +560,14 @@ export default defineComponent({
   },
   watch: {
     wallets() {
+      this.previewFeeList = [];
+    },
+    tokenType(v) {
+      this.previewFeeList = [];
+      this.selectedToken = undefined;
+      MAX_WALLET_PER_TX = v ? 36 : 50;
+    },
+    transferWay() {
       this.previewFeeList = [];
     },
     tokenAmount() {
@@ -590,34 +616,65 @@ export default defineComponent({
       const options = [];
 
       if (this.resourcesOfSender) {
-        this.resourcesOfSender.fungible.forEach((info) => {
-          if (info.amount === "0") return;
+        if (!this.tokenType) {
+          this.resourcesOfSender.fungible.forEach((info) => {
+            if (info.amount === "0") return;
 
-          let tempLabel = info.name;
+            let tempLabel = info.name;
 
-          if (info.symbol) tempLabel = info.symbol;
+            if (info.symbol) tempLabel = info.symbol;
 
-          if (!tempLabel)
-            tempLabel = this.$t(
-              `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
-            );
+            if (!tempLabel)
+              tempLabel = this.$t(
+                `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+              );
 
-          let label = `「 ${tempLabel} 」`;
+            let label = `「 ${tempLabel} 」`;
 
-          label += `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.balance`,
-          )}: ${formatNumber(info.amount as string)} 」`;
+            label += `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.balance`,
+            )}: ${formatNumber(info.amount as string)} 」`;
 
-          label += `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.address`,
-          )}: ${info.resourceAddress} 」`;
+            label += `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.address`,
+            )}: ${info.resourceAddress} 」`;
 
-          options.push({
-            label,
-            name: tempLabel,
-            value: info.resourceAddress,
+            options.push({
+              label,
+              name: tempLabel,
+              value: info.resourceAddress,
+            });
           });
-        });
+        } else {
+          this.resourcesOfSender.nonFungible.forEach((info) => {
+            if (info.ids?.length === 0) return;
+
+            let tempLabel = info.name;
+
+            if (info.symbol) tempLabel = info.symbol;
+
+            if (!tempLabel)
+              tempLabel = this.$t(
+                `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+              );
+
+            let label = `「 ${tempLabel} 」`;
+
+            label += `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.balance`, //@ts-ignore
+            )}: ${formatNumber(info.ids.length.toString())} 」`;
+
+            label += `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.address`,
+            )}: ${info.resourceAddress} 」`;
+
+            options.push({
+              label,
+              name: tempLabel,
+              value: info.resourceAddress,
+            });
+          });
+        }
       }
       //@ts-ignore
       return options;
@@ -654,42 +711,46 @@ export default defineComponent({
       );
     },
     totalTokenAmount() {
-      let addressField = this.$t(`View.WalletGenerate.script.address`);
+      if (!this.tokenType) {
+        let addressField = this.$t(`View.WalletGenerate.script.address`);
 
-      let amountText = this.$t(
-        `View.TokenTransfer.SingleToMultiple.template.content.amount`,
-      );
+        let amountText = this.$t(
+          `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+        );
 
-      if (this.wallets.length) {
-        if (!this.wallets[0][addressField]) {
-          const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+        if (this.wallets.length) {
+          if (!this.wallets[0][addressField]) {
+            const locale = this.$i18n.locale === "zh" ? "en" : "zh";
 
-          amountText = this.$t(
-            `View.TokenTransfer.SingleToMultiple.template.content.amount`,
-            locale,
-            [],
-          );
+            amountText = this.$t(
+              `View.TokenTransfer.SingleToMultiple.template.content.amount`,
+              locale,
+              [],
+            );
+          }
         }
-      }
 
-      if (this.tokenAmount.length) {
-        try {
-          const singleAmount = new Decimal(this.tokenAmount);
+        if (this.tokenAmount.length) {
+          try {
+            const singleAmount = new Decimal(this.tokenAmount);
 
-          return singleAmount.mul(this.wallets.length);
-        } catch (e) {
+            return singleAmount.mul(this.wallets.length);
+          } catch (e) {
+            return "0";
+          }
+        } else if (this.wallets.length && this.wallets[0][amountText]) {
+          let amount = new Decimal(0);
+
+          this.wallets.forEach((data) => {
+            amount = amount.plus(data[amountText]);
+          });
+
+          return amount;
+        } else {
           return "0";
         }
-      } else if (this.wallets.length && this.wallets[0][amountText]) {
-        let amount = new Decimal(0);
-
-        this.wallets.forEach((data) => {
-          amount = amount.plus(data[amountText]);
-        });
-
-        return amount;
       } else {
-        return "0";
+        return this.wallets.length;
       }
     },
     amountPlaceholder() {
@@ -752,7 +813,7 @@ export default defineComponent({
         });
     },
     estimateFee() {
-      if (!this.validateInputData()) {
+      if (this.validateInputData()) {
         message.warn(
           `「 ${this.$t(
             `View.TokenTransfer.SingleToMultiple.template.header.dataNotValid`,
@@ -786,13 +847,23 @@ export default defineComponent({
         }
       }
 
-      return !(
-        !this.feePayerWallet ||
-        !this.wallets.length ||
-        !this.senderWallet ||
-        !this.selectedToken ||
-        (!this.tokenAmount.length && !this.wallets[0][amountText])
-      );
+      if (!this.tokenType) {
+        return (
+          !this.feePayerWallet ||
+          !this.wallets.length ||
+          !this.senderWallet ||
+          !this.selectedToken ||
+          (!this.tokenAmount.length && !this.wallets[0][amountText])
+        );
+      } else {
+        return (
+          !this.feePayerWallet ||
+          !this.wallets.length ||
+          !this.senderWallet ||
+          !this.selectedToken ||
+          (this.transferWay === 0 && !this.wallets[0]["NFT ID"])
+        );
+      }
     },
     processTransaction() {
       this.openConfirmTransaction = false;
@@ -851,22 +922,75 @@ export default defineComponent({
 
       const fromPrivateKey = this.senderWallet?.privateKeyHexString();
 
-      //@ts-ignore
-      this.customOptions = this.wallets.map((data) => {
-        return {
-          fromPrivateKey,
-          toAddress: data[addressField],
-          transferInfos: [
-            {
-              tokenType: TokenType.FUNGIBLE,
-              tokenAddress: this.selectedToken,
-              amount: this.tokenAmount.length
-                ? this.tokenAmount
-                : data[amountText],
-            } as TransferInfo,
-          ],
+      if (!this.tokenType) {
+        //@ts-ignore
+        this.customOptions = this.wallets.map((data) => {
+          return {
+            fromPrivateKey,
+            toAddress: data[addressField],
+            transferInfos: [
+              {
+                tokenType: TokenType.FUNGIBLE,
+                tokenAddress: this.selectedToken,
+                amount: this.tokenAmount.length
+                  ? this.tokenAmount
+                  : data[amountText],
+              } as TransferInfo,
+            ],
+          };
+        });
+      } else {
+        const getRandomIds = () => {
+          const info = this.resourcesOfSender?.nonFungible.find((r) => {
+            return r.resourceAddress === this.selectedToken;
+          });
+
+          if (!info) return;
+          const ids = info.ids;
+
+          if (!ids) return;
+
+          const getRandomInt = (min: number, max: number) => {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+          };
+
+          const shuffle = (arr: string[]) => {
+            let _arr = arr.slice();
+            for (let i = 0; i < _arr.length; i++) {
+              let j = getRandomInt(0, i);
+              let t = _arr[i];
+              _arr[i] = _arr[j];
+              _arr[j] = t;
+            }
+            return _arr;
+          };
+
+          return shuffle(ids);
         };
-      });
+
+        let randomIds: string[];
+
+        if (this.transferWay) {
+          randomIds = getRandomIds() as string[];
+        }
+
+        //@ts-ignore
+        this.customOptions = this.wallets.map((data) => {
+          return {
+            fromPrivateKey,
+            toAddress: data[addressField],
+            transferInfos: [
+              {
+                tokenType: TokenType.NONFUNGIBLE,
+                tokenAddress: this.selectedToken,
+                nonFungibleLocalIds: this.transferWay
+                  ? [randomIds.pop()]
+                  : [data["NFT ID"]],
+              } as TransferInfo,
+            ],
+          };
+        });
+      }
     },
     async sendTransaction() {
       this.progressCount = 0;
@@ -952,6 +1076,8 @@ export default defineComponent({
             )} 」`,
             key,
           });
+
+          this.previewFeeList = [];
         } else {
           message.success({
             content: `「 ${this.$t(

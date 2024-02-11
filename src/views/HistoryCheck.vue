@@ -1005,7 +1005,9 @@ export default defineComponent({
             opt_ins: {
               raw_hex: true,
               balance_changes: true,
+              receipt_fee_summary: true,
               receipt_state_changes: true,
+              receipt_costing_parameters: true,
             },
           },
         })

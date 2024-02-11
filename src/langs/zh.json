@@ -182,8 +182,8 @@
             "simTx": "发送交易时是否进行交易模拟",
             "template": "导入格式",
             "tokenTypeSelect": {
-              "fungibleToken": "代币",
-              "nonFungibleToken": "NFT"
+              "fungibleToken": "发送代币",
+              "nonFungibleToken": "发送NFT"
             }
           },
           "divider": {
@@ -280,12 +280,12 @@
         },
         "header": {
           "tokenTypeSelect": {
-            "fungibleToken": "代币",
-            "nonFungibleToken": "NFT"
+            "fungibleToken": "创建代币",
+            "nonFungibleToken": "创建NFT"
           },
           "settingsMode": {
-            "simple": "简单",
-            "detailed": "详细"
+            "simple": "简易设置",
+            "detailed": "详细设置"
           }
         },
         "content": {
@@ -459,12 +459,12 @@
     "HexConvert": {
       "template": {
         "input": {
-          "placeholder": "输入地址或十六进制字符串"
+          "placeholder": "输入地址(Bech32)或十六进制字符串"
         },
         "result": {
           "placeholder": "这里显示转换后的结果"
         },
-        "tip": "Radix网络中的地址与十六进制格式互转",
+        "tip": "Radix网络中的地址(Bech32)与十六进制格式互转",
         "errorMainnetAddress": "错误的主网地址",
         "errorStokenetAddress": "错误的测试网地址"
       }

@@ -44,7 +44,7 @@
       "title": "XRD Faucet"
     },
     "LocalSettings": {
-      "title": "Local Settings"
+      "title": "Local Setting"
     }
   },
   "View": {
@@ -281,8 +281,8 @@
             "nonFungibleToken": "NonFungible"
           },
           "settingsMode": {
-            "simple": "Simple",
-            "detailed": "Detailed"
+            "simple": "Simple Setting",
+            "detailed": "Detailed Setting"
           }
         },
         "content": {
@@ -459,12 +459,12 @@
     "HexConvert": {
       "template": {
         "input": {
-          "placeholder": "Enter address or hex string"
+          "placeholder": "Enter address(Bech32) or hex string"
         },
         "result": {
           "placeholder": "Show converted result here"
         },
-        "tip": "The address and hexadecimal format in Radix Network converted to each other",
+        "tip": "The address(Bech32) and hexadecimal format in Radix Network converted to each other",
         "errorMainnetAddress": "Wrong mainnet address",
         "errorStokenetAddress": "Wrong stokenet address"
       }

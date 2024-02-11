@@ -355,15 +355,6 @@ export default defineComponent({
         }, 100);
       }
     },
-    "store.simTx"(flag: boolean) {
-      this.store.setSimTx(flag);
-
-      let msg = flag
-        ? this.$t(`View.TokenTransfer.SingleToMultiple.script.enableSimTx`)
-        : this.$t(`View.TokenTransfer.SingleToMultiple.script.disableSimTx`);
-
-      message.success({ content: `「 ${msg} 」`, key: "simTx" });
-    },
     "store.networkId"(id: number) {
       this.networkChecker.networkId = id;
       this.walletGenerator.networkId = id;

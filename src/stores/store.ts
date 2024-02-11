@@ -9,7 +9,6 @@ const radixTool = window.RadixTool as RadixTool;
 
 const state = {};
 
-state.simTx = await radixTool.data.get("simTx");
 state.pageSize = await radixTool.data.get("pageSize");
 state.language = await radixTool.data.get("language");
 state.networkId = await radixTool.data.get("networkId");
@@ -38,7 +37,6 @@ export default defineStore("store", {
   state: () => ({
     worker,
     radixTool,
-    simTx: state.simTx,
     language: state.language,
     pageSize: state.pageSize,
     networkId: state.networkId,
@@ -52,9 +50,6 @@ export default defineStore("store", {
     stokenetDefaultUrl: STOKENET_DEFAULT_URL,
   }),
   actions: {
-    setSimTx(flag: boolean) {
-      radixTool.data.set("simTx", flag);
-    },
     setPageSize(size: number) {
       radixTool.data.set("pageSize", size);
     },

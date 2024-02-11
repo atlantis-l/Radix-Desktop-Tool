@@ -413,7 +413,6 @@ const CONFIG_FILE = ".radix-tool";
 const CONFIG_FILE_PATH = join(HOME_PATH, CONFIG_FILE);
 
 interface Config {
-  simTx: boolean;
   pageSize: number;
   language: string;
   networkId: number;
@@ -426,7 +425,6 @@ interface Config {
 }
 
 const DEFAULT_CONFIG: Config = {
-  simTx: true,
   pageSize: 10,
   language: "en",
   showNetwork: false,

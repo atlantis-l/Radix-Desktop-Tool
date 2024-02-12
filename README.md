@@ -26,6 +26,9 @@
     <li>
         <a href="https://radix.wiki/ecosystem/radix-desktop-tool">Radix Wiki</a>
     </li>
+    <li>
+        <a href="https://radixecosystem.com/projects/radix-desktop-tool">Radix Ecosystem</a>
+    </li>
 </ul>
 
 ## Usage

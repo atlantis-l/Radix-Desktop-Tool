@@ -26,6 +26,9 @@
     <li>
         <a href="https://radix.wiki/ecosystem/radix-desktop-tool">Radix 维基</a>
     </li>
+    <li>
+        <a href="https://radixecosystem.com/projects/radix-desktop-tool">Radix 生态</a>
+    </li>
 </ul>
 
 ## 运行程序

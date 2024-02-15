@@ -788,11 +788,19 @@ export default defineComponent({
         }
       }
 
+      const checkedAddressList: string[] = [];
+
       if (!this.tokenType) {
-        this.wallets.map((data) => {
+        this.wallets.forEach((data) => {
           let amount: string | undefined;
 
-          const resources = this.addressAndResourcesMap.get(data[addressField]);
+          const address = data[addressField];
+
+          if (checkedAddressList.includes(address)) return;
+
+          checkedAddressList.push(address);
+
+          const resources = this.addressAndResourcesMap.get(address);
 
           if (resources) {
             const info = resources.fungible.find(
@@ -828,7 +836,13 @@ export default defineComponent({
         });
       } else {
         this.wallets.forEach((data) => {
-          const resources = this.addressAndResourcesMap.get(data[addressField]);
+          const address = data[addressField];
+
+          if (checkedAddressList.includes(address)) return;
+
+          checkedAddressList.push(address);
+
+          const resources = this.addressAndResourcesMap.get(address);
 
           if (resources) {
             const info = resources.nonFungible.find(

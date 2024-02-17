@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="view-layout">
+  <a-layout class="view-layout" style="position: relative">
     <!------------------------ Modal Group ------------------------>
     <PrivateKeyModal
       :title="
@@ -15,6 +15,14 @@
       :open="openTxConfirmModal"
       @close="openTxConfirmModal = false"
       @sendTx="sendTransaction"
+    />
+
+    <ProgressModal
+      :open="openProgressModal"
+      :closable="maskClosable"
+      :status="progressStatus"
+      :percent="progressPercent"
+      @close="openProgressModal = false"
     />
 
     <CSVTemplateModal
@@ -206,12 +214,35 @@
       >「 {{ $t("View.ManifestExecute.template.divider.text") }} 」
     </a-divider>
 
+    <a-tooltip>
+      <template #title>
+        {{ $t("View.ManifestExecute.template.executionTimes") }}
+      </template>
+
+      <a-input-number
+        style="
+          position: absolute;
+          width: 130px;
+          top: 205px;
+          right: 10px;
+          z-index: 999;
+        "
+        :min="1"
+        v-model:value="executionTimes"
+      >
+        <template #addonBefore>
+          <CreateIcon icon="ThunderboltTwoTone" />
+        </template>
+      </a-input-number>
+    </a-tooltip>
+
     <!------------------------ Content ------------------------>
     <a-layout-content class="view-layout-content">
       <a-textarea autoSize readonly :value="feeLockCode" />
 
       <a-textarea
         allowClear
+        class="manifest-execute"
         v-model:value="manifestText"
         style="flex: 1; margin-top: 20px"
         :placeholder="
@@ -225,10 +256,8 @@
 
 <script lang="ts">
 import {
-  Status,
   Wallet,
   PublicKey,
-  PrivateKey,
   Instruction,
   Instructions,
   getCurrentEpoch,
@@ -243,11 +272,13 @@ import {
   CSVTemplateModal,
   PrivateKeyModal,
   TxComfirmModal,
+  ProgressModal,
 } from "../components";
-import { formatNumber, selectXrdAddress } from "../common";
+import { formatNumber, selectXrdAddress, CreateIcon, sleep } from "../common";
 import { message } from "ant-design-vue";
 import { defineComponent } from "vue";
 import store from "../stores/store";
+import Decimal from "decimal.js";
 import Papa from "papaparse";
 
 const MAX_DIFF_SENDER_AMOUNT = 16;
@@ -257,6 +288,8 @@ export default defineComponent({
     CSVTemplateModal,
     PrivateKeyModal,
     TxComfirmModal,
+    ProgressModal,
+    CreateIcon,
   },
   data() {
     return {
@@ -265,13 +298,19 @@ export default defineComponent({
       wallets: [],
       store: store(),
       manifestText: "",
+      progressCount: 0,
+      executionTimes: 1,
       feeLockEstimate: "",
+      maskClosable: false,
       isPreviewDone: false,
       feePayerXrdBalance: "",
+      progressStatus: "normal",
       openTemplateModal: false,
+      openProgressModal: false,
       openFeePayerModal: false,
       openTxConfirmModal: false,
-      privateKeyList: [] as PrivateKey[],
+      privateKeyList: [] as string[],
+      commitStatusList: [] as number[],
       feePayerWallet: undefined as Wallet | undefined,
       networkChecker: new RadixNetworkChecker(store().networkId),
       walletGenerator: new RadixWalletGenerator(store().networkId),
@@ -284,6 +323,9 @@ export default defineComponent({
   watch: {
     manifestText() {
       this.isPreviewDone = false;
+    },
+    executionTimes(v) {
+      if (!v) this.executionTimes = 1;
     },
     feePayerAddress() {
       this.isPreviewDone = false;
@@ -298,15 +340,34 @@ export default defineComponent({
     feeLockCode() {
       return this.$t("View.ManifestExecute.script.feeLockCode", [
         this.feePayerAddress ? this.feePayerAddress : "",
-        this.feeLock.length ? this.feeLock : "0",
+        this.feeLock.length
+          ? new Decimal(this.feeLock)
+              .div(Math.floor(this.executionTimes))
+              .toString()
+          : "0",
       ]);
+    },
+    isCommitDone() {
+      return this.commitStatusList.length === Math.floor(this.executionTimes);
     },
     feePayerAddress() {
       return this.feePayerWallet ? this.feePayerWallet.address : undefined;
     },
+    progressPercent() {
+      const totalCount = Math.floor(this.executionTimes) * 2 + 1;
+
+      return Math.floor(
+        ((this.progressCount + this.commitStatusList.length) / totalCount) *
+          100,
+      );
+    },
     feeLockPlaceholder() {
       return this.feeLockEstimate.length
-        ? formatNumber(this.feeLockEstimate)
+        ? formatNumber(
+            new Decimal(this.feeLockEstimate)
+              .mul(Math.floor(this.executionTimes))
+              .toString(),
+          )
         : this.$t(
             `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
           );
@@ -374,11 +435,18 @@ export default defineComponent({
       }
     },
     async sendTransaction(txMessage: string) {
+      this.progressCount = 0;
+      this.maskClosable = false;
+      this.commitStatusList = [];
       this.isPreviewDone = false;
-      const key = "sendTransaction";
+      this.progressStatus = "normal";
       this.openTxConfirmModal = false;
 
-      this.manifestExecutor.executorWallet = this.feePayerWallet as Wallet;
+      setTimeout(() => {
+        this.openProgressModal = true;
+      }, 500);
+
+      const key = "sendTransaction";
 
       message.loading({
         key,
@@ -390,44 +458,37 @@ export default defineComponent({
 
       const manifestStr = `${this.feeLockCode}\n${this.manifestText}`;
 
-      const result = await this.manifestExecutor.execute(
-        manifestStr,
-        this.privateKeyList,
-        txMessage.length ? txMessage : undefined,
-        await getCurrentEpoch(this.store.networkId),
-      );
+      const executionTimes = Math.floor(this.executionTimes);
 
-      if (result.status === Status.FAIL) {
-        message.error({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.error`,
-          )} 」`,
-          key,
-        });
-      } else if (result.status === Status.DUPLICATE_TX) {
-        message.warning({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.warning`,
-          )} 」`,
-          key,
-        });
-      } else {
-        message.success({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.success`,
-          )} 」`,
-          key,
-        });
+      let currentEpoch = await getCurrentEpoch(this.store.networkId);
 
-        message.loading({
-          duration: 0,
-          key: "checkTx",
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.loading`,
-          )} 」`,
+      let startTime = Date.now();
+
+      const feePayerPrivateKey = this.feePayerWallet?.privateKeyHexString();
+
+      for (let i = 0; i < executionTimes; i++) {
+        await sleep(i, 10, 4000);
+
+        const nowTime = Date.now();
+
+        if (startTime + 1000 * 60 * 5 < nowTime) {
+          startTime = nowTime;
+          currentEpoch = await getCurrentEpoch(this.store.networkId);
+        }
+
+        this.store.worker.postMessage({
+          action: "ManifestExecute.execute",
+          args: [
+            txMessage,
+            manifestStr,
+            currentEpoch,
+            feePayerPrivateKey,
+            JSON.stringify(this.privateKeyList),
+            this.store.networkId,
+          ],
         });
 
-        this.checkTx(result.transactionId as string);
+        this.progressCount++;
       }
     },
     async previewTransaction() {
@@ -535,7 +596,7 @@ export default defineComponent({
         const wallet =
           await this.walletGenerator.generateWalletByPrivateKey(pk);
 
-        this.privateKeyList.push(wallet.privateKey);
+        this.privateKeyList.push(wallet.privateKeyHexString());
 
         pubKeyList.push(wallet.publicKey);
       }
@@ -590,6 +651,39 @@ export default defineComponent({
         });
       }
     },
+    addCommitStatus(data: Data) {
+      this.commitStatusList.push(data.args[0].status ? 0 : 1);
+
+      const key = "sendTransaction";
+
+      if (this.isCommitDone) {
+        if (this.commitStatusList.includes(0)) {
+          message.error({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.error`,
+            )} 」`,
+            key,
+          });
+        } else {
+          message.success({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.success`,
+            )} 」`,
+            key,
+          });
+
+          message.loading({
+            duration: 0,
+            key: "checkTx",
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.loading`,
+            )} 」`,
+          });
+
+          this.checkTx(data.args[0].transactionId as string);
+        }
+      }
+    },
     async checkTx(txId: string) {
       const key = "checkTx";
 
@@ -600,6 +694,9 @@ export default defineComponent({
           txResult.transaction.transaction_status ===
           TransactionStatus.CommittedSuccess
         ) {
+          this.progressCount++;
+          this.progressStatus = "success";
+          this.maskClosable = true;
           message.success({
             key,
             content: `「 ${this.$t(
@@ -613,6 +710,9 @@ export default defineComponent({
         if (
           txResult.transaction.transaction_status !== TransactionStatus.Pending
         ) {
+          this.progressCount++;
+          this.progressStatus = "exception";
+          this.maskClosable = true;
           console.error(txResult.transaction.error_message);
           message.error({
             key,
@@ -725,6 +825,24 @@ export default defineComponent({
         });
       });
     },
+  },
+  activated() {
+    this.store.worker.onmessage = (msg: MessageEvent<Data>) => {
+      const actionList = msg.data.action.split(".");
+
+      const action = {
+        executor: actionList[0],
+        method: actionList[1],
+      };
+
+      if (action.executor === "ManifestExecute") {
+        switch (action.method) {
+          case "addCommitStatus":
+            this.addCommitStatus(msg.data);
+            break;
+        }
+      }
+    };
   },
 });
 </script>

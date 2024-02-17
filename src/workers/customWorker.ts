@@ -1,12 +1,13 @@
 import {
-  PrivateKey,
+  Wallet,
   PublicKey,
-  RadixNetworkChecker,
-  RadixWalletGenerator,
-  ResourcesOfAccount,
+  PrivateKey,
   TokenSender,
   TransferInfo,
-  Wallet,
+  ResourcesOfAccount,
+  RadixNetworkChecker,
+  RadixWalletGenerator,
+  CustomManifestExecutor,
 } from "@atlantis-l/radix-tool";
 import { sleep } from "../common";
 
@@ -48,6 +49,14 @@ onmessage = (msg: MessageEvent<Data>) => {
         break;
       case "getResourcesOfSenders":
         MultipleToSingle.getResourcesOfSenders(msg.data);
+        break;
+    }
+  }
+
+  if (action.executor === "ManifestExecute") {
+    switch (action.method) {
+      case "execute":
+        ManifestExecute.execute(msg.data);
         break;
     }
   }
@@ -200,5 +209,48 @@ const MultipleToSingle = {
         args: [],
       } as Data);
     }
+  },
+};
+
+const ManifestExecute = {
+  execute: async (data: Data) => {
+    const txMessage = data.args[0] as string;
+    const manifestStr = data.args[1] as string;
+    const currentEpoch = data.args[2] as number;
+    const feePayerPrivateKey = data.args[3] as string;
+    const privateKeyList = JSON.parse(data.args[4]) as string[];
+    const networkId = data.args[5] as number;
+
+    const pkList: PrivateKey[] = [];
+
+    const walletGenerator = new RadixWalletGenerator(networkId);
+
+    for (let i = 0; i < privateKeyList.length; i++) {
+      pkList.push(
+        (await walletGenerator.generateWalletByPrivateKey(privateKeyList[i]))
+          .privateKey,
+      );
+    }
+
+    const feePayerWallet =
+      await walletGenerator.generateWalletByPrivateKey(feePayerPrivateKey);
+
+    const executor = new CustomManifestExecutor(networkId, feePayerWallet);
+
+    executor
+      .execute(
+        manifestStr,
+        pkList,
+        txMessage.length ? txMessage : undefined,
+        currentEpoch,
+      )
+      .then((result) => {
+        postMessage({
+          action: `${data.action.split(".")[0]}.addCommitStatus`,
+          args: [
+            { status: result.status, transactionId: result.transactionId },
+          ],
+        } as Data);
+      });
   },
 };

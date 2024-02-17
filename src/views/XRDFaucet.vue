@@ -28,6 +28,7 @@
           </template>
 
           <a-input-number
+            :min="1"
             @keyup.enter="getXRD"
             class="view-max-width"
             v-model:value.trim="requestTimes"
@@ -100,6 +101,9 @@ export default defineComponent({
       if (value.length && value.startsWith("account")) {
         this.getXrdBalance();
       }
+    },
+    requestTimes(v) {
+      if (!v) this.requestTimes = 1;
     },
   },
   methods: {

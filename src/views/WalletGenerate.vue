@@ -3,10 +3,11 @@
     <div style="height: 90px" />
 
     <a-row justify="center">
-      <a-col span="8">
-        <a-input
+      <a-col span="7">
+        <a-input-number
+          class="view-max-width"
           ref="amount"
-          allowClear
+          :min="1"
           v-model:value.trim="amount"
           @keyup.enter="createWallet"
           :placeholder="$t(`View.WalletGenerate.template.placeholder`)"
@@ -61,7 +62,7 @@ import { RadixWalletGenerator } from "@atlantis-l/radix-tool";
 export default defineComponent({
   data() {
     return {
-      amount: "",
+      amount: 1,
       store: store(),
       walletGenerator: new RadixWalletGenerator(store().networkId),
       fileData: {
@@ -71,6 +72,9 @@ export default defineComponent({
     };
   },
   watch: {
+    amount(v) {
+      if (!v) this.amount = 1;
+    },
     "store.networkId"(id: number) {
       this.walletGenerator.networkId = id;
     },
@@ -82,7 +86,7 @@ export default defineComponent({
   },
   methods: {
     async createWallet() {
-      const amount = parseInt(this.amount);
+      const amount = Math.floor(this.amount);
 
       if (!amount) {
         message.error(`「 ${this.$t(`View.WalletGenerate.script.error`)} 」`);

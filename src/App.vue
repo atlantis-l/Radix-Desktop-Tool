@@ -253,6 +253,10 @@ textarea::-webkit-scrollbar {
   display: none !important;
 }
 
+.manifest-execute textarea {
+  resize: none;
+}
+
 #json * {
   font-family: "SF-Mono-Regular" !important;
 }

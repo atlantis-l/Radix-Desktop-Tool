@@ -123,7 +123,7 @@
         </a-button>
       </a-col>
     </a-row>
-    
+
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip destroyTooltipOnHide placement="bottom">

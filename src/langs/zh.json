@@ -354,7 +354,8 @@
         },
         "header": {
           "importManifest": "导入清单"
-        }
+        },
+        "executionTimes": "执行次数"
       },
       "script": {
         "feeLockCode": "CALL_METHOD\n    Address(\"{0}\")\n    \"lock_fee\"\n    Decimal(\"{1}\")\n;",

@@ -354,7 +354,8 @@
         },
         "header": {
           "importManifest": "Import Manifest"
-        }
+        },
+        "executionTimes": "Number of executions"
       },
       "script": {
         "feeLockCode": "CALL_METHOD\n    Address(\"{0}\")\n    \"lock_fee\"\n    Decimal(\"{1}\")\n;",

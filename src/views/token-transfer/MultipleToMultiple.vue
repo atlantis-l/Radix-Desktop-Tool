@@ -1,139 +1,127 @@
 <template>
   <a-layout class="view-layout">
     <!------------------------ Modal Group ------------------------>
-    <div id="modal-group">
-      <a-modal
-        centered
-        destroyOnClose
-        @ok="setFeePayer"
-        v-model:open="openFeePayerModal"
-        :title="
-          $t(
-            `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.title`,
-          )
-        "
-      >
-        <a-input
-          showCount
-          allowClear
-          @keyup.enter="setFeePayer"
-          ref="feePayerWalletPrivateKey"
-          v-model:value.trim="feePayerWalletPrivateKey"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.addonBefore`,
-            )
-          "
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.placeholder`,
-            )
-          "
-        ></a-input>
-      </a-modal>
-      <a-modal
-        centered
-        destroyOnClose
-        @ok="sendTransaction"
-        v-model:open="openConfirmTransaction"
-        :title="
-          $t(
-            `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.title`,
-          )
-        "
-      >
-        <a-textarea
-          allowClear
-          ref="transactionMessage"
-          v-model:value.trim="transactionMessage"
-          @keyup.ctrl.enter="sendTransaction"
-          style="margin: 12px 0 8px 0"
-          :autoSize="{ minRows: 10, maxRows: 10 }"
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.placeholder`,
-            )
-          "
-        />
-      </a-modal>
-      <a-modal
-        centered
-        destroyOnClose
-        @ok="setSender"
-        v-model:open="openSenderModal"
-        :title="`${$t(
-          `View.TokenTransfer.MultipleToMultiple.template.senderModal.title`,
-        )}「 #${senderIndex + 1} 」`"
-      >
-        <a-input
-          showCount
-          allowClear
-          ref="senderPrivateKey"
-          @keyup.enter="setSender"
-          v-model:value.trim="senderPrivateKey"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.senderModal.addonBefore`,
-            )
-          "
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.senderModal.placeholder`,
-            )
-          "
-        ></a-input>
-      </a-modal>
-      <a-modal
-        centered
-        :footer="null"
-        destroyOnClose
-        v-model:open="openSelectTokenModal"
-        :title="`「 #${senderIndex + 1} 」${$t(
-          `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.title`,
-        )}`"
-      >
-        <!------------------------ Header ------------------------>
-        <a-select
-          allowClear
-          mode="multiple"
-          class="view-max-width"
-          optionLabelProp="name"
-          :options="tokenOptions"
-          optionFilterProp="label"
-          max-tag-count="responsive"
-          v-model:value="selectedTokens"
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.placeholder1`,
-            )
-          "
-        >
-          <template #option="{ label, address }">
-            <a-tooltip destroyTooltipOnHide placement="left">
-              <template #title>
-                <span style="cursor: pointer" @click="copy(address)">{{
-                  address
-                }}</span>
-              </template>
-              <span>{{ label }}</span>
-            </a-tooltip>
-          </template>
-        </a-select>
-        <!------------------------ Header ------------------------>
+    <PrivateKeyModal
+      :title="
+        $t(`View.TokenTransfer.MultipleToMultiple.template.feePayerModal.title`)
+      "
+      :wallet="feePayerWallet"
+      :open="openFeePayerModal"
+      @action="setFeePayer"
+      @close="openFeePayerModal = false"
+    />
 
-        <!------------------------ Content ------------------------>
-        <a-layout-content class="view-50vh-max-height">
-          <a-row
-            :class="
-              customOptions[senderIndex].transferInfos.length - i === 1
-                ? 'no-margin-row'
-                : ''
-            "
-            v-for="(transferInfo, i) in customOptions[senderIndex]
-              .transferInfos"
-          >
-            <!-------------------- Fungible Token Input -------------------->
-            <a-col flex="1" v-if="transferInfo.tokenType === 0">
+    <TxComfirmModal
+      :open="openTxConfirmModal"
+      @sendTx="sendTransaction"
+      @close="openTxConfirmModal = false"
+    />
+
+    <PrivateKeyModal
+      :title="`${$t(
+        `View.TokenTransfer.MultipleToMultiple.template.senderModal.title`,
+      )}「 #${senderIndex + 1} 」`"
+      :open="openSenderModal"
+      :wallet="customOptions[senderIndex]?.fromWallet"
+      @action="setSender"
+      @close="openSenderModal = false"
+    />
+
+    <a-modal
+      centered
+      destroyOnClose
+      :title="`「 #${senderIndex + 1} 」${$t(
+        `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.title`,
+      )}`"
+      :footer="null"
+      v-model:open="openSelectTokenModal"
+    >
+      <!------------------------ Header ------------------------>
+      <a-select
+        allowClear
+        mode="multiple"
+        class="view-max-width"
+        optionLabelProp="name"
+        :options="tokenOptions"
+        optionFilterProp="label"
+        max-tag-count="responsive"
+        v-model:value="selectedTokens"
+        :placeholder="
+          $t(
+            `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.placeholder1`,
+          )
+        "
+      >
+        <template #option="{ label, address }">
+          <a-tooltip destroyTooltipOnHide placement="left">
+            <template #title>
+              <span style="cursor: pointer" @click="copy(address)">{{
+                address
+              }}</span>
+            </template>
+            <span>{{ label }}</span>
+          </a-tooltip>
+        </template>
+      </a-select>
+      <!------------------------ Header ------------------------>
+
+      <!------------------------ Content ------------------------>
+      <a-layout-content class="view-50vh-max-height">
+        <a-row
+          :class="
+            customOptions[senderIndex].transferInfos.length - i === 1
+              ? 'no-margin-row'
+              : ''
+          "
+          v-for="(transferInfo, i) in customOptions[senderIndex].transferInfos"
+        >
+          <!-------------------- Fungible Token Input -------------------->
+          <a-col flex="1" v-if="transferInfo.tokenType === 0">
+            <a-tooltip destroyTooltipOnHide placement="right">
+              <template #title>
+                <span
+                  style="cursor: pointer"
+                  @click="copy(transferInfo.tokenAddress)"
+                  >{{ transferInfo.tokenAddress }}</span
+                >
+              </template>
+              <!-- @vue-ignore -->
+              <a-input
+                allowClear
+                class="view-max-width"
+                :addonBefore="
+                  transferInfo.name
+                    ? transferInfo.name
+                    : $t(
+                        `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                      )
+                "
+                v-model:value.trim="transferInfo.amount"
+                :placeholder="transferInfo.placeholder"
+              ></a-input>
+            </a-tooltip>
+          </a-col>
+          <!-------------------- Fungible Token Input -------------------->
+
+          <!----------------- NonFungible Token Selector ----------------->
+          <a-col flex="1" v-else-if="transferInfo.tokenType === 1">
+            <a-input-group compact style="display: flex">
+              <!-- @vue-skip -->
+              <a-select
+                value="label"
+                :bordered="false"
+                :open="false"
+                :show-arrow="false"
+                class="view-nft-selector-label"
+              >
+                <a-select-option value="label">{{
+                  transferInfo.name
+                    ? transferInfo.name
+                    : $t(
+                        `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
+                      )
+                }}</a-select-option>
+              </a-select>
               <a-tooltip destroyTooltipOnHide placement="right">
                 <template #title>
                   <span
@@ -142,86 +130,40 @@
                     >{{ transferInfo.tokenAddress }}</span
                   >
                 </template>
+
                 <!-- @vue-ignore -->
-                <a-input
-                  allowClear
-                  class="view-max-width"
-                  :addonBefore="
-                    transferInfo.name
-                      ? transferInfo.name
-                      : $t(
-                          `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
-                        )
-                  "
-                  v-model:value.trim="transferInfo.amount"
-                  :placeholder="transferInfo.placeholder"
-                ></a-input>
-              </a-tooltip>
-            </a-col>
-            <!-------------------- Fungible Token Input -------------------->
-
-            <!----------------- NonFungible Token Selector ----------------->
-            <a-col flex="1" v-else-if="transferInfo.tokenType === 1">
-              <a-input-group compact style="display: flex">
-                <!-- @vue-skip -->
                 <a-select
-                  value="label"
-                  :bordered="false"
-                  :open="false"
-                  :show-arrow="false"
-                  class="view-nft-selector-label"
+                  allowClear
+                  mode="multiple"
+                  class="view-nft-selector"
+                  max-tag-count="responsive"
+                  :options="transferInfo.idOptions"
+                  v-model:value="transferInfo.nonFungibleLocalIds"
+                  :placeholder="
+                    $t(
+                      `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.placeholder2`,
+                    )
+                  "
                 >
-                  <a-select-option value="label">{{
-                    transferInfo.name
-                      ? transferInfo.name
-                      : $t(
-                          `View.TokenTransfer.MultipleToMultiple.script.methods.activateSelectTokenModal.unnamedToken`,
-                        )
-                  }}</a-select-option>
-                </a-select>
-                <a-tooltip destroyTooltipOnHide placement="right">
-                  <template #title>
-                    <span
-                      style="cursor: pointer"
-                      @click="copy(transferInfo.tokenAddress)"
-                      >{{ transferInfo.tokenAddress }}</span
-                    >
+                  <template #option="{ label }">
+                    <a-tooltip destroyTooltipOnHide placement="left">
+                      <template #title>
+                        <span style="cursor: pointer" @click="copy(label)">{{
+                          label
+                        }}</span>
+                      </template>
+                      <span>{{ label }}</span>
+                    </a-tooltip>
                   </template>
-
-                  <!-- @vue-ignore -->
-                  <a-select
-                    allowClear
-                    mode="multiple"
-                    class="view-nft-selector"
-                    max-tag-count="responsive"
-                    :options="transferInfo.idOptions"
-                    v-model:value="transferInfo.nonFungibleLocalIds"
-                    :placeholder="
-                      $t(
-                        `View.TokenTransfer.MultipleToMultiple.template.selectTokenModal.placeholder2`,
-                      )
-                    "
-                  >
-                    <template #option="{ label }">
-                      <a-tooltip destroyTooltipOnHide placement="left">
-                        <template #title>
-                          <span style="cursor: pointer" @click="copy(label)">{{
-                            label
-                          }}</span>
-                        </template>
-                        <span>{{ label }}</span>
-                      </a-tooltip>
-                    </template>
-                  </a-select>
-                </a-tooltip>
-              </a-input-group>
-            </a-col>
-            <!----------------- NonFungible Token Selector ----------------->
-          </a-row>
-        </a-layout-content>
-        <!------------------------ Content ------------------------>
-      </a-modal>
-    </div>
+                </a-select>
+              </a-tooltip>
+            </a-input-group>
+          </a-col>
+          <!----------------- NonFungible Token Selector ----------------->
+        </a-row>
+      </a-layout-content>
+      <!------------------------ Content ------------------------>
+    </a-modal>
     <!------------------------ Modal Group ------------------------>
 
     <!------------------------ Header ------------------------>
@@ -252,7 +194,7 @@
           <a-input
             readonly
             :value="feePayerAddress"
-            @click="activateFeePayerModal"
+            @click="openFeePayerModal = true"
             :addonBefore="
               $t(
                 `View.TokenTransfer.MultipleToMultiple.template.header.feePayer.addonBefore`,
@@ -305,6 +247,7 @@
         </a-button>
       </a-col>
     </a-row>
+
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip destroyTooltipOnHide placement="bottom">
@@ -408,6 +351,7 @@
               >{{ `#${index + 1}` }}
             </a-button>
           </a-col>
+
           <a-col flex="11">
             <a-tooltip destroyTooltipOnHide placement="left">
               <template #title>
@@ -448,6 +392,7 @@
               />
             </a-tooltip>
           </a-col>
+
           <a-col flex="3">
             <a-tooltip destroyTooltipOnHide placement="left">
               <template #title>
@@ -467,6 +412,7 @@
               </a-button>
             </a-tooltip>
           </a-col>
+
           <a-col flex="11">
             <a-input
               allowClear
@@ -483,6 +429,7 @@
               "
             />
           </a-col>
+
           <a-col flex="1" class="view-no-padding-right">
             <a-tooltip destroyTooltipOnHide placement="left">
               <template #title>
@@ -512,21 +459,22 @@
 
 <script lang="ts">
 import {
-  CustomOption,
-  getCurrentEpoch,
-  PrivateKey,
+  Wallet,
+  Status,
   PublicKey,
+  TokenType,
+  PrivateKey,
+  TokenSender,
+  CustomOption,
+  TransferInfo,
+  getCurrentEpoch,
+  TransactionStatus,
+  ResourcesOfAccount,
   RadixNetworkChecker,
   RadixWalletGenerator,
-  ResourcesOfAccount,
-  Status,
-  TokenSender,
-  TokenType,
-  TransactionStatus,
-  TransferInfo,
-  Wallet,
 } from "@atlantis-l/radix-tool";
-import { CreateIcon, formatNumber, selectXrdAddress } from "../../common";
+import { PrivateKeyModal, TxComfirmModal } from "../../components";
+import { formatNumber, selectXrdAddress } from "../../common";
 import { message } from "ant-design-vue";
 import store from "../../stores/store";
 import { defineComponent } from "vue";
@@ -548,26 +496,23 @@ const MAX_DIFF_SENDER_AMOUNT = 16;
 
 export default defineComponent({
   components: {
-    CreateIcon,
+    TxComfirmModal,
+    PrivateKeyModal,
   },
   data() {
     return {
       gutter: 10,
       feeLock: "",
-      focusInput: "",
       store: store(),
       senderIndex: 0,
       feeLockEstimate: "",
       isPreviewDone: false,
-      senderPrivateKey: "",
       feePayerXrdBalance: "",
-      transactionMessage: "",
       openSenderModal: false,
       openFeePayerModal: false,
+      openTxConfirmModal: false,
       openSelectTokenModal: false,
       loadingSelectedTokens: false,
-      feePayerWalletPrivateKey: "",
-      openConfirmTransaction: false,
       selectedTokens: [] as string[],
       tokenOptions: [] as TokenOption[],
       customOptions: [] as CustomOption[],
@@ -587,15 +532,6 @@ export default defineComponent({
       this.tokenOptions[0].address = this.label.ftLabel;
       this.tokenOptions[1].label = this.label.nftLabel;
       this.tokenOptions[1].address = this.label.nftLabel;
-    },
-    focusInput(ref: string) {
-      if (ref.length) {
-        setTimeout(() => {
-          //@ts-ignore
-          this.$refs[ref].focus();
-          this.focusInput = "";
-        }, 100);
-      }
     },
     "customOptions.length"() {
       this.isPreviewDone = false;
@@ -685,18 +621,15 @@ export default defineComponent({
     },
   },
   methods: {
-    setSender() {
+    setSender(privateKey: string) {
       this.walletGenerator
-        .generateWalletByPrivateKey(this.senderPrivateKey)
+        .generateWalletByPrivateKey(privateKey)
         .then(async (wallet) => {
           const index = this.senderIndex;
 
           const fromWallet = this.customOptions[index].fromWallet;
 
-          if (
-            fromWallet &&
-            fromWallet.privateKeyHexString() !== this.senderPrivateKey
-          ) {
+          if (fromWallet && fromWallet.privateKeyHexString() !== privateKey) {
             this.customOptions[index].transferInfos = [];
           }
 
@@ -747,9 +680,9 @@ export default defineComponent({
           );
         });
     },
-    setFeePayer() {
+    setFeePayer(privateKey: string) {
       this.walletGenerator
-        .generateWalletByPrivateKey(this.feePayerWalletPrivateKey)
+        .generateWalletByPrivateKey(privateKey)
         .then((wallet) => {
           this.feePayerWallet = wallet;
           this.openFeePayerModal = false;
@@ -832,13 +765,12 @@ export default defineComponent({
           )} 」`,
         );
       } else {
-        this.focusInput = "transactionMessage";
-        this.openConfirmTransaction = true;
+        this.openTxConfirmModal = true;
       }
     },
-    async sendTransaction() {
+    async sendTransaction(txMessage: string) {
       this.isPreviewDone = false;
-      this.openConfirmTransaction = false;
+      this.openTxConfirmModal = false;
 
       const key = "sendTransaction";
 
@@ -851,8 +783,6 @@ export default defineComponent({
         )} 」`,
         key,
       });
-
-      const txMessage = this.transactionMessage;
 
       const map = new Map<string, PrivateKey>();
 
@@ -937,12 +867,6 @@ export default defineComponent({
           top: this.$refs.content.$el.scrollHeight,
         });
       }, 100);
-    },
-    activateFeePayerModal() {
-      const wallet = this.feePayerWallet;
-      if (wallet) this.feePayerWalletPrivateKey = wallet.privateKeyHexString();
-      this.focusInput = "feePayerWalletPrivateKey";
-      this.openFeePayerModal = true;
     },
     async previewTransaction() {
       this.validateTransferInfos();
@@ -1035,7 +959,6 @@ export default defineComponent({
               `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success`,
             )} 」`,
           });
-          this.transactionMessage = "";
           this.clearAllTransfers();
           this.refreshXrdBalance();
           return;
@@ -1096,14 +1019,8 @@ export default defineComponent({
         });
     },
     activateSenderModal(index: number) {
-      this.senderPrivateKey = "";
-      const wallet = this.customOptions[index].fromWallet;
-
-      if (wallet) this.senderPrivateKey = wallet.privateKeyHexString();
-
       this.senderIndex = index;
       this.openSenderModal = true;
-      this.focusInput = "senderPrivateKey";
     },
     activateSelectTokenModal(index: number) {
       this.loadingSelectedTokens = true;

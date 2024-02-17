@@ -1,107 +1,67 @@
 <template>
   <a-layout class="view-layout">
     <!------------------------ Modal Group ------------------------>
-    <div id="modal-group">
-      <a-modal
-        centered
-        destroyOnClose
-        @ok="setFeePayer"
-        v-model:open="openFeePayerModal"
-        :title="
-          $t(
-            `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.title`,
-          )
-        "
-      >
-        <a-input
-          showCount
-          allowClear
-          @pressEnter="setFeePayer"
-          ref="feePayerWalletPrivateKey"
-          v-model:value.trim="feePayerWalletPrivateKey"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.addonBefore`,
-            )
-          "
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.placeholder`,
-            )
-          "
-        ></a-input>
-      </a-modal>
-      <a-modal
-        centered
-        destroyOnClose
-        @ok="processTransaction"
-        v-model:open="openConfirmTransaction"
-        :title="
-          $t(
-            `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.title`,
-          )
-        "
-      >
-        <a-textarea
-          allowClear
-          ref="transactionMessage"
-          v-model:value.trim="transactionMessage"
-          @keyup.ctrl.enter="processTransaction"
-          style="margin: 12px 0 8px 0"
-          :autoSize="{ minRows: 10, maxRows: 10 }"
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.placeholder`,
-            )
-          "
-        />
-      </a-modal>
-      <a-modal
-        centered
-        destroyOnClose
-        :footer="null"
-        v-model:open="openResourceModal"
-      >
-        <template #title v-if="selectedValue === 1"
-          >{{ $t("View.PackageDeploy.template.header.select.1") }}
-        </template>
+    <PrivateKeyModal
+      :title="
+        $t(`View.TokenTransfer.MultipleToMultiple.template.feePayerModal.title`)
+      "
+      :wallet="feePayerWallet"
+      :open="openFeePayerModal"
+      @close="openFeePayerModal = false"
+      @action="setFeePayer"
+    />
 
-        <template #title v-if="selectedValue === 2"
-          >{{ $t("View.PackageDeploy.template.header.select.2") }}
-        </template>
+    <TxComfirmModal
+      :open="openTxConfirmModal"
+      @close="openTxConfirmModal = false"
+      @sendTx="sendTransaction"
+    />
 
-        <a-row :class="selectedValue === 1 ? 'no-margin-row' : ''">
-          <a-col flex="1">
-            <a-input
-              allowClear
-              ref="resourceAddress"
-              class="view-max-width"
-              v-model:value.trim="resourceAddress"
-              @keyup.enter="openResourceModal = false"
-              :addonBefore="
-                $t('View.HistoryCheck.template.header.input.addonBefore')
-              "
-              :placeholder="
-                $t('View.PackageDeploy.template.modal.resourceAddress')
-              "
-            ></a-input>
-          </a-col>
-        </a-row>
+    <a-modal
+      centered
+      destroyOnClose
+      :footer="null"
+      v-model:open="openResourceModal"
+    >
+      <template #title v-if="selectedValue === 1"
+        >{{ $t("View.PackageDeploy.template.header.select.1") }}
+      </template>
 
-        <a-row class="no-margin-row" v-if="selectedValue === 2">
-          <a-col flex="1">
-            <a-input
-              allowClear
-              addonBefore="NFT ID"
-              placeholder="NFT ID"
-              v-model:value.trim="nftId"
-              class="view-max-width"
-              @pressEnter="openResourceModal = false"
-            ></a-input>
-          </a-col>
-        </a-row>
-      </a-modal>
-    </div>
+      <template #title v-if="selectedValue === 2"
+        >{{ $t("View.PackageDeploy.template.header.select.2") }}
+      </template>
+
+      <a-row :class="selectedValue === 1 ? 'no-margin-row' : ''">
+        <a-col flex="1">
+          <a-input
+            allowClear
+            ref="resourceAddress"
+            class="view-max-width"
+            v-model:value.trim="resourceAddress"
+            @keyup.enter="openResourceModal = false"
+            :addonBefore="
+              $t('View.HistoryCheck.template.header.input.addonBefore')
+            "
+            :placeholder="
+              $t('View.PackageDeploy.template.modal.resourceAddress')
+            "
+          ></a-input>
+        </a-col>
+      </a-row>
+
+      <a-row class="no-margin-row" v-if="selectedValue === 2">
+        <a-col flex="1">
+          <a-input
+            allowClear
+            addonBefore="NFT ID"
+            placeholder="NFT ID"
+            v-model:value.trim="nftId"
+            class="view-max-width"
+            @keyup.enter="openResourceModal = false"
+          ></a-input>
+        </a-col>
+      </a-row>
+    </a-modal>
     <!------------------------ Modal Group ------------------------>
 
     <!------------------------ Header ------------------------>
@@ -132,7 +92,7 @@
           <a-input
             readonly
             :value="feePayerAddress"
-            @click="activateFeePayerModal"
+            @click="openFeePayerModal = true"
             :addonBefore="
               $t(
                 `View.TokenTransfer.MultipleToMultiple.template.header.feePayer.addonBefore`,
@@ -410,6 +370,7 @@ import {
   RadixWalletGenerator,
 } from "@atlantis-l/radix-tool";
 import { CreateIcon, formatNumber, selectXrdAddress } from "../common";
+import { PrivateKeyModal, TxComfirmModal } from "../components";
 import { message } from "ant-design-vue";
 import { defineComponent } from "vue";
 import store from "../stores/store";
@@ -417,6 +378,8 @@ import store from "../stores/store";
 export default defineComponent({
   components: {
     CreateIcon,
+    TxComfirmModal,
+    PrivateKeyModal,
   },
   data() {
     return {
@@ -434,11 +397,9 @@ export default defineComponent({
       feeLockEstimate: "",
       isPreviewDone: false,
       feePayerXrdBalance: "",
-      transactionMessage: "",
       openFeePayerModal: false,
       openResourceModal: false,
-      feePayerWalletPrivateKey: "",
-      openConfirmTransaction: false,
+      openTxConfirmModal: false,
       rpd: undefined as Uint8Array | undefined,
       wasm: undefined as Uint8Array | undefined,
       feePayerWallet: undefined as Wallet | undefined,
@@ -546,9 +507,9 @@ export default defineComponent({
     },
   },
   methods: {
-    setFeePayer() {
+    setFeePayer(privateKey: string) {
       this.walletGenerator
-        .generateWalletByPrivateKey(this.feePayerWalletPrivateKey)
+        .generateWalletByPrivateKey(privateKey)
         .then((wallet) => {
           this.feePayerWallet = wallet;
           this.openFeePayerModal = false;
@@ -603,13 +564,13 @@ export default defineComponent({
           )} 」`,
         );
       } else {
-        this.focusInput = "transactionMessage";
-        this.openConfirmTransaction = true;
+        this.openTxConfirmModal = true;
       }
     },
-    async sendTransaction() {
+    async sendTransaction(txMessage: string) {
       this.isPreviewDone = false;
       const key = "sendTransaction";
+      this.openTxConfirmModal = false;
 
       message.loading({
         key,
@@ -620,8 +581,6 @@ export default defineComponent({
       });
 
       this.packageDeployer.feeLock = this.feeLock;
-
-      const txMessage = this.transactionMessage;
 
       let result: Result | undefined;
 
@@ -683,12 +642,6 @@ export default defineComponent({
 
         this.checkTx(result.transactionId as string);
       }
-    },
-    activateFeePayerModal() {
-      const wallet = this.feePayerWallet;
-      if (wallet) this.feePayerWalletPrivateKey = wallet.privateKeyHexString();
-      this.focusInput = "feePayerWalletPrivateKey";
-      this.openFeePayerModal = true;
     },
     async previewTransaction() {
       this.packageDeployer.deployerWallet = this.feePayerWallet as Wallet;
@@ -760,11 +713,6 @@ export default defineComponent({
         });
       }
     },
-    async processTransaction() {
-      this.openConfirmTransaction = false;
-
-      this.sendTransaction();
-    },
     async checkTx(txId: string) {
       const key = "checkTx";
 
@@ -781,7 +729,6 @@ export default defineComponent({
               `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success`,
             )} 」`,
           });
-          this.transactionMessage = "";
           this.refreshXrdBalance();
           return;
         }

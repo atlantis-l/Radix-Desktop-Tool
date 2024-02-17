@@ -55,4 +55,13 @@ const selectXrdAddress = (networkId: number) => {
   return networkId === 1 ? XRD_ADDRESS.mainnet : XRD_ADDRESS.stokenet;
 };
 
-export { sleep, message, CreateIcon, formatNumber, selectXrdAddress };
+const FOCUS_DELAY = 100;
+
+export {
+  sleep,
+  message,
+  CreateIcon,
+  formatNumber,
+  selectXrdAddress,
+  FOCUS_DELAY,
+};

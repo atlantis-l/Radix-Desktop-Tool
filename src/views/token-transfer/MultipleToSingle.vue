@@ -1,115 +1,35 @@
 <template>
   <a-layout class="view-layout">
     <!------------------------ Modal Group ------------------------>
-    <div id="modal-group">
-      <a-modal
-        centered
-        destroyOnClose
-        @ok="setFeePayer"
-        v-model:open="openFeePayerModal"
-        :title="
-          $t(
-            `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.title`,
-          )
-        "
-      >
-        <a-input
-          showCount
-          allowClear
-          @keyup.enter="setFeePayer"
-          ref="feePayerWalletPrivateKey"
-          v-model:value.trim="feePayerWalletPrivateKey"
-          :addonBefore="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.addonBefore`,
-            )
-          "
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.feePayerModal.placeholder`,
-            )
-          "
-        ></a-input>
-      </a-modal>
-      <a-modal
-        centered
-        destroyOnClose
-        @ok="processTransaction"
-        v-model:open="openConfirmTransaction"
-        :title="
-          $t(
-            `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.title`,
-          )
-        "
-      >
-        <a-textarea
-          allowClear
-          ref="transactionMessage"
-          v-model:value.trim="transactionMessage"
-          @keyup.ctrl.enter="processTransaction"
-          style="margin: 12px 0 8px 0"
-          :autoSize="{ minRows: 10, maxRows: 10 }"
-          :placeholder="
-            $t(
-              `View.TokenTransfer.MultipleToMultiple.template.confirmTransactionModal.placeholder`,
-            )
-          "
-        />
-      </a-modal>
-      <a-modal
-        centered
-        :width="270"
-        :footer="null"
-        destroyOnClose
-        :maskClosable="maskClosable"
-        v-model:open="openTransactionProgress"
-        style="text-align: center; user-select: none"
-        :title="
-          $t(
-            `View.TokenTransfer.SingleToMultiple.template.modal.transactionProgress`,
-          )
-        "
-      >
-        <a-progress
-          type="circle"
-          :stroke-color="{
-            '0%': '#052cc0',
-            '50%': '#1dddbf',
-            '100%': '#ff00e6',
-          }"
-          style="margin-top: 8px"
-          :status="progressStatus"
-          :percent="progressPercent"
-        />
-      </a-modal>
-      <a-modal
-        centered
-        destroyOnClose
-        :footer="null"
-        v-model:open="openTemplateModal"
-      >
-        {{ $t(`View.WalletGenerate.script.address`) }},{{
-          $t(`View.WalletGenerate.script.privateKey`)
-        }}[,......]({{
-          $t("View.TokenTransfer.SingleToMultiple.template.optional")
-        }})<br />
-        account_xxxxxx,xxxxxx[,......]({{
-          $t("View.TokenTransfer.SingleToMultiple.template.optional")
-        }})<br />
-        account_xxxxxx,xxxxxx[,......]({{
-          $t("View.TokenTransfer.SingleToMultiple.template.optional")
-        }})<br />
-        account_xxxxxx,xxxxxx[,......]({{
-          $t("View.TokenTransfer.SingleToMultiple.template.optional")
-        }})<br />
-        account_xxxxxx,xxxxxx[,......]({{
-          $t("View.TokenTransfer.SingleToMultiple.template.optional")
-        }})<br />
-        account_xxxxxx,xxxxxx[,......]({{
-          $t("View.TokenTransfer.SingleToMultiple.template.optional")
-        }})<br />[......]
-      </a-modal>
-    </div>
+    <PrivateKeyModal
+      :title="
+        $t(`View.TokenTransfer.MultipleToMultiple.template.feePayerModal.title`)
+      "
+      :wallet="feePayerWallet"
+      :open="openFeePayerModal"
+      @close="openFeePayerModal = false"
+      @action="setFeePayer"
+    />
+
+    <TxComfirmModal
+      :open="openTxConfirmModal"
+      @close="openTxConfirmModal = false"
+      @sendTx="sendTransaction"
+    />
+
+    <ProgressModal
+      :open="openProgressModal"
+      :closable="maskClosable"
+      :status="progressStatus"
+      :percent="progressPercent"
+      @close="openProgressModal = false"
+    />
+
+    <CSVTemplateModal
+      view="MultipleToSingle"
+      :open="openTemplateModal"
+      @close="openTemplateModal = false"
+    />
     <!------------------------ Modal Group ------------------------>
 
     <!------------------------ Header ------------------------>
@@ -140,7 +60,7 @@
           <a-input
             readonly
             :value="feePayerAddress"
-            @click="activateFeePayerModal"
+            @click="openFeePayerModal = true"
             :addonBefore="
               $t(
                 `View.TokenTransfer.MultipleToMultiple.template.header.feePayer.addonBefore`,
@@ -193,6 +113,7 @@
         </a-button>
       </a-col>
     </a-row>
+
     <a-row :gutter="gutter" class="no-margin-row">
       <a-col span="10" class="view-no-padding-left">
         <a-tooltip destroyTooltipOnHide placement="bottom">
@@ -291,6 +212,7 @@
       </a-col>
     </a-row>
     <!------------------------ Header ------------------------>
+
     <a-divider
       >「
       {{ $t(`View.TokenTransfer.SingleToMultiple.template.divider.text`) }} 」
@@ -378,6 +300,7 @@
           />
         </a-col>
       </a-row>
+
       <a-row>
         <a-col>
           <a-statistic
@@ -390,6 +313,7 @@
           />
         </a-col>
       </a-row>
+
       <a-row>
         <a-col span="8">
           <a-statistic
@@ -419,23 +343,24 @@
 
 <script lang="ts">
 import {
+  Wallet,
+  TokenType,
+  ResourceInfo,
+  TransferInfo,
   CustomOption,
   getCurrentEpoch,
+  TransactionStatus,
+  ResourcesOfAccount,
   RadixNetworkChecker,
   RadixWalletGenerator,
-  ResourceInfo,
-  ResourcesOfAccount,
-  TokenType,
-  TransactionStatus,
-  TransferInfo,
-  Wallet,
 } from "@atlantis-l/radix-tool";
 import {
-  CreateIcon,
-  formatNumber,
-  selectXrdAddress,
-  sleep,
-} from "../../common";
+  CSVTemplateModal,
+  PrivateKeyModal,
+  TxComfirmModal,
+  ProgressModal,
+} from "../../components";
+import { sleep, formatNumber, selectXrdAddress } from "../../common";
 import { message } from "ant-design-vue";
 import store from "../../stores/store";
 import { defineComponent } from "vue";
@@ -447,16 +372,14 @@ interface PreviewFee {
   fee: string;
 }
 
-enum CustomMethod {
-  ESTIMATE_FEE,
-  SEND_TRANSACTION,
-}
-
 const MAX_WALLET_PER_TX = 16;
 
 export default defineComponent({
   components: {
-    CreateIcon,
+    CSVTemplateModal,
+    PrivateKeyModal,
+    TxComfirmModal,
+    ProgressModal,
   },
   data() {
     return {
@@ -465,26 +388,22 @@ export default defineComponent({
       wallets: [],
       tokenType: 0,
       store: store(),
-      focusInput: "",
       tokenAmount: "",
       progressCount: 0,
       receiverAddress: "",
       feeLockEstimate: "",
       maskClosable: false,
       feePayerXrdBalance: "",
-      transactionMessage: "",
       progressStatus: "normal",
       openTemplateModal: false,
       openFeePayerModal: false,
-      feePayerWalletPrivateKey: "",
-      openConfirmTransaction: false,
-      openTransactionProgress: false,
+      openProgressModal: false,
+      openTxConfirmModal: false,
       commitStatusList: [] as number[],
       previewFeeList: [] as PreviewFee[],
       customOptions: [] as CustomOption[],
       selectedToken: undefined as string | undefined,
       feePayerWallet: undefined as Wallet | undefined,
-      customMethod: undefined as CustomMethod | undefined,
       networkChecker: new RadixNetworkChecker(store().networkId),
       walletGenerator: new RadixWalletGenerator(store().networkId),
       addressAndResourcesMap: new Map<string, ResourcesOfAccount>(),
@@ -510,15 +429,6 @@ export default defineComponent({
     },
     feePayerWallet() {
       this.previewFeeList = [];
-    },
-    focusInput(ref: string) {
-      if (ref.length) {
-        setTimeout(() => {
-          //@ts-ignore
-          this.$refs[ref].focus();
-          this.focusInput = "";
-        }, 100);
-      }
     },
     isCommitDone(flag: boolean) {
       if (flag) {
@@ -699,9 +609,9 @@ export default defineComponent({
     },
   },
   methods: {
-    setFeePayer() {
+    setFeePayer(privateKey: string) {
       this.walletGenerator
-        .generateWalletByPrivateKey(this.feePayerWalletPrivateKey)
+        .generateWalletByPrivateKey(privateKey)
         .then((wallet) => {
           this.feePayerWallet = wallet;
           this.openFeePayerModal = false;
@@ -724,7 +634,6 @@ export default defineComponent({
         );
         return;
       }
-      this.customMethod = CustomMethod.ESTIMATE_FEE;
       this.validateTransferInfo();
       this.previewTransaction();
     },
@@ -738,11 +647,6 @@ export default defineComponent({
         !this.wallets.length ||
         !this.receiverAddress.length
       );
-    },
-    processTransaction() {
-      this.openConfirmTransaction = false;
-
-      this.sendTransaction();
     },
     activateConfirmModal() {
       if (!this.customOptions.length || !this.isPreviewDone) {
@@ -758,8 +662,7 @@ export default defineComponent({
           )} 」`,
         );
       } else {
-        this.focusInput = "transactionMessage";
-        this.openConfirmTransaction = true;
+        this.openTxConfirmModal = true;
       }
     },
     validateTransferInfo() {
@@ -871,14 +774,15 @@ export default defineComponent({
       //@ts-ignore
       this.customOptions = customOptions;
     },
-    async sendTransaction() {
+    async sendTransaction(txMessage: string) {
       this.progressCount = 0;
       this.maskClosable = false;
       this.commitStatusList = [];
       this.progressStatus = "normal";
+      this.openTxConfirmModal = false;
 
       setTimeout(() => {
-        this.openTransactionProgress = true;
+        this.openProgressModal = true;
       }, 500);
 
       const key = "sendTransaction";
@@ -890,8 +794,6 @@ export default defineComponent({
           `View.TokenTransfer.MultipleToMultiple.script.methods.sendTransaction.loading`,
         )} 」`,
       });
-
-      const txMessage = this.transactionMessage;
 
       let currentEpoch = await getCurrentEpoch(this.store.networkId);
 
@@ -934,12 +836,6 @@ export default defineComponent({
         if (end === this.customOptions.length) break;
       }
     },
-    activateFeePayerModal() {
-      const wallet = this.feePayerWallet;
-      if (wallet) this.feePayerWalletPrivateKey = wallet.privateKeyHexString();
-      this.focusInput = "feePayerWalletPrivateKey";
-      this.openFeePayerModal = true;
-    },
     addPreviewFee(data: Data) {
       this.previewFeeList.push(data.args[0]);
 
@@ -965,18 +861,14 @@ export default defineComponent({
             key,
           });
 
-          if (CustomMethod.ESTIMATE_FEE === this.customMethod) {
-            let totalFee = new Decimal(0);
+          let totalFee = new Decimal(0);
 
-            feeList.forEach((fee) => {
-              totalFee = totalFee.plus(fee);
-            });
+          feeList.forEach((fee) => {
+            totalFee = totalFee.plus(fee);
+          });
 
-            this.feeLockEstimate = formatNumber(totalFee.toString());
-            this.feeLock = "";
-          } else if (CustomMethod.SEND_TRANSACTION === this.customMethod) {
-            this.sendTransaction();
-          }
+          this.feeLockEstimate = formatNumber(totalFee.toString());
+          this.feeLock = "";
         }
       }
     },
@@ -1083,7 +975,6 @@ export default defineComponent({
               `View.TokenTransfer.MultipleToMultiple.script.methods.checkTx.success`,
             )} 」`,
           });
-          this.transactionMessage = "";
           this.refreshXrdBalance();
           this.getResourcesOfSenders();
           return;

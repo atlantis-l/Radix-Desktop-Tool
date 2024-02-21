@@ -504,6 +504,11 @@
         "DenyAll": "Deny All",
         "Restricted": "Restricted",
         "Allow": "Allow"
+      },
+      "script": {
+        "loadingNFData": "Obtaining NFT data",
+        "NFDataLoaded": "Obtain completed",
+        "NFDataloadedError": "Failed to obtain"
       }
     }
   },

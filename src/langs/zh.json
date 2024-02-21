@@ -504,6 +504,11 @@
         "DenyAll": "全部拒绝",
         "Restricted": "部分允许",
         "Allow": "允许"
+      },
+      "script": {
+        "loadingNFData": "正在获取NFT数据",
+        "NFDataLoaded": "获取完成",
+        "NFDataloadedError": "获取失败"
       }
     }
   },

@@ -30,20 +30,69 @@
         <a-card
           hoverable
           :style="{
+            cursor: 'pointer',
             marginBottom:
               vaultMap.get(vaultAddress).length - index === 1 ? '0' : '20px',
           }"
           v-for="(id, index) in vaultMap.get(vaultAddress)"
+          @click="checkNFData(resourceAddress, id)"
         >
           <a-row justify="center" class="no-margin-row">
             <a-col>
-              <a-tag color="purple" style="display: inline" @click="copy(id)">
+              <a-tag
+                color="purple"
+                style="display: inline"
+                @click.stop="copy(id)"
+              >
                 {{ id }}
               </a-tag>
             </a-col>
           </a-row>
         </a-card>
       </a-card>
+    </a-modal>
+
+    <a-modal
+      centered
+      :footer="null"
+      destroyOnClose
+      style="width: 800px; overflow: scroll"
+      v-model:open="openNFDataModal"
+    >
+      <a-row justify="center">
+        <a-avatar
+          style="user-select: none; width: 128px; height: 128px"
+          shape="square"
+        >
+          <template #icon>
+            <img
+              draggable="false"
+              :src="keyImgUrl"
+              onerror="this.src='img_onerror.png'"
+            />
+          </template>
+        </a-avatar>
+      </a-row>
+
+      <!-- @vue-skip -->
+      <a-row justify="center">
+        <a-col>
+          <a-tag color="purple" @click="copy(NFData.non_fungible_id)">
+            {{ NFData.non_fungible_id }}
+          </a-tag>
+        </a-col>
+      </a-row>
+
+      <div id="nfdata" style="height: 372px; overflow: scroll">
+        <!-- @vue-skip -->
+        <vue-json-pretty
+          id="json"
+          showIcon
+          showLength
+          showLineNumber
+          :data="NFData"
+        />
+      </div>
     </a-modal>
 
     <!------------------------ Header ------------------------>
@@ -748,7 +797,13 @@
                               i + 1 === item.vaults.items.length ? '0' : '20px',
                             cursor: 'pointer !important',
                           }"
-                          @click="showVault(vault.vault_address, i)"
+                          @click="
+                            showVault(
+                              item.resource_address,
+                              vault.vault_address,
+                              i,
+                            )
+                          "
                         >
                           <a-row class="no-margin-row">
                             <a-col>
@@ -1011,7 +1066,13 @@
                               i + 1 === item.vaults.items.length ? '0' : '20px',
                             cursor: 'pointer !important',
                           }"
-                          @click="showVault(vault.vault_address, i)"
+                          @click="
+                            showVault(
+                              item.resource_address,
+                              vault.vault_address,
+                              i,
+                            )
+                          "
                         >
                           <a-row class="no-margin-row">
                             <a-col>
@@ -1178,12 +1239,13 @@
 import store from "../stores/store";
 import { defineComponent } from "vue";
 import { message } from "ant-design-vue";
+import VueJsonPretty from "vue-json-pretty";
 import { TagTwoTone } from "@ant-design/icons-vue";
 import { formatNumber, selectXrdAddress } from "../common";
-import { RadixNetworkChecker } from "@atlantis-l/radix-tool";
+import { RadixNetworkChecker, selectNetwork } from "@atlantis-l/radix-tool";
 
 export default defineComponent({
-  components: { TagTwoTone },
+  components: { TagTwoTone, VueJsonPretty },
   data() {
     return {
       gutter: 10,
@@ -1191,16 +1253,20 @@ export default defineComponent({
       address: "",
       segmented: 0,
       vaultIndex: 0,
+      keyImgUrl: "",
       store: store(),
       vaultAddress: "",
+      resourceAddress: "",
       isFungiblePage: true,
       openVaultModal: false,
+      openNFDataModal: false,
       respArr: [] as boolean[],
       fungibleKeyArr: [] as string[],
       nonFungibleKeyArr: [] as string[],
       data: undefined as object | undefined,
       vaultMap: new Map<string, string[]>(),
       resourceMap: new Map<string, object>(),
+      NFData: undefined as object | undefined,
       networkChecker: new RadixNetworkChecker(store().networkId),
     };
   },
@@ -1763,11 +1829,71 @@ export default defineComponent({
     isXrdAddress(address: string) {
       return address === selectXrdAddress(1) || address === selectXrdAddress(2);
     },
-    showVault(address: string, index: number) {
+    showVault(resource_address: string, vault_address: string, index: number) {
       this.vaultIndex = index;
-      this.vaultAddress = address;
+      this.vaultAddress = vault_address;
+      this.resourceAddress = resource_address;
 
       this.openVaultModal = true;
+    },
+    checkNFData(address: string, local_id: string) {
+      const key = "checkNFData";
+
+      message.loading({
+        duration: 0,
+        content: `「 ${this.$t("View.AssetCheck.script.loadingNFData")} 」`,
+        key,
+      });
+
+      selectNetwork(this.store.networkId)
+        .state.getNonFungibleData(address, local_id)
+        .then((res) => {
+          this.NFData = {
+            non_fungible_id: res.non_fungible_id,
+            is_burned: res.is_burned,
+            data: {
+              type_name: res.data?.programmatic_json.type_name,
+              kind: res.data?.programmatic_json.kind, //@ts-ignore
+              fields: res.data?.programmatic_json.fields,
+            },
+          };
+
+          if (
+            res.data &&
+            res.data.programmatic_json && //@ts-ignore
+            res.data.programmatic_json.fields
+          ) {
+            //@ts-ignore
+            const fields = res.data.programmatic_json.fields as {
+              field_name: string;
+              value: string;
+            }[];
+
+            this.keyImgUrl = "";
+
+            for (let i = 0; i < fields.length; i++) {
+              if (fields[i].field_name === "key_image_url") {
+                this.keyImgUrl = fields[i].value;
+                break;
+              }
+            }
+          }
+
+          message.success({
+            content: `「 ${this.$t("View.AssetCheck.script.NFDataLoaded")} 」`,
+            key,
+          });
+
+          this.openNFDataModal = true;
+        })
+        .catch((e) => {
+          message.error({
+            content: `「 ${this.$t("View.AssetCheck.script.NFDataloadedError")} 」`,
+            key,
+          });
+
+          console.error(e);
+        });
     },
     onFungibleTabChange(key: string, index: number) {
       this.fungibleKeyArr[index] = key;
@@ -1856,6 +1982,10 @@ export default defineComponent({
   user-select: none;
   margin-left: 10px;
   position: relative;
+}
+
+#nfdata::-webkit-scrollbar {
+  display: none;
 }
 
 .list-move,

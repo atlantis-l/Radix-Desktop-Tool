@@ -24,14 +24,35 @@
 
     <a-row>
       <a-col flex="1">
-        <a-input
-          readonly
-          ref="result"
+        <a-tag v-if="!result.length" class="view-max-width result">
+          {{ $t("View.HexConvert.template.result.placeholder") }}
+        </a-tag>
+
+        <a-tag
+          color="purple"
+          v-else
           @click="copy(result)"
-          v-model:value="result"
-          style="cursor: pointer"
-          :placeholder="$t('View.HexConvert.template.result.placeholder')"
-        />
+          class="view-max-width result"
+        >
+          {{ result }}
+        </a-tag>
+      </a-col>
+    </a-row>
+
+    <a-row>
+      <a-col flex="1">
+        <a-tag v-if="!u8ArrayStr.length" class="view-max-width result">
+          {{ $t("View.HexConvert.template.u8ArrayStr.placeholder") }}
+        </a-tag>
+
+        <a-tag
+          v-else
+          color="purple"
+          @click="copy(u8ArrayStr)"
+          class="view-max-width result"
+        >
+          {{ u8ArrayStr }}
+        </a-tag>
       </a-col>
     </a-row>
   </a-layout>
@@ -48,6 +69,7 @@ export default defineComponent({
     return {
       input: "",
       result: "",
+      u8ArrayStr: "",
       store: store(),
     };
   },
@@ -74,19 +96,34 @@ export default defineComponent({
 
         try {
           this.result = await formatConvert(v, this.store.networkId);
+
+          const fromHexString = (hex: string) => {
+            const r = hex.match(/.{1,2}/g);
+            //@ts-ignore
+            return Uint8Array.from(r.map((byte) => parseInt(byte, 16)));
+          };
+
+          let hexStr = v;
+
+          if (v.includes("_")) {
+            hexStr = this.result;
+          }
+
+          const uint8Arr = fromHexString(hexStr) as Uint8Array;
+
+          this.u8ArrayStr = `[${uint8Arr.map((v) => v).join(", ")}]`;
         } catch (_) {
           this.result = "";
+          this.u8ArrayStr = "";
         }
       } else {
         this.result = "";
+        this.u8ArrayStr = "";
       }
     },
   },
   methods: {
     copy(text: string) {
-      //@ts-ignore
-      this.$refs.result.blur();
-
       if (!text.length) return;
 
       navigator.clipboard.writeText(text).then(() => {
@@ -109,5 +146,18 @@ export default defineComponent({
 <style scoped>
 .ant-layout {
   background-color: #fff;
+}
+
+.result {
+  height: 32px;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 32px;
+  user-select: none;
+  overflow: scroll;
+}
+
+.result::-webkit-scrollbar {
+  display: none;
 }
 </style>

@@ -467,7 +467,10 @@
         },
         "tip": "Radix网络中的地址(Bech32)与十六进制格式互转",
         "errorMainnetAddress": "错误的主网地址",
-        "errorStokenetAddress": "错误的测试网地址"
+        "errorStokenetAddress": "错误的测试网地址",
+        "u8ArrayStr": {
+          "placeholder": "这里显示对应的U8数组"
+        }
       }
     },
     "AssetCheck": {

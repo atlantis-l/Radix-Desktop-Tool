@@ -467,7 +467,10 @@
         },
         "tip": "The address(Bech32) and hexadecimal format in Radix Network converted to each other",
         "errorMainnetAddress": "Wrong mainnet address",
-        "errorStokenetAddress": "Wrong stokenet address"
+        "errorStokenetAddress": "Wrong stokenet address",
+        "u8ArrayStr": {
+          "placeholder": "The corresponding U8 Array is shown here"
+        }
       }
     },
     "AssetCheck": {

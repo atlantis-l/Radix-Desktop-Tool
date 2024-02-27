@@ -22,39 +22,76 @@
       </a-col>
     </a-row>
 
-    <a-row>
+    <a-row v-if="u8ArrayStr.length">
       <a-col flex="1">
-        <a-tag v-if="!result.length" class="view-max-width result">
-          {{ $t("View.HexConvert.template.result.placeholder") }}
-        </a-tag>
+        <a-tooltip>
+          <template #title>{{ $t("u8-shu-zu") }}</template>
 
-        <a-tag
-          color="purple"
-          v-else
-          @click="copy(result)"
-          class="view-max-width result"
-        >
-          {{ result }}
-        </a-tag>
+          <a-tag @click="copy(u8ArrayStr)" class="view-max-width result">
+            {{ u8ArrayStr }}
+          </a-tag>
+        </a-tooltip>
       </a-col>
     </a-row>
 
-    <a-row>
+    <a-row v-if="hexString.length">
       <a-col flex="1">
-        <a-tag v-if="!u8ArrayStr.length" class="view-max-width result">
-          {{ $t("View.HexConvert.template.u8ArrayStr.placeholder") }}
-        </a-tag>
+        <a-tooltip>
+          <template #title>{{ $t("shi-liu-jin-zhi-zi-fu-chuan") }}</template>
 
-        <a-tag
-          v-else
-          color="purple"
-          @click="copy(u8ArrayStr)"
-          class="view-max-width result"
-        >
-          {{ u8ArrayStr }}
-        </a-tag>
+          <a-tag @click="copy(hexString)" class="view-max-width result">
+            {{ hexString }}
+          </a-tag>
+        </a-tooltip>
       </a-col>
     </a-row>
+
+    <template v-if="addresses">
+      <a-row>
+        <a-col flex="1">
+          <a-tooltip>
+            <template #title>{{ $t("zhu-wang-di-zhi") }}</template>
+
+            <a-tag
+              @click="copy(addresses?.mainnet_address as string)"
+              class="view-max-width result"
+            >
+              {{ addresses?.mainnet_address }}
+            </a-tag>
+          </a-tooltip>
+        </a-col>
+      </a-row>
+
+      <a-row>
+        <a-col flex="1">
+          <a-tooltip>
+            <template #title>{{ $t("ce-shi-wang-di-zhi") }}</template>
+
+            <a-tag
+              @click="copy(addresses?.stokenet_address as string)"
+              class="view-max-width result"
+            >
+              {{ addresses?.stokenet_address }}
+            </a-tag>
+          </a-tooltip>
+        </a-col>
+      </a-row>
+
+      <a-row>
+        <a-col flex="1">
+          <a-tooltip>
+            <template #title>{{ $t("mo-ni-qi-di-zhi") }}</template>
+
+            <a-tag
+              @click="copy(addresses?.simulator_address as string)"
+              class="view-max-width result"
+            >
+              {{ addresses?.simulator_address }}
+            </a-tag>
+          </a-tooltip>
+        </a-col>
+      </a-row>
+    </template>
   </a-layout>
 </template>
 
@@ -64,38 +101,33 @@ import { defineComponent } from "vue";
 import { message } from "ant-design-vue";
 import { formatConvert } from "@atlantis-l/radix-tool";
 
+interface Addresses {
+  mainnet_address: string;
+  stokenet_address: string;
+  simulator_address: string;
+}
+
 export default defineComponent({
   data() {
     return {
       input: "",
-      result: "",
+      hexString: "",
       u8ArrayStr: "",
+      addresses: undefined as undefined | Addresses,
       store: store(),
     };
   },
   watch: {
     async input(v: string) {
       if (v.length) {
-        if (v.includes("_")) {
-          if (this.store.networkId === 1 && !v.includes("_rdx")) {
-            message.error({
-              content: `「 ${this.$t("View.HexConvert.template.errorMainnetAddress")} 」`,
-              key: "error address",
-            });
-            return;
-          }
-
-          if (this.store.networkId === 2 && !v.includes("_tdx_2_")) {
-            message.error({
-              content: `「 ${this.$t("View.HexConvert.template.errorStokenetAddress")} 」`,
-              key: "error address",
-            });
-            return;
-          }
-        }
-
         try {
-          this.result = await formatConvert(v, this.store.networkId);
+          if (v.includes("_")) {
+            this.hexString = (await formatConvert(v)) as string;
+            this.addresses = (await formatConvert(this.hexString)) as Addresses;
+          } else {
+            this.hexString = v;
+            this.addresses = (await formatConvert(v)) as Addresses;
+          }
 
           const fromHexString = (hex: string) => {
             const r = hex.match(/.{1,2}/g);
@@ -103,22 +135,23 @@ export default defineComponent({
             return Uint8Array.from(r.map((byte) => parseInt(byte, 16)));
           };
 
-          let hexStr = v;
-
-          if (v.includes("_")) {
-            hexStr = this.result;
-          }
-
-          const uint8Arr = fromHexString(hexStr) as Uint8Array;
+          const uint8Arr = fromHexString(this.hexString) as Uint8Array;
 
           this.u8ArrayStr = `[${uint8Arr.map((v) => v).join(", ")}]`;
         } catch (_) {
-          this.result = "";
+          message.error({
+            key: "format",
+            content: `「 ${this.$t("ge-shi-cuo-wu")} 」`,
+          });
+
+          this.hexString = "";
           this.u8ArrayStr = "";
+          this.addresses = undefined;
         }
       } else {
-        this.result = "";
+        this.hexString = "";
         this.u8ArrayStr = "";
+        this.addresses = undefined;
       }
     },
   },

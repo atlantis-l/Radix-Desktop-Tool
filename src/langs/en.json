@@ -518,5 +518,11 @@
   "1-info-resourceaddress-templabel-info-ids-join": "1:{0}:{1}:{2}",
   "current-language-english": "Current Language:「English」",
   "dang-qian-yu-yan-zhong-wen": "Current language: \"Chinese\"",
-  "menu-string-array-toreversed-pop-name-string-location-name": "Menu.{0}.{1}"
+  "menu-string-array-toreversed-pop-name-string-location-name": "Menu.{0}.{1}",
+  "u8-shu-zu": "U8 Array",
+  "shi-liu-jin-zhi-zi-fu-chuan": "Hex String",
+  "zhu-wang-di-zhi": "Mainnet Address",
+  "ce-shi-wang-di-zhi": "Stokenet Address",
+  "mo-ni-qi-di-zhi": "Simulator Address",
+  "ge-shi-cuo-wu": "Format error"
 }

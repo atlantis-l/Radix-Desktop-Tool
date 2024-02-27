@@ -518,5 +518,11 @@
   "current-language-english": "Current Language:「 English 」",
   "dang-qian-yu-yan-zhong-wen": "当前语言:「 中文 」",
   "menu-string-array-toreversed-pop-name-string-location-name": "Menu.{0}.{1}",
-  "1-info-resourceaddress-templabel-info-ids-join": "1:{0}:{1}:{2}"
+  "1-info-resourceaddress-templabel-info-ids-join": "1:{0}:{1}:{2}",
+  "u8-shu-zu": "U8数组",
+  "shi-liu-jin-zhi-zi-fu-chuan": "十六进制字符串",
+  "zhu-wang-di-zhi": "主网地址",
+  "ce-shi-wang-di-zhi": "测试网地址",
+  "mo-ni-qi-di-zhi": "模拟器地址",
+  "ge-shi-cuo-wu": "格式错误"
 }

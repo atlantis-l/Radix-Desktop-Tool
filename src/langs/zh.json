@@ -524,5 +524,12 @@
   "zhu-wang-di-zhi": "主网地址",
   "ce-shi-wang-di-zhi": "测试网地址",
   "mo-ni-qi-di-zhi": "模拟器地址",
-  "ge-shi-cuo-wu": "格式错误"
+  "ge-shi-cuo-wu": "格式错误",
+  "pu-tong-qing-dan": "普通清单",
+  "ke-geng-xin-nft-id": "可更新NFT ID",
+  "zhao-bu-dao-nftid": "找不到<NFT_ID>",
+  "xu-yao-zhi-hang-de-nft-id-shu-liang": "需要执行的NFT ID数量",
+  "qing-dan-nei-rong-zai-dan-ci-shi-wu-zhong-de-zhong-fu-ci-shu": "清单内容在单次事务中的重复次数",
+  "mu-qian-zhi-zhi-chi-xiang-tong-zi-yuan-de-xiang-tong-nft-id-ke-zhong-fu-chu-xian": "目前只支持相同资源的相同NFT ID(可重复出现)",
+  "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids": "不导入CSV文件则默认从网络获取NFT ID"
 }

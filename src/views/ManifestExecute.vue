@@ -30,6 +30,12 @@
       :open="openTemplateModal"
       @close="openTemplateModal = false"
     />
+
+    <CSVTemplateModal
+      view="ManifestExecuteNftIdCSV"
+      :open="openNftIdTemplateModal"
+      @close="openNftIdTemplateModal = false"
+    />
     <!------------------------ Modal Group ------------------------>
 
     <!------------------------ Header ------------------------>
@@ -214,9 +220,103 @@
       >「 {{ $t("View.ManifestExecute.template.divider.text") }} 」
     </a-divider>
 
+    <a-select
+      :style="{
+        position: 'absolute',
+        top: '205px',
+        right: executeMode ? '430px' : '150px',
+        zIndex: '999',
+      }"
+      :dropdownMatchSelectWidth="false"
+      v-model:value="executeMode"
+    >
+      <a-select-option :value="0">{{ $t("pu-tong-qing-dan") }}</a-select-option>
+
+      <a-select-option :value="1">
+        <a-tooltip placement="left">
+          <template #title>{{
+            $t(
+              "mu-qian-zhi-zhi-chi-xiang-tong-zi-yuan-de-xiang-tong-nft-id-ke-zhong-fu-chu-xian",
+            )
+          }}</template>
+          {{ $t("ke-geng-xin-nft-id") }}
+        </a-tooltip>
+      </a-select-option>
+    </a-select>
+
+    <a-tooltip destroyTooltipOnHide placement="bottom" v-if="executeMode">
+      <template #title>
+        {{ $t("bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids")
+        }}<br />
+        <a-button
+          @click="openNftIdTemplateModal = true"
+          class="view-max-width custom-btn"
+          :text="
+            $t('View.TokenTransfer.SingleToMultiple.template.header.template')
+          "
+          >{{
+            $t("View.TokenTransfer.SingleToMultiple.template.header.template")
+          }}
+        </a-button>
+      </template>
+
+      <a-upload
+        name="file"
+        :maxCount="1"
+        :customRequest="uplodaNftId"
+        style="
+          position: absolute;
+          width: 130px;
+          top: 205px;
+          right: 290px;
+          z-index: 999;
+        "
+      >
+        <a-button
+          class="view-max-width custom-btn"
+          :text="
+            $t(
+              `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
+            )
+          "
+          >{{
+            $t(
+              `View.TokenTransfer.SingleToMultiple.template.header.importWallets.button`,
+            )
+          }}
+        </a-button>
+      </a-upload>
+    </a-tooltip>
+
+    <a-tooltip v-if="executeMode">
+      <template #title>
+        {{ $t("qing-dan-nei-rong-zai-dan-ci-shi-wu-zhong-de-zhong-fu-ci-shu") }}
+      </template>
+
+      <a-input-number
+        style="
+          position: absolute;
+          width: 130px;
+          top: 205px;
+          right: 150px;
+          z-index: 999;
+        "
+        :min="1"
+        v-model:value="manifestContentTimes"
+      >
+        <template #addonBefore>
+          <CreateIcon icon="BuildTwoTone" />
+        </template>
+      </a-input-number>
+    </a-tooltip>
+
     <a-tooltip>
       <template #title>
-        {{ $t("View.ManifestExecute.template.executionTimes") }}
+        {{
+          executeMode
+            ? $t("xu-yao-zhi-hang-de-nft-id-shu-liang")
+            : $t("View.ManifestExecute.template.executionTimes")
+        }}
       </template>
 
       <a-input-number
@@ -297,6 +397,8 @@ export default defineComponent({
       feeLock: "",
       wallets: [],
       store: store(),
+      executeMode: 0,
+      nftIdsData: [],
       manifestText: "",
       progressCount: 0,
       executionTimes: 1,
@@ -304,11 +406,15 @@ export default defineComponent({
       maskClosable: false,
       isPreviewDone: false,
       feePayerXrdBalance: "",
+      manifestContentTimes: 1,
       progressStatus: "normal",
       openTemplateModal: false,
       openProgressModal: false,
       openFeePayerModal: false,
       openTxConfirmModal: false,
+      nftIdList: [] as string[],
+      bucketList: [] as string[],
+      openNftIdTemplateModal: false,
       privateKeyList: [] as string[],
       commitStatusList: [] as number[],
       feePayerWallet: undefined as Wallet | undefined,
@@ -321,8 +427,18 @@ export default defineComponent({
     };
   },
   watch: {
-    manifestText() {
+    manifestText(v: string) {
       this.isPreviewDone = false;
+
+      if (v.includes("<NFT_ID>")) {
+        this.executeMode = 1;
+      } else {
+        this.executeMode = 0;
+      }
+    },
+    manifestContentTimes(v) {
+      this.isPreviewDone = false;
+      if (!v) this.manifestContentTimes = 1;
     },
     executionTimes(v) {
       if (!v) this.executionTimes = 1;
@@ -342,19 +458,17 @@ export default defineComponent({
         this.feePayerAddress ? this.feePayerAddress : "",
         this.feeLock.length
           ? new Decimal(this.feeLock)
-              .div(Math.floor(this.executionTimes))
+              .div(this.actulExecutionTimes)
+              .toFixed(18)
               .toString()
           : "0",
       ]);
     },
     isCommitDone() {
-      return this.commitStatusList.length === Math.floor(this.executionTimes);
-    },
-    feePayerAddress() {
-      return this.feePayerWallet ? this.feePayerWallet.address : undefined;
+      return this.commitStatusList.length === this.actulExecutionTimes;
     },
     progressPercent() {
-      const totalCount = Math.floor(this.executionTimes) * 2 + 1;
+      let totalCount = this.actulExecutionTimes * 2 + 1;
 
       return Math.floor(
         ((this.progressCount + this.commitStatusList.length) / totalCount) *
@@ -365,12 +479,20 @@ export default defineComponent({
       return this.feeLockEstimate.length
         ? formatNumber(
             new Decimal(this.feeLockEstimate)
-              .mul(Math.floor(this.executionTimes))
+              .mul(this.actulExecutionTimes)
               .toString(),
           )
         : this.$t(
             `View.TokenTransfer.MultipleToMultiple.template.header.feeLock.placeholder`,
           );
+    },
+    actulExecutionTimes() {
+      return this.executeMode
+        ? Math.ceil(this.executionTimes / this.manifestContentTimes)
+        : Math.floor(this.executionTimes);
+    },
+    feePayerAddress() {
+      return this.feePayerWallet ? this.feePayerWallet.address : undefined;
     },
   },
   methods: {
@@ -456,39 +578,111 @@ export default defineComponent({
         )} 」`,
       });
 
-      const manifestStr = `${this.feeLockCode}\n${this.manifestText}`;
-
-      const executionTimes = Math.floor(this.executionTimes);
-
       let currentEpoch = await getCurrentEpoch(this.store.networkId);
 
       let startTime = Date.now();
 
       const feePayerPrivateKey = this.feePayerWallet?.privateKeyHexString();
 
-      for (let i = 0; i < executionTimes; i++) {
-        await sleep(i, 10, 4000);
+      if (this.executeMode === 0) {
+        const manifestStr = `${this.feeLockCode}\n${this.manifestText}`;
 
-        const nowTime = Date.now();
+        const executionTimes = Math.floor(this.executionTimes);
 
-        if (startTime + 1000 * 60 * 5 < nowTime) {
-          startTime = nowTime;
-          currentEpoch = await getCurrentEpoch(this.store.networkId);
+        for (let i = 0; i < executionTimes; i++) {
+          await sleep(i, 10, 4000);
+
+          const nowTime = Date.now();
+
+          if (startTime + 1000 * 60 * 5 < nowTime) {
+            startTime = nowTime;
+            currentEpoch = await getCurrentEpoch(this.store.networkId);
+          }
+
+          this.store.worker.postMessage({
+            action: "ManifestExecute.execute",
+            args: [
+              txMessage,
+              manifestStr,
+              currentEpoch,
+              feePayerPrivateKey,
+              JSON.stringify(this.privateKeyList),
+              this.store.networkId,
+            ],
+          });
+
+          this.progressCount++;
+        }
+      } else if (this.executeMode === 1) {
+        const replaceAll = async (manifest: string) => {
+          let text = manifest.replaceAll(
+            "<NFT_ID>",
+            this.nftIdList.reverse().pop() as string,
+          );
+
+          this.nftIdList.reverse();
+
+          for (let i = 0; i < this.bucketList.length; i++) {
+            text = text.replaceAll(
+              this.bucketList[i],
+              (
+                await this.walletGenerator.generateNewWallet()
+              ).privateKeyHexString(),
+            );
+          }
+
+          return text;
+        };
+
+        const realExecutionTimes = Math.ceil(
+          this.executionTimes / this.manifestContentTimes,
+        );
+
+        for (let i = 0; i < realExecutionTimes; i++) {
+          let manifestStr = this.feeLockCode;
+
+          let contentTimes = 0;
+
+          if (this.nftIdList.length >= this.manifestContentTimes) {
+            contentTimes = this.manifestContentTimes;
+          } else {
+            contentTimes = this.nftIdList.length;
+          }
+
+          for (let i = 0; i < contentTimes; i++) {
+            manifestStr += `\n${await replaceAll(this.manifestText)}`;
+          }
+
+          await sleep(i, 10, 4000);
+
+          const nowTime = Date.now();
+
+          if (startTime + 1000 * 60 * 5 < nowTime) {
+            startTime = nowTime;
+            currentEpoch = await getCurrentEpoch(this.store.networkId);
+          }
+
+          this.store.worker.postMessage({
+            action: "ManifestExecute.execute",
+            args: [
+              txMessage,
+              manifestStr,
+              currentEpoch,
+              feePayerPrivateKey,
+              JSON.stringify(this.privateKeyList),
+              this.store.networkId,
+            ],
+          });
+
+          this.progressCount++;
         }
 
-        this.store.worker.postMessage({
-          action: "ManifestExecute.execute",
-          args: [
-            txMessage,
-            manifestStr,
-            currentEpoch,
-            feePayerPrivateKey,
-            JSON.stringify(this.privateKeyList),
-            this.store.networkId,
-          ],
-        });
+        this.nftIdList = [];
 
-        this.progressCount++;
+        if (this.nftIdsData.length) {
+          //@ts-ignore
+          this.nftIdList = this.nftIdsData.map((o) => o["NFT ID"]);
+        }
       }
     },
     async previewTransaction() {
@@ -524,43 +718,15 @@ export default defineComponent({
 
       const set = new Set<string>();
 
-      if (parsedManifest) {
-        (parsedManifest.value as Instruction[]).forEach((instruction) => {
-          if (
-            instruction.kind === "CallMethod" &&
-            (instruction.address.value as string).startsWith("account") &&
-            !instruction.methodName.startsWith("try")
-          ) {
-            set.add(instruction.address.value as string);
-          }
-        });
-      }
+      const key = "previewTransaction";
 
-      set.delete(this.feePayerAddress as string);
-
-      if (set.size > MAX_DIFF_SENDER_AMOUNT) {
-        message.warning({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
-          )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
-        });
-
-        return;
-      }
-
-      if (set.size && !this.wallets.length) {
-        message.warning({
-          content: `「 ${this.$t(
-            "View.ManifestExecute.script.needImportWalletFile",
-          )} 」`,
-          key: "needImportWalletFile",
-        });
-        return;
-      }
-
-      const addressList = [...set.values()];
-
-      const pubKeyList = [] as PublicKey[];
+      message.loading({
+        key,
+        duration: 0,
+        content: `「 ${this.$t(
+          `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.loading`,
+        )} 」`,
+      });
 
       let addressField = this.$t(`View.WalletGenerate.script.address`);
       let privateKeyField = this.$t(`View.WalletGenerate.script.privateKey`);
@@ -583,72 +749,321 @@ export default defineComponent({
         }
       }
 
-      this.privateKeyList = [];
+      if (this.executeMode === 0) {
+        if (parsedManifest) {
+          (parsedManifest.value as Instruction[]).forEach((instruction) => {
+            if (
+              instruction.kind === "CallMethod" &&
+              (instruction.address.value as string).startsWith("account") &&
+              !instruction.methodName.startsWith("try")
+            ) {
+              set.add(instruction.address.value as string);
+            }
+          });
+        }
 
-      for (let i = 0; i < addressList.length; i++) {
-        const walletData = this.wallets.find((data) => {
-          return addressList[i] === data[addressField];
-        }) as unknown as object;
+        set.delete(this.feePayerAddress as string);
 
-        //@ts-ignore
-        const pk = walletData[privateKeyField] as string;
-
-        const wallet =
-          await this.walletGenerator.generateWalletByPrivateKey(pk);
-
-        this.privateKeyList.push(wallet.privateKeyHexString());
-
-        pubKeyList.push(wallet.publicKey);
-      }
-
-      this.manifestExecutor.executorWallet = this.feePayerWallet as Wallet;
-
-      const key = "previewTransaction";
-
-      message.loading({
-        key,
-        duration: 0,
-        content: `「 ${this.$t(
-          `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.loading`,
-        )} 」`,
-      });
-
-      const manifestStr = `${this.feeLockCode}\n${this.manifestText}`;
-
-      try {
-        const result = await this.manifestExecutor.executePreview(
-          manifestStr,
-          pubKeyList,
-          await getCurrentEpoch(this.store.networkId),
-        );
-
-        if (result.errorMessage) {
-          console.error(result.errorMessage);
-          message.error({
+        if (set.size > MAX_DIFF_SENDER_AMOUNT) {
+          message.warning({
             content: `「 ${this.$t(
-              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
+            )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
+          });
+
+          return;
+        }
+
+        if (set.size && !this.wallets.length) {
+          message.warning({
+            content: `「 ${this.$t(
+              "View.ManifestExecute.script.needImportWalletFile",
             )} 」`,
             key,
           });
           return;
         }
 
-        message.success({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.success`,
-          )} 」`,
-          key,
-        });
+        const addressList = [...set.values()];
 
-        return result;
-      } catch (e) {
-        console.error((e as Error).message);
-        message.error({
-          content: `「 ${this.$t(
-            `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
-          )} 」`,
-          key,
-        });
+        const pubKeyList = [] as PublicKey[];
+
+        this.privateKeyList = [];
+
+        for (let i = 0; i < addressList.length; i++) {
+          const walletData = this.wallets.find((data) => {
+            return addressList[i] === data[addressField];
+          }) as unknown as object;
+
+          //@ts-ignore
+          const pk = walletData[privateKeyField] as string;
+
+          const wallet =
+            await this.walletGenerator.generateWalletByPrivateKey(pk);
+
+          this.privateKeyList.push(wallet.privateKeyHexString());
+
+          pubKeyList.push(wallet.publicKey);
+        }
+
+        this.manifestExecutor.executorWallet = this.feePayerWallet as Wallet;
+
+        const manifestStr = `${this.feeLockCode}\n${this.manifestText}`;
+
+        try {
+          const result = await this.manifestExecutor.executePreview(
+            manifestStr,
+            pubKeyList,
+            await getCurrentEpoch(this.store.networkId),
+          );
+
+          if (result.errorMessage) {
+            console.error(result.errorMessage);
+            message.error({
+              content: `「 ${this.$t(
+                `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+              )} 」`,
+              key,
+            });
+            return;
+          }
+
+          message.success({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.success`,
+            )} 」`,
+            key,
+          });
+
+          return result;
+        } catch (e) {
+          console.error((e as Error).message);
+          message.error({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+            )} 」`,
+            key,
+          });
+        }
+      } else if (this.executeMode === 1) {
+        let resourceAddress = "";
+        let accountAddress = "";
+        this.bucketList = [];
+
+        if (parsedManifest) {
+          (parsedManifest.value as Instruction[]).forEach((instruction) => {
+            if (
+              instruction.kind === "CallMethod" &&
+              (instruction.address.value as string).startsWith("account") &&
+              !instruction.methodName.startsWith("try")
+            ) {
+              set.add(instruction.address.value as string);
+            }
+
+            if (
+              //@ts-ignore
+              instruction.args && //@ts-ignore
+              instruction.args.fields &&
+              !resourceAddress.length
+            ) {
+              let address = "";
+              //@ts-ignore
+              for (let i = 0; i < instruction.args.fields.length; i++) {
+                //@ts-ignore
+                const field = instruction.args.fields[i];
+
+                if (
+                  field.kind === "Address" &&
+                  field.value.value.startsWith("resource")
+                ) {
+                  address = field.value.value;
+                }
+
+                if (
+                  field.kind === "Array" &&
+                  field.elementValueKind === "NonFungibleLocalId" &&
+                  field.elements[0].value === "<NFT_ID>" &&
+                  address.length
+                ) {
+                  //@ts-ignore
+                  accountAddress = instruction.address.value;
+                  resourceAddress = address;
+                  break;
+                }
+              }
+            }
+
+            //@ts-ignore
+            if (instruction.args && instruction.args.fields) {
+              //@ts-ignore
+              for (let i = 0; i < instruction.args.fields.length; i++) {
+                //@ts-ignore
+                const field = instruction.args.fields[i];
+
+                if (field.kind === "Bucket") {
+                  this.bucketList.push(`bucket${field.value + 1}`);
+                }
+              }
+            }
+          });
+        }
+
+        let resources: ResourcesOfAccount | undefined = undefined;
+
+        if (
+          resourceAddress.length &&
+          accountAddress.length &&
+          !this.nftIdsData.length
+        ) {
+          try {
+            resources = (
+              await this.networkChecker.checkResourcesOfAccounts([
+                accountAddress,
+              ])
+            )[0];
+          } catch (_) {
+            message.error({
+              content: `「 ${this.$t(
+                `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+              )} 」`,
+              key,
+            });
+            return;
+          }
+
+          for (let i = 0; i < resources.nonFungible.length; i++) {
+            if (resources.nonFungible[i].resourceAddress === resourceAddress) {
+              this.nftIdList = resources.nonFungible[i].ids
+                ? (resources.nonFungible[i].ids as string[])
+                : [];
+              break;
+            }
+          }
+
+          if (this.nftIdList.length < 2) {
+            message.error({
+              content: `「 ${this.$t(
+                `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+              )} 」`,
+              key,
+            });
+            return;
+          }
+        } else if (!resourceAddress.length || !accountAddress.length) {
+          message.error({
+            key,
+            content: `「 ${this.$t("zhao-bu-dao-nftid")} 」`,
+          });
+          return;
+        }
+
+        if (resources) this.executionTimes = this.nftIdList.length;
+
+        set.delete(this.feePayerAddress as string);
+
+        if (set.size > MAX_DIFF_SENDER_AMOUNT) {
+          message.warning({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
+            )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
+          });
+
+          return;
+        }
+
+        if (set.size && !this.wallets.length) {
+          message.warning({
+            content: `「 ${this.$t(
+              "View.ManifestExecute.script.needImportWalletFile",
+            )} 」`,
+            key,
+          });
+          return;
+        }
+
+        const addressList = [...set.values()];
+
+        const pubKeyList = [] as PublicKey[];
+
+        this.privateKeyList = [];
+
+        for (let i = 0; i < addressList.length; i++) {
+          const walletData = this.wallets.find((data) => {
+            return addressList[i] === data[addressField];
+          }) as unknown as object;
+
+          //@ts-ignore
+          const pk = walletData[privateKeyField] as string;
+
+          const wallet =
+            await this.walletGenerator.generateWalletByPrivateKey(pk);
+
+          this.privateKeyList.push(wallet.privateKeyHexString());
+
+          pubKeyList.push(wallet.publicKey);
+        }
+
+        this.manifestExecutor.executorWallet = this.feePayerWallet as Wallet;
+
+        const replaceAll = async (manifest: string, nftIdIndex: number) => {
+          let text = manifest.replaceAll(
+            "<NFT_ID>",
+            this.nftIdList[nftIdIndex],
+          );
+
+          for (let i = 0; i < this.bucketList.length; i++) {
+            text = text.replaceAll(
+              this.bucketList[i],
+              (
+                await this.walletGenerator.generateNewWallet()
+              ).privateKeyHexString(),
+            );
+          }
+
+          return text;
+        };
+
+        try {
+          let manifestStr = this.feeLockCode;
+
+          for (let i = 0; i < this.manifestContentTimes; i++) {
+            manifestStr += `\n${await replaceAll(this.manifestText, i)}`;
+          }
+
+          const result = await this.manifestExecutor.executePreview(
+            manifestStr,
+            pubKeyList,
+            await getCurrentEpoch(this.store.networkId),
+          );
+
+          if (result.errorMessage) {
+            console.error(result.errorMessage);
+            message.error({
+              content: `「 ${this.$t(
+                `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+              )} 」`,
+              key,
+            });
+            return;
+          }
+
+          message.success({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.success`,
+            )} 」`,
+            key,
+          });
+
+          return result;
+        } catch (e) {
+          console.error((e as Error).message);
+          message.error({
+            content: `「 ${this.$t(
+              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.error`,
+            )} 」`,
+            key,
+          });
+        }
       }
     },
     addCommitStatus(data: Data) {
@@ -769,6 +1184,20 @@ export default defineComponent({
         complete: (file) => {
           //@ts-ignore
           this.wallets = file.data;
+        },
+      });
+    },
+    uplodaNftId({ file }: { file: File }) {
+      //@ts-ignore
+      Papa.parse(file, {
+        skipEmptyLines: "greedy",
+        header: true,
+        complete: (file) => {
+          //@ts-ignore
+          this.nftIdsData = file.data;
+          //@ts-ignore
+          this.nftIdList = this.nftIdsData.map((o) => o["NFT ID"]);
+          this.executionTimes = this.nftIdList.length;
         },
       });
     },

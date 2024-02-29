@@ -349,7 +349,7 @@
         },
         "content": {
           "textarea": {
-            "placeholder": "清单内容"
+            "placeholder": "清单内容\n\n当使用 Updatable NFT ID 模式时, 需要将你想更新的NFT ID替换为<NFT_ID>。"
           }
         },
         "header": {

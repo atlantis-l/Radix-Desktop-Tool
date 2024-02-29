@@ -349,7 +349,7 @@
         },
         "content": {
           "textarea": {
-            "placeholder": "Manifest Content"
+            "placeholder": "Manifest Content\n\nWhen using Updatable NFT ID Mode, you need to replace the NFT ID you want to update with <NFT_ID>."
           }
         },
         "header": {

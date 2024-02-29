@@ -413,6 +413,7 @@ export default defineComponent({
       openFeePayerModal: false,
       openTxConfirmModal: false,
       nftIdList: [] as string[],
+      proofList: [] as string[],
       bucketList: [] as string[],
       openNftIdTemplateModal: false,
       privateKeyList: [] as string[],
@@ -625,6 +626,15 @@ export default defineComponent({
           for (let i = 0; i < this.bucketList.length; i++) {
             text = text.replaceAll(
               this.bucketList[i],
+              (
+                await this.walletGenerator.generateNewWallet()
+              ).privateKeyHexString(),
+            );
+          }
+
+          for (let i = 0; i < this.proofList.length; i++) {
+            text = text.replaceAll(
+              this.proofList[i],
               (
                 await this.walletGenerator.generateNewWallet()
               ).privateKeyHexString(),
@@ -849,6 +859,7 @@ export default defineComponent({
         let resourceAddress = "";
         let accountAddress = "";
         this.bucketList = [];
+        this.proofList = [];
 
         if (parsedManifest) {
           (parsedManifest.value as Instruction[]).forEach((instruction) => {
@@ -902,6 +913,10 @@ export default defineComponent({
 
                 if (field.kind === "Bucket") {
                   this.bucketList.push(`bucket${field.value + 1}`);
+                }
+
+                if (field.kind === "Proof") {
+                  this.proofList.push(`proof${field.value + 1}`);
                 }
               }
             }
@@ -1014,6 +1029,15 @@ export default defineComponent({
           for (let i = 0; i < this.bucketList.length; i++) {
             text = text.replaceAll(
               this.bucketList[i],
+              (
+                await this.walletGenerator.generateNewWallet()
+              ).privateKeyHexString(),
+            );
+          }
+
+          for (let i = 0; i < this.proofList.length; i++) {
+            text = text.replaceAll(
+              this.proofList[i],
               (
                 await this.walletGenerator.generateNewWallet()
               ).privateKeyHexString(),

@@ -630,9 +630,23 @@ export default defineComponent({
             return text;
           };
 
+          let singleFee: Decimal | undefined = undefined;
+
+          if (this.executionTimes > csvData.length) {
+            singleFee = new Decimal(this.feeLock).div(
+              Math.ceil(this.executionTimes / this.manifestContentTimes),
+            );
+
+            this.executionTimes = csvData.length;
+          }
+
           const realExecutionTimes = Math.ceil(
             this.executionTimes / this.manifestContentTimes,
           );
+
+          if (singleFee) {
+            this.feeLock = singleFee.mul(realExecutionTimes).toString();
+          }
 
           for (let i = 0; i < realExecutionTimes; i++) {
             let manifestStr = this.feeLockCode;
@@ -766,9 +780,23 @@ export default defineComponent({
           return text;
         };
 
+        let singleFee: Decimal | undefined = undefined;
+
+        if (this.executionTimes > this.nftIdList.length) {
+          singleFee = new Decimal(this.feeLock).div(
+            Math.ceil(this.executionTimes / this.manifestContentTimes),
+          );
+
+          this.executionTimes = this.nftIdList.length;
+        }
+
         const realExecutionTimes = Math.ceil(
           this.executionTimes / this.manifestContentTimes,
         );
+
+        if (singleFee) {
+          this.feeLock = singleFee.mul(realExecutionTimes).toString();
+        }
 
         for (let i = 0; i < realExecutionTimes; i++) {
           let manifestStr = this.feeLockCode;

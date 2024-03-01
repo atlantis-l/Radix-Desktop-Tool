@@ -32,7 +32,9 @@
     />
 
     <CSVTemplateModal
-      view="ManifestExecuteNftIdCSV"
+      :view="
+        executeMode ? 'ManifestExecuteNftIdCSV' : 'ManifestExecuteFieldCSV'
+      "
       :open="openNftIdTemplateModal"
       @close="openNftIdTemplateModal = false"
     />
@@ -220,34 +222,15 @@
       >「 {{ $t("View.ManifestExecute.template.divider.text") }} 」
     </a-divider>
 
-    <a-select
-      :style="{
-        position: 'absolute',
-        top: '205px',
-        right: executeMode ? '430px' : '150px',
-        zIndex: '999',
-      }"
-      :dropdownMatchSelectWidth="false"
-      v-model:value="executeMode"
-    >
-      <a-select-option :value="0">{{ $t("pu-tong-qing-dan") }}</a-select-option>
-
-      <a-select-option :value="1">
-        <a-tooltip placement="left">
-          <template #title>{{
-            $t(
-              "mu-qian-zhi-zhi-chi-xiang-tong-zi-yuan-de-xiang-tong-nft-id-ke-zhong-fu-chu-xian",
-            )
-          }}</template>
-          {{ $t("ke-geng-xin-nft-id") }}
-        </a-tooltip>
-      </a-select-option>
-    </a-select>
-
-    <a-tooltip destroyTooltipOnHide placement="bottom" v-if="executeMode">
+    <a-tooltip placement="bottom">
       <template #title>
-        {{ $t("bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids")
-        }}<br />
+        {{
+          executeMode
+            ? $t(
+                "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids",
+              )
+            : ""
+        }}<br v-if="executeMode" />
         <a-button
           @click="openNftIdTemplateModal = true"
           class="view-max-width custom-btn"
@@ -263,7 +246,7 @@
       <a-upload
         name="file"
         :maxCount="1"
-        :customRequest="uplodaNftId"
+        :customRequest="uplodaFieldsCSV"
         style="
           position: absolute;
           width: 130px;
@@ -288,7 +271,7 @@
       </a-upload>
     </a-tooltip>
 
-    <a-tooltip v-if="executeMode">
+    <a-tooltip>
       <template #title>
         {{ $t("qing-dan-nei-rong-zai-dan-ci-shi-wu-zhong-de-zhong-fu-ci-shu") }}
       </template>
@@ -315,7 +298,9 @@
         {{
           executeMode
             ? $t("xu-yao-zhi-hang-de-nft-id-shu-liang")
-            : $t("View.ManifestExecute.template.executionTimes")
+            : hasFields
+              ? $t("xu-yao-zhi-hang-de-csv-hang-shu")
+              : $t("View.ManifestExecute.template.executionTimes")
         }}
       </template>
 
@@ -346,7 +331,10 @@
         v-model:value="manifestText"
         style="flex: 1; margin-top: 20px"
         :placeholder="
-          $t('View.ManifestExecute.template.content.textarea.placeholder')
+          $t('View.ManifestExecute.template.content.textarea.placeholder', [
+            '<NFT_ID>',
+            `{${$t('View.ManifestExecute.template.content.textarea.fieldName')}}`,
+          ])
         "
       />
     </a-layout-content>
@@ -398,7 +386,7 @@ export default defineComponent({
       wallets: [],
       store: store(),
       executeMode: 0,
-      nftIdsData: [],
+      fieldsData: [],
       manifestText: "",
       progressCount: 0,
       executionTimes: 1,
@@ -413,11 +401,13 @@ export default defineComponent({
       openFeePayerModal: false,
       openTxConfirmModal: false,
       nftIdList: [] as string[],
+      fieldList: [] as string[],
       proofList: [] as string[],
       bucketList: [] as string[],
       openNftIdTemplateModal: false,
       privateKeyList: [] as string[],
       commitStatusList: [] as number[],
+      nftIdMap: new Map<string, object>(),
       feePayerWallet: undefined as Wallet | undefined,
       networkChecker: new RadixNetworkChecker(store().networkId),
       walletGenerator: new RadixWalletGenerator(store().networkId),
@@ -436,6 +426,10 @@ export default defineComponent({
       } else {
         this.executeMode = 0;
       }
+
+      this.fieldsData = [];
+      this.nftIdList = [];
+      this.nftIdMap.clear();
     },
     manifestContentTimes(v) {
       this.isPreviewDone = false;
@@ -460,13 +454,23 @@ export default defineComponent({
         this.feeLock.length
           ? new Decimal(this.feeLock)
               .div(this.actulExecutionTimes)
-              .toFixed(18)
-              .toString()
+              .toFixed(
+                new Decimal(this.feeLock)
+                  .div(this.actulExecutionTimes)
+                  .toString().length > 18
+                  ? 18
+                  : new Decimal(this.feeLock)
+                      .div(this.actulExecutionTimes)
+                      .toString().length,
+              )
           : "0",
       ]);
     },
     isCommitDone() {
       return this.commitStatusList.length === this.actulExecutionTimes;
+    },
+    hasFields() {
+      return /\$\{(.+?)\}/g.exec(this.manifestText);
     },
     progressPercent() {
       let totalCount = this.actulExecutionTimes * 2 + 1;
@@ -490,7 +494,9 @@ export default defineComponent({
     actulExecutionTimes() {
       return this.executeMode
         ? Math.ceil(this.executionTimes / this.manifestContentTimes)
-        : Math.floor(this.executionTimes);
+        : this.hasFields
+          ? Math.ceil(this.executionTimes / this.manifestContentTimes)
+          : Math.floor(this.executionTimes);
     },
     feePayerAddress() {
       return this.feePayerWallet ? this.feePayerWallet.address : undefined;
@@ -586,42 +592,151 @@ export default defineComponent({
       const feePayerPrivateKey = this.feePayerWallet?.privateKeyHexString();
 
       if (this.executeMode === 0) {
-        const manifestStr = `${this.feeLockCode}\n${this.manifestText}`;
+        if (this.hasFields) {
+          const csvData: object[] = JSON.parse(JSON.stringify(this.fieldsData));
 
-        const executionTimes = Math.floor(this.executionTimes);
+          const replaceAll = async () => {
+            let text = this.manifestText;
 
-        for (let i = 0; i < executionTimes; i++) {
-          await sleep(i, 10, 4000);
+            const data = csvData.reverse().pop();
 
-          const nowTime = Date.now();
+            csvData.reverse();
 
-          if (startTime + 1000 * 60 * 5 < nowTime) {
-            startTime = nowTime;
-            currentEpoch = await getCurrentEpoch(this.store.networkId);
-          }
+            for (let i = 0; i < this.bucketList.length; i++) {
+              text = text.replaceAll(
+                this.bucketList[i],
+                (
+                  await this.walletGenerator.generateNewWallet()
+                ).privateKeyHexString(),
+              );
+            }
 
-          this.store.worker.postMessage({
-            action: "ManifestExecute.execute",
-            args: [
-              txMessage,
-              manifestStr,
-              currentEpoch,
-              feePayerPrivateKey,
-              JSON.stringify(this.privateKeyList),
-              this.store.networkId,
-            ],
-          });
+            for (let i = 0; i < this.proofList.length; i++) {
+              text = text.replaceAll(
+                this.proofList[i],
+                (
+                  await this.walletGenerator.generateNewWallet()
+                ).privateKeyHexString(),
+              );
+            }
 
-          this.progressCount++;
-        }
-      } else if (this.executeMode === 1) {
-        const replaceAll = async (manifest: string) => {
-          let text = manifest.replaceAll(
-            "<NFT_ID>",
-            this.nftIdList.reverse().pop() as string,
+            for (let i = 0; i < this.fieldList.length; i++) {
+              text = text.replaceAll(
+                "${" + this.fieldList[i] + "}", //@ts-ignore
+                data[this.fieldList[i]] as string,
+              );
+            }
+
+            return text;
+          };
+
+          const realExecutionTimes = Math.ceil(
+            this.executionTimes / this.manifestContentTimes,
           );
 
+          for (let i = 0; i < realExecutionTimes; i++) {
+            let manifestStr = this.feeLockCode;
+
+            let contentTimes = 0;
+
+            if (csvData.length >= this.manifestContentTimes) {
+              contentTimes = this.manifestContentTimes;
+            } else {
+              contentTimes = csvData.length;
+            }
+
+            for (let i = 0; i < contentTimes; i++) {
+              manifestStr += `\n${await replaceAll()}`;
+            }
+
+            await sleep(i, 10, 4000);
+
+            const nowTime = Date.now();
+
+            if (startTime + 1000 * 60 * 5 < nowTime) {
+              startTime = nowTime;
+              currentEpoch = await getCurrentEpoch(this.store.networkId);
+            }
+
+            this.store.worker.postMessage({
+              action: "ManifestExecute.execute",
+              args: [
+                txMessage,
+                manifestStr,
+                currentEpoch,
+                feePayerPrivateKey,
+                JSON.stringify(this.privateKeyList),
+                this.store.networkId,
+              ],
+            });
+
+            this.progressCount++;
+          }
+        } else {
+          const replaceAll = async () => {
+            let text = this.manifestText;
+
+            for (let i = 0; i < this.bucketList.length; i++) {
+              text = text.replaceAll(
+                this.bucketList[i],
+                (
+                  await this.walletGenerator.generateNewWallet()
+                ).privateKeyHexString(),
+              );
+            }
+
+            for (let i = 0; i < this.proofList.length; i++) {
+              text = text.replaceAll(
+                this.proofList[i],
+                (
+                  await this.walletGenerator.generateNewWallet()
+                ).privateKeyHexString(),
+              );
+            }
+
+            return text;
+          };
+
+          let manifestStr = this.feeLockCode;
+
+          for (let i = 0; i < this.manifestContentTimes; i++) {
+            manifestStr += `\n${await replaceAll()}`;
+          }
+
+          const executionTimes = Math.floor(this.executionTimes);
+
+          for (let i = 0; i < executionTimes; i++) {
+            await sleep(i, 10, 4000);
+
+            const nowTime = Date.now();
+
+            if (startTime + 1000 * 60 * 5 < nowTime) {
+              startTime = nowTime;
+              currentEpoch = await getCurrentEpoch(this.store.networkId);
+            }
+
+            this.store.worker.postMessage({
+              action: "ManifestExecute.execute",
+              args: [
+                txMessage,
+                manifestStr,
+                currentEpoch,
+                feePayerPrivateKey,
+                JSON.stringify(this.privateKeyList),
+                this.store.networkId,
+              ],
+            });
+
+            this.progressCount++;
+          }
+        }
+      } else if (this.executeMode === 1) {
+        const replaceAll = async () => {
+          const nftId = this.nftIdList.reverse().pop() as string;
+
           this.nftIdList.reverse();
+
+          let text = this.manifestText.replaceAll("<NFT_ID>", nftId);
 
           for (let i = 0; i < this.bucketList.length; i++) {
             text = text.replaceAll(
@@ -638,6 +753,13 @@ export default defineComponent({
               (
                 await this.walletGenerator.generateNewWallet()
               ).privateKeyHexString(),
+            );
+          }
+
+          for (let i = 0; i < this.fieldList.length; i++) {
+            text = text.replaceAll(
+              "${" + this.fieldList[i] + "}", //@ts-ignore
+              this.nftIdMap.get(nftId)[this.fieldList[i]] as string,
             );
           }
 
@@ -660,7 +782,7 @@ export default defineComponent({
           }
 
           for (let i = 0; i < contentTimes; i++) {
-            manifestStr += `\n${await replaceAll(this.manifestText)}`;
+            manifestStr += `\n${await replaceAll()}`;
           }
 
           await sleep(i, 10, 4000);
@@ -686,14 +808,11 @@ export default defineComponent({
 
           this.progressCount++;
         }
-
-        this.nftIdList = [];
-
-        if (this.nftIdsData.length) {
-          //@ts-ignore
-          this.nftIdList = this.nftIdsData.map((o) => o["NFT ID"]);
-        }
       }
+
+      this.fieldsData = [];
+      this.nftIdList = [];
+      this.nftIdMap.clear();
     },
     async previewTransaction() {
       let parsedManifest: Instructions | undefined;
@@ -759,68 +878,152 @@ export default defineComponent({
         }
       }
 
-      if (this.executeMode === 0) {
-        if (parsedManifest) {
-          (parsedManifest.value as Instruction[]).forEach((instruction) => {
-            if (
-              instruction.kind === "CallMethod" &&
-              (instruction.address.value as string).startsWith("account") &&
-              !instruction.methodName.startsWith("try")
-            ) {
-              set.add(instruction.address.value as string);
-            }
-          });
-        }
+      this.bucketList = [];
+      this.proofList = [];
+      this.fieldList = [];
 
-        set.delete(this.feePayerAddress as string);
-
-        if (set.size > MAX_DIFF_SENDER_AMOUNT) {
-          message.warning({
-            content: `「 ${this.$t(
-              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
-            )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
-          });
-
-          return;
-        }
-
-        if (set.size && !this.wallets.length) {
-          message.warning({
-            content: `「 ${this.$t(
-              "View.ManifestExecute.script.needImportWalletFile",
-            )} 」`,
-            key,
-          });
-          return;
-        }
-
-        const addressList = [...set.values()];
-
-        const pubKeyList = [] as PublicKey[];
-
-        this.privateKeyList = [];
-
-        for (let i = 0; i < addressList.length; i++) {
-          const walletData = this.wallets.find((data) => {
-            return addressList[i] === data[addressField];
-          }) as unknown as object;
+      if (parsedManifest) {
+        (parsedManifest.value as Instruction[]).forEach((instruction) => {
+          if (
+            instruction.kind === "CallMethod" &&
+            (instruction.address.value as string).startsWith("account") &&
+            !instruction.methodName.startsWith("try")
+          ) {
+            set.add(instruction.address.value as string);
+          }
 
           //@ts-ignore
-          const pk = walletData[privateKeyField] as string;
+          if (instruction.args && instruction.args.fields) {
+            //@ts-ignore
+            for (let i = 0; i < instruction.args.fields.length; i++) {
+              //@ts-ignore
+              const field = instruction.args.fields[i];
 
-          const wallet =
-            await this.walletGenerator.generateWalletByPrivateKey(pk);
+              if (field.kind === "Bucket") {
+                this.bucketList.push(`bucket${field.value + 1}`);
+              }
 
-          this.privateKeyList.push(wallet.privateKeyHexString());
+              if (field.kind === "Proof") {
+                this.proofList.push(`proof${field.value + 1}`);
+              }
+            }
+          }
+        });
+      }
 
-          pubKeyList.push(wallet.publicKey);
+      set.delete(this.feePayerAddress as string);
+
+      if (set.size > MAX_DIFF_SENDER_AMOUNT) {
+        message.warning({
+          content: `「 ${this.$t(
+            `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
+          )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
+        });
+
+        return;
+      }
+
+      if (set.size && !this.wallets.length) {
+        message.warning({
+          content: `「 ${this.$t(
+            "View.ManifestExecute.script.needImportWalletFile",
+          )} 」`,
+          key,
+        });
+        return;
+      }
+
+      const addressList = [...set.values()];
+
+      const pubKeyList = [] as PublicKey[];
+
+      this.privateKeyList = [];
+
+      for (let i = 0; i < addressList.length; i++) {
+        const walletData = this.wallets.find((data) => {
+          return addressList[i] === data[addressField];
+        }) as unknown as object;
+
+        //@ts-ignore
+        const pk = walletData[privateKeyField] as string;
+
+        const wallet =
+          await this.walletGenerator.generateWalletByPrivateKey(pk);
+
+        this.privateKeyList.push(wallet.privateKeyHexString());
+
+        pubKeyList.push(wallet.publicKey);
+      }
+
+      this.manifestExecutor.executorWallet = this.feePayerWallet as Wallet;
+
+      const reg_g = /\$\{(.+?)\}/g;
+      let result = undefined;
+
+      do {
+        result = reg_g.exec(this.manifestText);
+        result && this.fieldList.push(result[1]);
+      } while (result);
+
+      if (this.fieldList.length) {
+        if (!this.fieldsData.length) {
+          message.warn({
+            key,
+            content: `「 ${this.$t("xu-dao-ru-csv-wen-jian")} 」`,
+          });
+          return;
+        } else {
+          for (let i = 0; i < this.fieldList.length; i++) {
+            if (!this.fieldsData[0][this.fieldList[i]]) {
+              message.warn({
+                key,
+                content: `「 ${this.$t("csv-wen-jian-que-shao-zi-duan")} \`${this.fieldList[i]}\` 」`,
+              });
+              return;
+            }
+          }
         }
+      }
 
-        this.manifestExecutor.executorWallet = this.feePayerWallet as Wallet;
+      if (this.executeMode === 0) {
+        const replaceAll = async (index: number) => {
+          let text = this.manifestText;
 
-        const manifestStr = `${this.feeLockCode}\n${this.manifestText}`;
+          for (let i = 0; i < this.bucketList.length; i++) {
+            text = text.replaceAll(
+              this.bucketList[i],
+              (
+                await this.walletGenerator.generateNewWallet()
+              ).privateKeyHexString(),
+            );
+          }
+
+          for (let i = 0; i < this.proofList.length; i++) {
+            text = text.replaceAll(
+              this.proofList[i],
+              (
+                await this.walletGenerator.generateNewWallet()
+              ).privateKeyHexString(),
+            );
+          }
+
+          for (let i = 0; i < this.fieldList.length; i++) {
+            text = text.replaceAll(
+              "${" + this.fieldList[i] + "}", //@ts-ignore
+              this.fieldsData[index][this.fieldList[i]] as string,
+            );
+          }
+
+          return text;
+        };
 
         try {
+          let manifestStr = this.feeLockCode;
+
+          for (let i = 0; i < this.manifestContentTimes; i++) {
+            manifestStr += `\n${await replaceAll(i)}`;
+          }
+
           const result = await this.manifestExecutor.executePreview(
             manifestStr,
             pubKeyList,
@@ -858,19 +1061,9 @@ export default defineComponent({
       } else if (this.executeMode === 1) {
         let resourceAddress = "";
         let accountAddress = "";
-        this.bucketList = [];
-        this.proofList = [];
 
         if (parsedManifest) {
           (parsedManifest.value as Instruction[]).forEach((instruction) => {
-            if (
-              instruction.kind === "CallMethod" &&
-              (instruction.address.value as string).startsWith("account") &&
-              !instruction.methodName.startsWith("try")
-            ) {
-              set.add(instruction.address.value as string);
-            }
-
             if (
               //@ts-ignore
               instruction.args && //@ts-ignore
@@ -903,23 +1096,6 @@ export default defineComponent({
                 }
               }
             }
-
-            //@ts-ignore
-            if (instruction.args && instruction.args.fields) {
-              //@ts-ignore
-              for (let i = 0; i < instruction.args.fields.length; i++) {
-                //@ts-ignore
-                const field = instruction.args.fields[i];
-
-                if (field.kind === "Bucket") {
-                  this.bucketList.push(`bucket${field.value + 1}`);
-                }
-
-                if (field.kind === "Proof") {
-                  this.proofList.push(`proof${field.value + 1}`);
-                }
-              }
-            }
           });
         }
 
@@ -928,7 +1104,7 @@ export default defineComponent({
         if (
           resourceAddress.length &&
           accountAddress.length &&
-          !this.nftIdsData.length
+          !this.fieldsData.length
         ) {
           try {
             resources = (
@@ -967,61 +1143,15 @@ export default defineComponent({
         } else if (!resourceAddress.length || !accountAddress.length) {
           message.error({
             key,
-            content: `「 ${this.$t("zhao-bu-dao-nftid")} 」`,
+            content: `「 ${this.$t("zhao-bu-dao-nftid", ["<NFT_ID>"])} 」`,
           });
           return;
         }
 
         if (resources) this.executionTimes = this.nftIdList.length;
 
-        set.delete(this.feePayerAddress as string);
-
-        if (set.size > MAX_DIFF_SENDER_AMOUNT) {
-          message.warning({
-            content: `「 ${this.$t(
-              `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
-            )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
-          });
-
-          return;
-        }
-
-        if (set.size && !this.wallets.length) {
-          message.warning({
-            content: `「 ${this.$t(
-              "View.ManifestExecute.script.needImportWalletFile",
-            )} 」`,
-            key,
-          });
-          return;
-        }
-
-        const addressList = [...set.values()];
-
-        const pubKeyList = [] as PublicKey[];
-
-        this.privateKeyList = [];
-
-        for (let i = 0; i < addressList.length; i++) {
-          const walletData = this.wallets.find((data) => {
-            return addressList[i] === data[addressField];
-          }) as unknown as object;
-
-          //@ts-ignore
-          const pk = walletData[privateKeyField] as string;
-
-          const wallet =
-            await this.walletGenerator.generateWalletByPrivateKey(pk);
-
-          this.privateKeyList.push(wallet.privateKeyHexString());
-
-          pubKeyList.push(wallet.publicKey);
-        }
-
-        this.manifestExecutor.executorWallet = this.feePayerWallet as Wallet;
-
-        const replaceAll = async (manifest: string, nftIdIndex: number) => {
-          let text = manifest.replaceAll(
+        const replaceAll = async (nftIdIndex: number) => {
+          let text = this.manifestText.replaceAll(
             "<NFT_ID>",
             this.nftIdList[nftIdIndex],
           );
@@ -1044,6 +1174,15 @@ export default defineComponent({
             );
           }
 
+          for (let i = 0; i < this.fieldList.length; i++) {
+            text = text.replaceAll(
+              "${" + this.fieldList[i] + "}", //@ts-ignore
+              this.nftIdMap.get(this.nftIdList[nftIdIndex])[
+                this.fieldList[i]
+              ] as string,
+            );
+          }
+
           return text;
         };
 
@@ -1051,7 +1190,7 @@ export default defineComponent({
           let manifestStr = this.feeLockCode;
 
           for (let i = 0; i < this.manifestContentTimes; i++) {
-            manifestStr += `\n${await replaceAll(this.manifestText, i)}`;
+            manifestStr += `\n${await replaceAll(i)}`;
           }
 
           const result = await this.manifestExecutor.executePreview(
@@ -1211,17 +1350,25 @@ export default defineComponent({
         },
       });
     },
-    uplodaNftId({ file }: { file: File }) {
+    uplodaFieldsCSV({ file }: { file: File }) {
       //@ts-ignore
       Papa.parse(file, {
         skipEmptyLines: "greedy",
         header: true,
         complete: (file) => {
           //@ts-ignore
-          this.nftIdsData = file.data;
-          //@ts-ignore
-          this.nftIdList = this.nftIdsData.map((o) => o["NFT ID"]);
-          this.executionTimes = this.nftIdList.length;
+          this.fieldsData = file.data;
+
+          if (this.executeMode) {
+            this.nftIdMap.clear();
+            //@ts-ignore
+            this.nftIdList = this.fieldsData.map((o) => {
+              this.nftIdMap.set(o["NFT ID"], o);
+              return o["NFT ID"];
+            });
+          }
+
+          this.executionTimes = this.fieldsData.length;
         },
       });
     },

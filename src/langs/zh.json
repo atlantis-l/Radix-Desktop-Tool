@@ -349,7 +349,8 @@
         },
         "content": {
           "textarea": {
-            "placeholder": "清单内容\n\n当使用 Updatable NFT ID 模式时, 需要将你想更新的NFT ID替换为<NFT_ID>。"
+            "placeholder": "清单内容\n\n将想要更新的NFT ID替换为{0}\n\n除了NFT ID, 其它需要更新的字段都要替换为${1}",
+            "fieldName": "字段名称"
           }
         },
         "header": {
@@ -527,9 +528,12 @@
   "ge-shi-cuo-wu": "格式错误",
   "pu-tong-qing-dan": "普通清单",
   "ke-geng-xin-nft-id": "可更新NFT ID",
-  "zhao-bu-dao-nftid": "找不到<NFT_ID>",
+  "zhao-bu-dao-nftid": "找不到{0}",
   "xu-yao-zhi-hang-de-nft-id-shu-liang": "需要执行的NFT ID数量",
   "qing-dan-nei-rong-zai-dan-ci-shi-wu-zhong-de-zhong-fu-ci-shu": "清单内容在单次事务中的重复次数",
   "mu-qian-zhi-zhi-chi-xiang-tong-zi-yuan-de-xiang-tong-nft-id-ke-zhong-fu-chu-xian": "目前只支持相同资源的相同NFT ID(可重复出现)",
-  "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids": "不导入CSV文件则默认从网络获取NFT ID"
+  "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids": "不导入CSV文件则默认从网络获取NFT ID",
+  "xu-dao-ru-csv-wen-jian": "需导入CSV文件",
+  "csv-wen-jian-que-shao-zi-duan": "CSV文件缺少字段",
+  "xu-yao-zhi-hang-de-csv-hang-shu": "需要执行的CSV行数"
 }

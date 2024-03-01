@@ -349,7 +349,8 @@
         },
         "content": {
           "textarea": {
-            "placeholder": "Manifest Content\n\nWhen using Updatable NFT ID Mode, you need to replace the NFT ID you want to update with <NFT_ID>."
+            "placeholder": "Manifest Content\n\nReplaces the NFT ID you want to update with {0}\n\nReplace all fields that need to be updated with ${1} except NFT ID",
+            "fieldName": "Field Name"
           }
         },
         "header": {
@@ -527,9 +528,12 @@
   "ge-shi-cuo-wu": "Format error",
   "pu-tong-qing-dan": "Normal Manifest",
   "ke-geng-xin-nft-id": "Updatable NFT ID",
-  "zhao-bu-dao-nftid": "<NFT_ID> Not Found",
+  "zhao-bu-dao-nftid": "{0} Not Found",
   "xu-yao-zhi-hang-de-nft-id-shu-liang": "The number of NFT IDs that need to be executed",
   "qing-dan-nei-rong-zai-dan-ci-shi-wu-zhong-de-zhong-fu-ci-shu": "The number of times the manifest content is repeated in a single transaction",
   "mu-qian-zhi-zhi-chi-xiang-tong-zi-yuan-de-xiang-tong-nft-id-ke-zhong-fu-chu-xian": "Currently only the same NFT ID for the same resource is supported (Can appear repeatedly)",
-  "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids": "If don't import the CSV file, the NFT ID will be obtained from the network by default"
+  "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids": "If don't import the CSV file, the NFT ID will be obtained from the network by default",
+  "xu-dao-ru-csv-wen-jian": "Need to import CSV file",
+  "csv-wen-jian-que-shao-zi-duan": "CSV file missing field",
+  "xu-yao-zhi-hang-de-csv-hang-shu": "Number of CSV rows to execute"
 }

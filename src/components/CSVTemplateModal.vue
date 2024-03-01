@@ -68,6 +68,27 @@
         $t("View.TokenTransfer.SingleToMultiple.template.optional")
       }})<br />[......]
     </template>
+
+    <template v-if="view === 'ManifestExecuteFieldCSV'">
+      [......][,......]({{
+        $t("View.TokenTransfer.SingleToMultiple.template.optional")
+      }})<br />
+      [......][,......]({{
+        $t("View.TokenTransfer.SingleToMultiple.template.optional")
+      }})<br />
+      [......][,......]({{
+        $t("View.TokenTransfer.SingleToMultiple.template.optional")
+      }})<br />
+      [......][,......]({{
+        $t("View.TokenTransfer.SingleToMultiple.template.optional")
+      }})<br />
+      [......][,......]({{
+        $t("View.TokenTransfer.SingleToMultiple.template.optional")
+      }})<br />
+      [......][,......]({{
+        $t("View.TokenTransfer.SingleToMultiple.template.optional")
+      }})<br />[......]
+    </template>
   </a-modal>
 </template>
 

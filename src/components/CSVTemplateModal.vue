@@ -48,29 +48,8 @@
       }})<br />[......]
     </template>
 
-    <template v-if="view === 'ManifestExecuteNftIdCSV'">
-      NFT ID[,......]({{
-        $t("View.TokenTransfer.SingleToMultiple.template.optional")
-      }})<br />
-      ......[,......]({{
-        $t("View.TokenTransfer.SingleToMultiple.template.optional")
-      }})<br />
-      ......[,......]({{
-        $t("View.TokenTransfer.SingleToMultiple.template.optional")
-      }})<br />
-      ......[,......]({{
-        $t("View.TokenTransfer.SingleToMultiple.template.optional")
-      }})<br />
-      ......[,......]({{
-        $t("View.TokenTransfer.SingleToMultiple.template.optional")
-      }})<br />
-      ......[,......]({{
-        $t("View.TokenTransfer.SingleToMultiple.template.optional")
-      }})<br />[......]
-    </template>
-
     <template v-if="view === 'ManifestExecuteFieldCSV'">
-      [......][,......]({{
+      [NFT ID][,......]({{
         $t("View.TokenTransfer.SingleToMultiple.template.optional")
       }})<br />
       [......][,......]({{

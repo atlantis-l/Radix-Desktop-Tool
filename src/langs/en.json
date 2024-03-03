@@ -197,7 +197,8 @@
               "button": "Import CSV"
             },
             "simTx": "Whether to perform transaction simulation when sending transaction",
-            "template": "Template",
+            "template": "Account Template",
+            "fieldTemplate": "Field Template",
             "tokenTypeSelect": {
               "fungibleToken": "Fungible",
               "nonFungibleToken": "NonFungible"
@@ -349,7 +350,7 @@
         },
         "content": {
           "textarea": {
-            "placeholder": "Manifest Content\n\nReplaces the NFT ID you want to update with {0}\n\nReplace all fields that need to be updated with ${1} except NFT ID",
+            "placeholder": "Manifest Content\n\nReplaces all fields that need to be updated with ${0}",
             "fieldName": "Field Name"
           }
         },

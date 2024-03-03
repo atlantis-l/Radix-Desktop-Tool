@@ -180,7 +180,8 @@
             },
             "dataNotValid": "信息输入不完整",
             "simTx": "发送交易时是否进行交易模拟",
-            "template": "导入格式",
+            "template": "导入账户格式",
+            "fieldTemplate": "导入字段格式",
             "tokenTypeSelect": {
               "fungibleToken": "发送代币",
               "nonFungibleToken": "发送NFT"
@@ -349,7 +350,7 @@
         },
         "content": {
           "textarea": {
-            "placeholder": "清单内容\n\n将想要更新的NFT ID替换为{0}\n\n除了NFT ID, 其它需要更新的字段都要替换为${1}",
+            "placeholder": "清单内容\n\n将想要更新的字段都替换为${0}",
             "fieldName": "字段名称"
           }
         },

@@ -1366,7 +1366,6 @@ export default defineComponent({
                 this.vaultMap.set(vaultAddress, nftIds);
 
                 show = true;
-                break;
               }
             }
 

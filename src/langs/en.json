@@ -19,6 +19,9 @@
     "EntityCheck": {
       "title": "Entity Check"
     },
+    "NFTIDList": {
+      "title": "NFT ID List"
+    },
     "HistoryCheck": {
       "title": "History Check"
     },
@@ -534,7 +537,14 @@
   "qing-dan-nei-rong-zai-dan-ci-shi-wu-zhong-de-zhong-fu-ci-shu": "The number of times the manifest content is repeated in a single transaction",
   "mu-qian-zhi-zhi-chi-xiang-tong-zi-yuan-de-xiang-tong-nft-id-ke-zhong-fu-chu-xian": "Currently only the same NFT ID for the same resource is supported (Can appear repeatedly)",
   "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids": "If don't import the CSV file, the NFT ID will be obtained from the network by default",
-  "xu-dao-ru-csv-wen-jian": "Need to import CSV file",
+  "xu-dao-ru-csv-wen-jian": "Need to import Fields(CSV File)",
   "csv-wen-jian-que-shao-zi-duan": "CSV file missing field",
-  "xu-yao-zhi-hang-de-csv-hang-shu": "Number of CSV rows to execute"
+  "xu-yao-zhi-hang-de-csv-hang-shu": "Number of CSV rows to execute",
+  "shu-ru-zhang-hu-huo-zu-jian-di-zhi": "Enter account or component address",
+  "shu-ru-zi-yuan-di-zhi": "Enter resource address",
+  "yi-jin-ku-hua-fen-lie": "Divide Columns By Vault",
+  "zhuan-huan-wei-quan-ju-id": "Convert To Global ID",
+  "huo-qu-nft-id-lie-biao": "Get NFT ID List",
+  "cuo-wu-de-di-zhi": "Wrong Address",
+  "zheng-zai-huo-qu-nft-id-lie-biao": "Getting NFT ID list"
 }

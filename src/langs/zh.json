@@ -19,6 +19,9 @@
     "EntityCheck": {
       "title": "实体查询"
     },
+    "NFTIDList": {
+      "title": "NFT ID列表"
+    },
     "HistoryCheck": {
       "title": "历史查询"
     },
@@ -534,7 +537,14 @@
   "qing-dan-nei-rong-zai-dan-ci-shi-wu-zhong-de-zhong-fu-ci-shu": "清单内容在单次事务中的重复次数",
   "mu-qian-zhi-zhi-chi-xiang-tong-zi-yuan-de-xiang-tong-nft-id-ke-zhong-fu-chu-xian": "目前只支持相同资源的相同NFT ID(可重复出现)",
   "bu-dao-ru-csv-wen-jian-ze-mo-ren-cong-wang-luo-huo-qu-nft-ids": "不导入CSV文件则默认从网络获取NFT ID",
-  "xu-dao-ru-csv-wen-jian": "需导入CSV文件",
+  "xu-dao-ru-csv-wen-jian": "需导入字段(CSV文件)",
   "csv-wen-jian-que-shao-zi-duan": "CSV文件缺少字段",
-  "xu-yao-zhi-hang-de-csv-hang-shu": "需要执行的CSV行数"
+  "xu-yao-zhi-hang-de-csv-hang-shu": "需要执行的CSV行数",
+  "shu-ru-zhang-hu-huo-zu-jian-di-zhi": "输入账户或组件地址",
+  "shu-ru-zi-yuan-di-zhi": "输入资源地址",
+  "yi-jin-ku-hua-fen-lie": "以金库划分列",
+  "zhuan-huan-wei-quan-ju-id": "转换为全局ID",
+  "huo-qu-nft-id-lie-biao": "获取NFT ID列表",
+  "cuo-wu-de-di-zhi": "错误的地址",
+  "zheng-zai-huo-qu-nft-id-lie-biao": "正在获取NFT ID列表"
 }

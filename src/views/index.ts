@@ -1,3 +1,4 @@
+import NFTIDList from "./NFTIDList.vue";
 import XRDFaucet from "./XRDFaucet.vue";
 import AssetCheck from "./AssetCheck.vue";
 import HexConvert from "./HexConvert.vue";
@@ -12,6 +13,7 @@ import WalletGenerate from "./WalletGenerate.vue";
 import ManifestExecute from "./ManifestExecute.vue";
 
 export {
+  NFTIDList,
   XRDFaucet,
   AssetCheck,
   HexConvert,

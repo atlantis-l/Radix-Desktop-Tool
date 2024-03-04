@@ -86,6 +86,12 @@ const router = createRouter({
       component: View.EntityCheck,
     },
     {
+      name: "NFTIDList",
+      path: "/NFTIDList",
+      icon: "HddTwoTone",
+      component: View.NFTIDList,
+    },
+    {
       name: "HexConvert",
       path: "/HexConvert",
       icon: "ControlTwoTone",

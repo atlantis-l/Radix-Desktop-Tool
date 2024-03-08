@@ -66,15 +66,21 @@ npm run build-linux
 
 ![6](public/screenshots/zh/6.png)
 
-![11](public/screenshots/zh/11.png)
-
 ![7](public/screenshots/zh/7.png)
-
-![10](public/screenshots/zh/10.png)
 
 ![8](public/screenshots/zh/8.png)
 
 ![9](public/screenshots/zh/9.png)
+
+![10](public/screenshots/zh/10.png)
+
+![11](public/screenshots/zh/11.png)
+
+![12](public/screenshots/zh/12.png)
+
+![13](public/screenshots/zh/13.png)
+
+![14](public/screenshots/zh/14.png)
 
 ## 捐赠
 

@@ -13,14 +13,17 @@
       "singleToMultiple": "一转多",
       "multipleToSingle": "多转一"
     },
+    "Gadgets": {
+      "title": "小工具箱",
+      "HexConvert": "格式转换",
+      "AddressQRCode": "二维码",
+      "NFTIDList": "NFT ID"
+    },
     "AssetCheck": {
       "title": "资产查询"
     },
     "EntityCheck": {
       "title": "实体查询"
-    },
-    "NFTIDList": {
-      "title": "NFT ID列表"
     },
     "HistoryCheck": {
       "title": "历史查询"
@@ -36,12 +39,6 @@
     },
     "PackageDeploy": {
       "title": "代码部署"
-    },
-    "HexConvert": {
-      "title": "格式转换"
-    },
-    "AddressQRCode": {
-      "title": "地址转码"
     },
     "XRDFaucet": {
       "title": "XRD领取"

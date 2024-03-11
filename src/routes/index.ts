@@ -86,22 +86,29 @@ const router = createRouter({
       component: View.EntityCheck,
     },
     {
-      name: "NFTIDList",
-      path: "/NFTIDList",
-      icon: "HddTwoTone",
-      component: View.NFTIDList,
-    },
-    {
-      name: "HexConvert",
-      path: "/HexConvert",
-      icon: "ControlTwoTone",
-      component: View.HexConvert,
-    },
-    {
-      name: "AddressQRCode",
-      path: "/AddressQRCode",
+      name: "Gadgets",
+      path: "/Gadgets",
       icon: "AppstoreTwoTone",
-      component: View.AddressQRCode,
+      children: [
+        {
+          name: "NFTIDList",
+          path: "NFTIDList",
+          icon: "NumberOutlined",
+          component: View.NFTIDList,
+        },
+        {
+          name: "AddressQRCode",
+          path: "AddressQRCode",
+          icon: "NumberOutlined",
+          component: View.AddressQRCode,
+        },
+        {
+          name: "HexConvert",
+          path: "HexConvert",
+          icon: "NumberOutlined",
+          component: View.HexConvert,
+        },
+      ],
     },
     {
       name: "XRDFaucet",

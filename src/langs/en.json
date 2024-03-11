@@ -13,14 +13,17 @@
       "singleToMultiple": "Single To Multiple",
       "multipleToSingle": "Multiple To Single"
     },
+    "Gadgets": {
+      "title": "Gadgets",
+      "HexConvert": "Hex Convert",
+      "AddressQRCode": "QRCode",
+      "NFTIDList": "NFT ID"
+    },
     "AssetCheck": {
       "title": "Asset Check"
     },
     "EntityCheck": {
       "title": "Entity Check"
-    },
-    "NFTIDList": {
-      "title": "NFT ID List"
     },
     "HistoryCheck": {
       "title": "History Check"
@@ -36,12 +39,6 @@
     },
     "PackageDeploy": {
       "title": "Package Deploy"
-    },
-    "HexConvert": {
-      "title": "Format Convert"
-    },
-    "AddressQRCode": {
-      "title": "Address QRCode"
     },
     "XRDFaucet": {
       "title": "XRD Faucet"

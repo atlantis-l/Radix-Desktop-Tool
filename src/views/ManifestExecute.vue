@@ -414,6 +414,7 @@ export default defineComponent({
     manifestText() {
       this.isPreviewDone = false;
       this.fieldData = [];
+      this.wallets = [];
     },
     manifestContentTimes(v) {
       this.isPreviewDone = false;
@@ -634,6 +635,84 @@ export default defineComponent({
             manifestStr += `\n${await this.replaceAll(data as object)}`;
           }
 
+          {
+            let parsed: Instructions | undefined;
+
+            try {
+              parsed = await RadixEngineToolkit.Instructions.convert(
+                {
+                  kind: "String",
+                  value: manifestStr,
+                },
+                this.store.networkId,
+                "Parsed",
+              );
+            } catch (e) {
+              console.error((e as Error).message);
+              message.error({
+                content: `「 ${this.$t(
+                  "View.ManifestExecute.script.manifestParsedFailed",
+                )} 」`,
+                key,
+              });
+              return;
+            }
+
+            if (!parsed) return;
+
+            const set = new Set<string>();
+
+            (parsed.value as Instruction[]).forEach((instruction) => {
+              if (
+                instruction.kind === "CallMethod" &&
+                (instruction.address.value as string).startsWith("account") &&
+                !instruction.methodName.startsWith("try")
+              ) {
+                set.add(instruction.address.value as string);
+              }
+            });
+
+            set.delete(this.feePayerAddress as string);
+
+            let addressField = this.$t(`View.WalletGenerate.script.address`);
+            let privateKeyField = this.$t(
+              `View.WalletGenerate.script.privateKey`,
+            );
+
+            if (this.wallets.length) {
+              if (!this.wallets[0][addressField]) {
+                const locale = this.$i18n.locale === "zh" ? "en" : "zh";
+
+                addressField = this.$t(
+                  `View.WalletGenerate.script.address`,
+                  locale,
+                  [],
+                );
+
+                privateKeyField = this.$t(
+                  `View.WalletGenerate.script.privateKey`,
+                  locale,
+                  [],
+                );
+              }
+            }
+
+            const addressList = [...set.values()];
+
+            this.privateKeyList = [];
+
+            for (let i = 0; i < addressList.length; i++) {
+              const walletData = this.wallets.find((data) => {
+                return addressList[i] === data[addressField];
+              }) as unknown as object;
+
+              //@ts-ignore
+              const pk = walletData[privateKeyField] as string;
+
+              this.privateKeyList.push(pk);
+            }
+          }
+
           await sleep(i, 10, 4000);
 
           const nowTime = Date.now();
@@ -693,6 +772,7 @@ export default defineComponent({
       }
 
       this.fieldData = [];
+      this.wallets = [];
     },
     async previewTransaction() {
       this.fieldList = [];
@@ -821,6 +901,7 @@ export default defineComponent({
           content: `「 ${this.$t(
             `View.TokenTransfer.MultipleToMultiple.script.methods.previewTransaction.exceed`,
           )}: ${MAX_DIFF_SENDER_AMOUNT} 」`,
+          key,
         });
 
         return;
@@ -874,7 +955,7 @@ export default defineComponent({
         const wallet =
           await this.walletGenerator.generateWalletByPrivateKey(pk);
 
-        this.privateKeyList.push(wallet.privateKeyHexString());
+        this.privateKeyList.push(pk);
 
         pubKeyList.push(wallet.publicKey);
       }

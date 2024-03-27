@@ -1781,43 +1781,33 @@ export default defineComponent({
       ;
       CALL_METHOD
           Address("${this.feePayerAddress}")
-          "try_deposit_batch_or_abort"
+          "deposit_batch"
           Expression("ENTIRE_WORKTOP")
-          Enum<0u8>()
       ;
       `;
     },
     generateOwnerRoleStr() {
-      let ownerRoleStr: string | undefined;
-
       let ownerResource = this.resourceAddress;
 
-      if (this.nftId.length) {
-        ownerResource += `:${this.nftId}`;
-      }
+      const lockStatus = this.lock ? "1" : "2";
 
       const ownership = this.authValues.ownerRole;
 
+      if (this.nftId.length && ownership === Ownership.NFT) {
+        ownerResource += `:${this.nftId}`;
+      }
+
       if (ownership === Ownership.AllowAll) {
-        if (this.lock) {
-          ownerRoleStr = `
-            Enum<1u8>(
+        return `
+            Enum<${lockStatus}u8>(
                 Enum<0u8>()
             )
         `;
-        } else {
-          ownerRoleStr = `
-            Enum<2u8>(
-                Enum<0u8>()
-            )
-        `;
-        }
       }
 
       if (ownership === Ownership.Resource) {
-        if (this.lock) {
-          ownerRoleStr = `
-            Enum<1u8>(
+        return `
+            Enum<${lockStatus}u8>(
                 Enum<2u8>(
                     Enum<0u8>(
                         Enum<0u8>(
@@ -1829,27 +1819,11 @@ export default defineComponent({
                 )
             )
         `;
-        } else {
-          ownerRoleStr = `
-            Enum<2u8>(
-                Enum<2u8>(
-                    Enum<0u8>(
-                        Enum<0u8>(
-                            Enum<1u8>(
-                                Address("${ownerResource}")
-                            )
-                        )
-                    )
-                )
-            )
-        `;
-        }
       }
 
       if (ownership === Ownership.NFT) {
-        if (this.lock) {
-          ownerRoleStr = `
-            Enum<1u8>(
+        return `
+            Enum<${lockStatus}u8>(
                 Enum<2u8>(
                     Enum<0u8>(
                         Enum<0u8>(
@@ -1861,30 +1835,13 @@ export default defineComponent({
                 )
             )
         `;
-        } else {
-          ownerRoleStr = `
-            Enum<2u8>(
-                Enum<2u8>(
-                    Enum<0u8>(
-                        Enum<0u8>(
-                            Enum<0u8>(
-                                NonFungibleGlobalId("${ownerResource}")
-                            )
-                        )
-                    )
-                )
-            )
-        `;
-        }
       }
 
       if (ownership === Ownership.None) {
-        ownerRoleStr = `
+        return `
           Enum<0u8>()
       `;
       }
-
-      return ownerRoleStr;
     },
     activateConfirmModal() {
       if (!this.feePayerAddress) {
@@ -2088,31 +2045,15 @@ export default defineComponent({
       this.openNftModal = true;
     },
     generateAuthRoleStr(rule: AuthRule) {
-      let authRoleStr: string | undefined;
-
-      if (rule === AuthRule.Owner) {
-        authRoleStr = `
+      return rule === AuthRule.Owner
+        ? `
         Enum<0u8>()
-        `;
-      }
-
-      if (rule === AuthRule.DenyAll) {
-        authRoleStr = `
+        `
+        : `
         Enum<1u8>(
-            Enum<1u8>()
+            Enum<${rule === AuthRule.DenyAll ? "1" : "0"}u8>()
         )
         `;
-      }
-
-      if (rule === AuthRule.AllowAll) {
-        authRoleStr = `
-        Enum<1u8>(
-            Enum<0u8>()
-        )
-        `;
-      }
-
-      return authRoleStr;
     },
     copy(text: string) {
       navigator.clipboard.writeText(text).then(() => {

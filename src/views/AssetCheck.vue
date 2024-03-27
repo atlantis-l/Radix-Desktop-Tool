@@ -60,10 +60,7 @@
       v-model:open="openNFDataModal"
     >
       <a-row justify="center">
-        <a-avatar
-          style="user-select: none; width: 128px; height: 128px"
-          shape="square"
-        >
+        <a-avatar style="user-select: none; width: 128px; height: 128px">
           <template #icon>
             <img
               draggable="false"

@@ -3,13 +3,28 @@ import { EventEmitter } from "node:stream";
 import { homedir, release } from "node:os";
 import contextMenu from "electron-context-menu";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { app, BrowserWindow, ipcMain, Menu, MenuItem, shell } from "electron";
 import {
   attachTitlebarToWindow,
   setupTitlebar,
 } from "custom-electron-titlebar/main";
+import {
+  app,
+  net,
+  Menu,
+  shell,
+  dialog,
+  ipcMain,
+  MenuItem,
+  BrowserWindow,
+} from "electron";
 
-const VERSION = "v0.1.8";
+const DOWNLOAD_URL =
+  "https://github.com/atlantis-l/Radix-Desktop-Tool/releases";
+
+const VERSION_URL =
+  "https://api.github.com/repos/atlantis-l/Radix-Desktop-Tool/releases/latest";
+
+const VERSION = "v0.1.9";
 
 const VERSION_MENU = {
   label: VERSION,
@@ -380,6 +395,50 @@ async function createWindow() {
   await loadPage();
 
   win.show();
+
+  setTimeout(() => {
+    const request = net.request(VERSION_URL);
+
+    request.setHeader("Accept", "application/vnd.github+json");
+    request.setHeader("X-GitHub-Api-Version", "2022-11-28");
+
+    request.on("response", (r) => {
+      if (r.statusCode === 200) {
+        r.on("data", (b) => {
+          try {
+            const o = JSON.parse(b.toString());
+            //@ts-ignore
+            const tag = o["tag_name"] as string;
+
+            if (tag && tag.startsWith("v") && tag !== VERSION) {
+              dialog
+                .showMessageBox(win as BrowserWindow, {
+                  title:
+                    config.language === "en" ? "Version Update" : "版本更新",
+                  //################ Message ################//
+                  message: `${config.language === "en" ? "Download latest version" : "下载最新版本"}?`,
+                  //################ detail ################//
+                  detail: `${config.language === "en" ? "Latest Version" : "最新版本"}: 「${tag}」\n${config.language === "en" ? "Local Version" : "本地版本"}: 「${VERSION}」`,
+                  type: "question",
+                  buttons: [
+                    config.language === "en" ? "Download" : "下载",
+                    config.language === "en" ? "Cancel" : "取消",
+                  ],
+                  defaultId: 0,
+                })
+                .then((v) => {
+                  if (!v.response) {
+                    shell.openExternal(DOWNLOAD_URL);
+                  }
+                });
+            }
+          } catch (e) {}
+        });
+      }
+    });
+
+    request.end();
+  }, 9000);
 }
 
 app.on("window-all-closed", () => {

@@ -24,7 +24,7 @@ const DOWNLOAD_URL =
 const VERSION_URL =
   "https://api.github.com/repos/atlantis-l/Radix-Desktop-Tool/releases/latest";
 
-const VERSION = "v0.1.9";
+const VERSION = "v0.2.0";
 
 const VERSION_MENU = {
   label: VERSION,

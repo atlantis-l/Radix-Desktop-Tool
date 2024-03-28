@@ -1688,24 +1688,25 @@ export default defineComponent({
                           }
                         } else {
                           // O
-                          if (
-                            // Updater E
-                            //@ts-ignore
-                            updaterMap.get(name + updater).resolution ===
-                            "Explicit"
-                          ) {
-                            if (
-                              // E:!D
-                              //@ts-ignore
-                              updaterMap.get(name + updater).type !== "DenyAll"
-                            ) {
-                              permissions.push(name);
-                            }
-                          }
-
                           if (hasOwner) {
                             // O:!D
                             permissions.push(name);
+                          } else {
+                            if (
+                              // Updater E
+                              //@ts-ignore
+                              updaterMap.get(name + updater).resolution ===
+                              "Explicit"
+                            ) {
+                              if (
+                                // E:!D
+                                //@ts-ignore
+                                updaterMap.get(name + updater).type !==
+                                "DenyAll"
+                              ) {
+                                permissions.push(name);
+                              }
+                            }
                           }
                         }
                       }
